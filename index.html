@@ -1,0 +1,715 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Army Pink — Pathway to Freedom</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body>
+
+  <!-- ===== CRISIS BANNER ===== -->
+  <div class="crisis-banner" role="complementary" aria-label="Crisis resources">
+    <p>
+      If you are in immediate danger, call <strong>911</strong>. &nbsp;
+      National DV Hotline: <a href="tel:18007997233"><strong>1-800-799-7233</strong></a> &nbsp;|&nbsp;
+      Text <strong>START</strong> to <strong>88788</strong> &nbsp;|&nbsp;
+      <a href="https://www.thehotline.org" target="_blank" rel="noopener">thehotline.org</a>
+    </p>
+  </div>
+
+  <!-- ===== NAVIGATION ===== -->
+  <nav class="main-nav" aria-label="Main navigation">
+    <div class="nav-inner">
+      <a href="#" class="logo" aria-label="Army Pink home">
+        <span class="logo-text">Army Pink</span>
+      </a>
+      <button class="mobile-menu-toggle" aria-label="Toggle menu" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+      <ul class="nav-links">
+        <li><a href="#wellness">Pathway to Freedom</a></li>
+        <li><a href="#community">Survivor Stories</a></li>
+        <li><a href="#mission">Team</a></li>
+        <li><a href="#about">Our Mission</a></li>
+        <li><a href="#partnership">Partnership</a></li>
+      </ul>
+      <a href="#support-us" class="btn btn-primary nav-donate">Donate</a>
+    </div>
+  </nav>
+
+  <!-- ===== HERO + JOURNEY ===== -->
+  <header class="hero" id="home">
+    <div class="container">
+      <div class="hero-glass">
+        <h1>You already did the hardest part.</h1>
+        <p class="hero-sub">
+          Leaving took more courage than most people will ever understand.
+          What comes next doesn't have to be faced alone.
+        </p>
+        <div class="hero-actions">
+          <a href="#wellness" class="btn btn-primary">Pathway to Wellness</a>
+          <a href="#community" class="btn btn-ghost-light">Visit Community</a>
+        </div>
+      </div>
+
+    </div>
+    <svg class="hero-wave" viewBox="0 0 1440 80" preserveAspectRatio="none" aria-hidden="true">
+      <path d="M0,60 C360,0 540,80 720,40 C900,0 1080,80 1440,20 L1440,80 L0,80 Z" fill="var(--cream)"/>
+    </svg>
+  </header>
+
+  <!-- ===== JOURNEY — "Where are you right now?" ===== -->
+  <section class="section section-journey">
+    <div class="container">
+      <h2 class="journey-heading">Where are you right now?</h2>
+      <div class="journey-cards">
+        <button class="journey-card" data-overlay="overlay-phase-1" type="button">
+          <span class="journey-phase">I just left</span>
+          <p>
+            Everything feels confusing. I'm not sure what I'm feeling or what to do next.
+          </p>
+          <span class="journey-link">Find your footing &rarr;</span>
+        </button>
+        <button class="journey-card" data-overlay="overlay-phase-2" type="button">
+          <span class="journey-phase">I've been out for a while</span>
+          <p>
+            I'm safe, but I still feel stuck. Some days are harder than others.
+          </p>
+          <span class="journey-link">Keep going &rarr;</span>
+        </button>
+        <button class="journey-card" data-overlay="overlay-phase-3" type="button">
+          <span class="journey-phase">I'm rebuilding</span>
+          <p>
+            I'm moving forward but struggling with trust, identity, or relationships.
+          </p>
+          <span class="journey-link">Build what's yours &rarr;</span>
+        </button>
+      </div>
+      <p class="journey-note">No login required. No data stored. You're in control.</p>
+    </div>
+  </section>
+
+  <!-- ===== LAYER 1: SAFETY — "What you're feeling is normal" ===== -->
+  <section class="section section-safety" id="about">
+    <div class="container">
+      <h2>What you're feeling is normal.</h2>
+      <p class="section-lead">
+        The confusion, the fear, the guilt, the relief tangled up with grief -
+        all of it is a natural response to what you've been through.
+        You are not broken. You are healing.
+      </p>
+
+      <div class="card-grid">
+        <div class="card">
+          <div class="card-icon"><i data-lucide="cloud-fog" aria-hidden="true"></i></div>
+          <h3>The fog is real</h3>
+          <p>
+            After leaving, many survivors describe feeling unable to think clearly or
+            even name what happened. This fog lifts -at your own pace.
+          </p>
+        </div>
+        <div class="card">
+          <div class="card-icon"><i data-lucide="heart" aria-hidden="true"></i></div>
+          <h3>Missing them is normal</h3>
+          <p>
+            The pull to go back isn't weakness. It's a biochemical response to
+            the cycle you survived. On average, survivors leave 7 times before
+            leaving for good.
+          </p>
+        </div>
+        <div class="card">
+          <div class="card-icon"><i data-lucide="sprout" aria-hidden="true"></i></div>
+          <h3>Healing isn't linear</h3>
+          <p>
+            Some days will feel like progress. Others will feel like starting over.
+            Both are part of the journey, and both are okay.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== LAYER 2/3: WELLNESS PORTAL — Vedanta Partnership ===== -->
+  <section class="section section-wellness" id="wellness">
+    <div class="container">
+      <span class="overline">Pathway to Wellness</span>
+      <h2>Your body kept you safe.<br>Now let it rest.</h2>
+      <p class="section-lead">
+        Through our wellness partnership, we offer trauma-informed yoga,
+        guided meditation, and breathwork -all designed for survivors,
+        by people who understand.
+      </p>
+
+      <div class="wellness-grid">
+        <button class="wellness-card" data-overlay="overlay-breathing" type="button">
+          <div class="wellness-icon">
+            <i data-lucide="wind" aria-hidden="true"></i>
+          </div>
+          <h3>Guided Breathing</h3>
+          <p>Simple exercises to calm your nervous system when everything feels too much.</p>
+          <span class="wellness-tag">Available now</span>
+        </button>
+        <button class="wellness-card" data-overlay="overlay-yoga" type="button">
+          <div class="wellness-icon">
+            <i data-lucide="flower-2" aria-hidden="true"></i>
+          </div>
+          <h3>Trauma-Informed Yoga</h3>
+          <p>Gentle, body-reconnection practices that honor where you are today.</p>
+          <span class="wellness-tag">Weekly sessions</span>
+        </button>
+        <button class="wellness-card" data-overlay="overlay-sleep" type="button">
+          <div class="wellness-icon">
+            <i data-lucide="moon" aria-hidden="true"></i>
+          </div>
+          <h3>Meditation for Sleep</h3>
+          <p>For the nights when your mind won't quiet down and your body won't stop scanning for danger.</p>
+          <span class="wellness-tag">On demand</span>
+        </button>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ===== LAYER 3: CONNECTION — Community ===== -->
+  <section class="section section-community" id="community">
+    <div class="container">
+      <span class="overline">Escape Club Community</span>
+      <h2>You're not alone in this.</h2>
+      <p class="section-lead">
+        The Escape Club is a private, moderated community of survivors and supporters.
+        A place to be heard, to share wins, and to know that someone understands.
+      </p>
+
+      <div class="community-features">
+        <div class="community-feature">
+          <h4>Peer Support</h4>
+          <p>Connect with others who truly understand what you've been through.</p>
+        </div>
+        <div class="community-feature">
+          <h4>Daily Check-Ins</h4>
+          <p>A simple, low-pressure way to stay connected -even on the hard days.</p>
+        </div>
+        <div class="community-feature">
+          <h4>Wellness Events</h4>
+          <p>Weekly guided sessions, workshops, and community conversations.</p>
+        </div>
+        <div class="community-feature">
+          <h4>Moderated & Safe</h4>
+          <p>Verified members only. Trained moderators. Zero tolerance for harmful behavior.</p>
+        </div>
+      </div>
+
+      <div class="community-cta">
+        <a href="#" class="btn btn-primary">Join the community</a>
+        <p class="community-note">Free for survivors. Always.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== ABOUT ARMY PINK ===== -->
+  <section class="section section-mission" id="mission">
+    <div class="container">
+      <div class="mission-grid">
+        <div class="mission-text">
+          <span class="overline">Our Mission</span>
+          <h2>We don't sell healing.<br>We connect you to it.</h2>
+          <p>
+            Army Pink is a 501(c)(3) nonprofit supporting domestic violence survivors
+            through safety-centered transportation, concierge support, and wellness resources.
+          </p>
+          <p>
+            Our <strong>Pathway to Freedom</strong> program provides donation-based Freedom Rides -
+            immediate safe transportation when you need it most -plus connections to
+            ongoing wellness support for the road ahead.
+          </p>
+          <p class="quiet">Based in California. Serving survivors nationwide.</p>
+        </div>
+        <div class="mission-values">
+          <div class="value">
+            <span class="value-number">01</span>
+            <div>
+              <h4>Safety First</h4>
+              <p>Every decision we make starts with your safety.</p>
+            </div>
+          </div>
+          <div class="value">
+            <span class="value-number">02</span>
+            <div>
+              <h4>Survivor-Led</h4>
+              <p>People who understand the journey shape our work.</p>
+            </div>
+          </div>
+          <div class="value">
+            <span class="value-number">03</span>
+            <div>
+              <h4>No Barriers</h4>
+              <p>Survivors never pay. Supporters make that possible.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== SUPPORT / DONATE ===== -->
+  <section class="section section-support" id="support-us">
+    <div class="container">
+      <div class="support-grid">
+        <div class="support-text">
+          <span class="overline">Support Army Pink</span>
+          <h2>Help someone escape.</h2>
+          <p>
+            Every dollar funds a Freedom Ride, a wellness session, or a moment of safety
+            for someone who needs it. Survivors never pay -supporters make that possible.
+          </p>
+          <div class="support-actions">
+            <a href="#" class="btn btn-primary">Donate</a>
+            <a href="#" class="btn btn-ghost">Become a monthly supporter</a>
+          </div>
+          <p class="quiet">
+            Army Pink is a 501(c)(3) nonprofit. Donations are tax-deductible through our fiscal sponsor, Charity On Top.
+          </p>
+        </div>
+        <div class="support-tiers">
+          <div class="tier">
+            <span class="tier-price">$10<small>/mo</small></span>
+            <span class="tier-name">Friend</span>
+            <p>Monthly impact updates and supporter badge</p>
+          </div>
+          <div class="tier tier-featured">
+            <span class="tier-price">$50<small>/mo</small></span>
+            <span class="tier-name">Escape Club Member</span>
+            <p>Expert workshops, small groups, and impact reports</p>
+          </div>
+          <div class="tier">
+            <span class="tier-price">$100+<small>/mo</small></span>
+            <span class="tier-name">Champion</span>
+            <p>Advisory input, recognition, and leadership calls</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== FOOTER ===== -->
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <span class="logo-text">Army Pink</span>
+          <p>Supporting domestic violence survivors through safety, transportation, and wellness.</p>
+        </div>
+        <div class="footer-links">
+          <h4>Resources</h4>
+          <ul>
+            <li><a href="tel:18007997233">DV Hotline: 1-800-799-7233</a></li>
+            <li><a href="https://www.thehotline.org" target="_blank" rel="noopener">thehotline.org</a></li>
+            <li><a href="#">Safety Planning</a></li>
+            <li><a href="#">Crisis Text Line: Text START to 88788</a></li>
+          </ul>
+        </div>
+        <div class="footer-links">
+          <h4>Army Pink</h4>
+          <ul>
+            <li><a href="#mission">About Us</a></li>
+            <li><a href="#wellness">Wellness Portal</a></li>
+            <li><a href="#community">Escape Club</a></li>
+            <li><a href="#support-us">Support Us</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; 2026 Army Pink. All rights reserved. 501(c)(3) nonprofit.</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ===== JOURNEY OVERLAYS ===== -->
+
+  <!-- Phase 1: I just left -->
+  <div class="overlay" id="overlay-phase-1" aria-hidden="true" role="dialog" aria-label="Resources for when you just left">
+    <div class="overlay-backdrop"></div>
+    <div class="overlay-panel">
+      <button class="overlay-close" aria-label="Close">&times;</button>
+      <div class="overlay-content">
+        <span class="overline">Phase 1: Immediate Aftermath</span>
+        <h2>You're safe now. That matters.</h2>
+        <p>
+          The confusion you're feeling - the fog, the fear, the guilt tangled with relief -
+          is your mind processing what you survived. It's not a flaw. It's a natural response.
+        </p>
+
+        <!-- Row 1: Audio -->
+        <div class="carousel-row">
+          <h3 class="carousel-label">Something gentle for your ears</h3>
+          <div class="carousel">
+            <button class="carousel-arrow carousel-prev" aria-label="Scroll left">&lsaquo;</button>
+            <div class="carousel-track">
+              <a href="#" class="carousel-card">
+                <span class="carousel-type">Meditation</span>
+                <h4>Guided Meditation for Victims of Domestic Abuse</h4>
+                <p class="carousel-source">Fragrant Heart</p>
+              </a>
+              <a href="#" class="carousel-card">
+                <span class="carousel-type">Meditation</span>
+                <h4>Grounding Meditation for Trauma</h4>
+                <p class="carousel-source">Insight Timer -Dr. Amelia Kelley</p>
+              </a>
+              <a href="#" class="carousel-card">
+                <span class="carousel-type">Meditation</span>
+                <h4>I Am Safe: Healing from Terror/Trauma</h4>
+                <p class="carousel-source">Insight Timer</p>
+              </a>
+              <a href="#" class="carousel-card">
+                <span class="carousel-type">Podcast</span>
+                <h4>4 Steps to Break a Trauma Bond</h4>
+                <p class="carousel-source">The Relationship Recovery Podcast -EP102</p>
+              </a>
+              <a href="#" class="carousel-card">
+                <span class="carousel-type">Podcast</span>
+                <h4>Love and Abuse</h4>
+                <p class="carousel-source">Paul Colaianni</p>
+              </a>
+            </div>
+            <button class="carousel-arrow carousel-next" aria-label="Scroll right">&rsaquo;</button>
+          </div>
+        </div>
+
+        <!-- Row 2: Reading -->
+        <div class="carousel-row">
+          <h3 class="carousel-label">Words that understand</h3>
+          <div class="carousel">
+            <button class="carousel-arrow carousel-prev" aria-label="Scroll left">&lsaquo;</button>
+            <div class="carousel-track">
+              <a href="#" class="carousel-card">
+                <span class="carousel-type">Article</span>
+                <h4>Stages of Recovery After Trauma</h4>
+                <p class="carousel-source">DomesticShelters.org</p>
+              </a>
+              <a href="#" class="carousel-card">
+                <span class="carousel-type">Article</span>
+                <h4>What Is Trauma Bonding?</h4>
+                <p class="carousel-source">DomesticShelters.org</p>
+              </a>
+              <a href="#" class="carousel-card">
+                <span class="carousel-type">Guide</span>
+                <h4>I've Left and I Need Support</h4>
+                <p class="carousel-source">Women's Aid -The Survivor's Handbook</p>
+              </a>
+              <a href="#" class="carousel-card">
+                <span class="carousel-type">Article</span>
+                <h4>5 Powerful Self-Care Tips for Abuse and Trauma Survivors</h4>
+                <p class="carousel-source">The Hotline</p>
+              </a>
+              <a href="#" class="carousel-card">
+                <span class="carousel-type">Guide</span>
+                <h4>Create Your Personal Safety Plan</h4>
+                <p class="carousel-source">The Hotline</p>
+              </a>
+            </div>
+            <button class="carousel-arrow carousel-next" aria-label="Scroll right">&rsaquo;</button>
+          </div>
+        </div>
+
+        <!-- Row 3: Video -->
+        <div class="carousel-row">
+          <h3 class="carousel-label">Stories like yours</h3>
+          <div class="carousel">
+            <button class="carousel-arrow carousel-prev" aria-label="Scroll left">&lsaquo;</button>
+            <div class="carousel-track">
+              <a href="#" class="carousel-card">
+                <span class="carousel-type">TED Talk</span>
+                <h4>Why Domestic Violence Victims Don't Leave</h4>
+                <p class="carousel-source">Leslie Morgan Steiner</p>
+              </a>
+              <a href="#" class="carousel-card">
+                <span class="carousel-type">TEDx Talk</span>
+                <h4>I Left on a Tuesday</h4>
+                <p class="carousel-source">Chiara Lisowski</p>
+              </a>
+              <a href="#" class="carousel-card">
+                <span class="carousel-type">YouTube Channel</span>
+                <h4>Dr. Ramani Durvasula</h4>
+                <p class="carousel-source">YouTube</p>
+              </a>
+              <a href="#" class="carousel-card">
+                <span class="carousel-type">TEDx Talk</span>
+                <h4>Domestic Violence: What Everyone Needs to Know</h4>
+                <p class="carousel-source">Hannah Petrillo</p>
+              </a>
+              <a href="#" class="carousel-card">
+                <span class="carousel-type">Exercise</span>
+                <h4>Trauma-Sensitive 5-4-3-2-1 Grounding Exercise</h4>
+                <p class="carousel-source">Insight Timer</p>
+              </a>
+            </div>
+            <button class="carousel-arrow carousel-next" aria-label="Scroll right">&rsaquo;</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Phase 2: I've been out for a while -->
+  <div class="overlay" id="overlay-phase-2" aria-hidden="true" role="dialog" aria-label="Resources for when you feel stuck">
+    <div class="overlay-backdrop"></div>
+    <div class="overlay-panel">
+      <button class="overlay-close" aria-label="Close">&times;</button>
+      <div class="overlay-content">
+        <span class="overline">Phase 2: The Middle</span>
+        <h2>Stuck doesn't mean broken.</h2>
+        <p>
+          You're safe, but the weight of everything is surfacing. Grief for the relationship,
+          anger you couldn't express before, and the question "who am I without this?" are
+          all part of this phase.
+        </p>
+
+        <div class="overlay-cards">
+          <div class="overlay-card">
+            <h4>Grief without closure</h4>
+            <p>You're mourning someone still alive, a relationship that held both love and violence. Society rarely validates this grief.</p>
+          </div>
+          <div class="overlay-card">
+            <h4>Anger is arriving</h4>
+            <p>Anger was unsafe to express during the relationship. Feeling it now is healthy -even when it's frightening.</p>
+          </div>
+          <div class="overlay-card">
+            <h4>Identity is rebuilding</h4>
+            <p>Your preferences, opinions, and sense of self were systematically eroded. Rediscovering them takes time and patience.</p>
+          </div>
+        </div>
+
+        <div class="overlay-resources">
+          <h3>What might help right now</h3>
+          <a href="#wellness" class="overlay-link" data-close-overlay>Trauma-informed yoga for body reconnection &rarr;</a>
+          <a href="#wellness" class="overlay-link" data-close-overlay>Mindfulness practices for self-exploration &rarr;</a>
+          <a href="#community" class="overlay-link" data-close-overlay>Daily check-ins with the community &rarr;</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Phase 3: I'm rebuilding -->
+  <div class="overlay" id="overlay-phase-3" aria-hidden="true" role="dialog" aria-label="Resources for rebuilding">
+    <div class="overlay-backdrop"></div>
+    <div class="overlay-panel">
+      <button class="overlay-close" aria-label="Close">&times;</button>
+      <div class="overlay-content">
+        <span class="overline">Phase 3: Rebuilding</span>
+        <h2>You're becoming someone new.</h2>
+        <p>
+          Rebuilding trust, setting boundaries, navigating new relationships -
+          this phase is simultaneously liberating and terrifying. Growth and pain coexist here,
+          and that's okay.
+        </p>
+
+        <div class="overlay-cards">
+          <div class="overlay-card">
+            <h4>Boundaries are new</h4>
+            <p>You may swing between walls and no boundaries at all. Learning the middle ground is a practice, not a destination.</p>
+          </div>
+          <div class="overlay-card">
+            <h4>Trust takes time</h4>
+            <p>Learning to distinguish healthy from unhealthy patterns -in others and in yourself -is part of earned secure attachment.</p>
+          </div>
+          <div class="overlay-card">
+            <h4>Post-traumatic growth</h4>
+            <p>Deeper empathy, clarity about values, new life directions. Not universal, but possible -and it coexists with ongoing pain.</p>
+          </div>
+        </div>
+
+        <div class="overlay-resources">
+          <h3>What might help right now</h3>
+          <a href="#wellness" class="overlay-link" data-close-overlay>Wellness programs for ongoing healing &rarr;</a>
+          <a href="#community" class="overlay-link" data-close-overlay>Peer support and mentorship &rarr;</a>
+          <a href="#community" class="overlay-link" data-close-overlay>Weekly community events &rarr;</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Wellness: Guided Breathing -->
+  <div class="overlay" id="overlay-breathing" aria-hidden="true" role="dialog" aria-label="Guided breathing resources">
+    <div class="overlay-backdrop"></div>
+    <div class="overlay-panel">
+      <button class="overlay-close" aria-label="Close">&times;</button>
+      <div class="overlay-content">
+        <span class="overline">Learn to Breathe Better</span>
+        <h2>Calm starts with a single breath.</h2>
+        <p>
+          When your body is stuck in fight-or-flight, breathing is the fastest way back to safety.
+          These exercises are simple, short, and available anytime you need them.
+        </p>
+
+        <div class="breathing-exercise" role="region" aria-label="Guided breathing exercise">
+          <h3>Try it now: Box Breathing</h3>
+          <p>A simple grounding exercise you can use anytime. Follow the animation at your own pace.</p>
+          <div class="breath-box" id="breath-box">
+            <div class="breath-circle" id="breath-circle"></div>
+            <p class="breath-instruction" id="breath-instruction"></p>
+          </div>
+          <button class="btn btn-outline" id="breath-toggle">Start breathing exercise</button>
+        </div>
+
+        <div class="overlay-cards">
+          <a href="#" class="overlay-card overlay-card-link">
+            <h4>Box Breathing</h4>
+            <p>A 4-count breathing technique used to slow your heart rate and regain focus. Great for moments of panic or overwhelm.</p>
+            <span class="wellness-tag">Beginner</span>
+          </a>
+          <a href="#" class="overlay-card overlay-card-link">
+            <h4>5 Minute Stress Relief</h4>
+            <p>A short guided breathwork session to release tension and bring your nervous system back to baseline.</p>
+            <span class="wellness-tag">All levels</span>
+          </a>
+          <a href="#" class="overlay-card overlay-card-link">
+            <h4>4-7-8 Calming Breath</h4>
+            <p>Inhale for 4, hold for 7, exhale for 8. A technique shown to activate your parasympathetic nervous system within minutes.</p>
+            <span class="wellness-tag">Beginner</span>
+          </a>
+          <a href="#" class="overlay-card overlay-card-link">
+            <h4>Grounding Breathwork for Flashbacks</h4>
+            <p>A guided practice to bring you back to the present when an emotional flashback pulls you into the past.</p>
+            <span class="wellness-tag">All levels</span>
+          </a>
+          <a href="#" class="overlay-card overlay-card-link">
+            <h4>Morning Reset: 3 Minutes to Start Your Day</h4>
+            <p>A short breathwork routine to set a calm intention before the day begins. Especially helpful when mornings feel heavy.</p>
+            <span class="wellness-tag">Beginner</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Wellness: Trauma-Informed Yoga -->
+  <div class="overlay" id="overlay-yoga" aria-hidden="true" role="dialog" aria-label="Yoga and wellness resources">
+    <div class="overlay-backdrop"></div>
+    <div class="overlay-panel">
+      <button class="overlay-close" aria-label="Close">&times;</button>
+      <div class="overlay-content">
+        <span class="overline">Empowering Movement</span>
+        <h2>Reconnect with your body at your own pace.</h2>
+        <p>
+          These classes are designed with survivors in mind. No pressure, no performance.
+          Just gentle movement to help you feel at home in your body again.
+        </p>
+
+        <h3 class="carousel-label">Empowering Series</h3>
+        <div class="overlay-cards">
+          <a href="#" class="overlay-card overlay-card-link">
+            <h4>Survivor Series</h4>
+            <p>Movement and mindfulness designed specifically for trauma survivors.</p>
+            <span class="wellness-tag">Multi-level</span>
+          </a>
+          <a href="#" class="overlay-card overlay-card-link">
+            <h4>Calm in the Chaos</h4>
+            <p>Find stillness even when everything around you feels uncertain.</p>
+            <span class="wellness-tag">Intermediate</span>
+          </a>
+          <a href="#" class="overlay-card overlay-card-link">
+            <h4>Busy Place Quiet Mind</h4>
+            <p>Grounding practices for when your environment feels overstimulating.</p>
+            <span class="wellness-tag">All levels</span>
+          </a>
+          <a href="#" class="overlay-card overlay-card-link">
+            <h4>Back to the Mat</h4>
+            <p>A gentle re-entry for those returning to movement after a long time away.</p>
+            <span class="wellness-tag">Beginner</span>
+          </a>
+          <a href="#" class="overlay-card overlay-card-link">
+            <h4>Inner Strength Series</h4>
+            <p>Build physical and emotional resilience through intentional practice.</p>
+            <span class="wellness-tag">Intermediate</span>
+          </a>
+        </div>
+
+        <h3 class="carousel-label">Calm and Strong Kids</h3>
+        <div class="overlay-cards">
+          <a href="#" class="overlay-card overlay-card-link">
+            <h4>Kids Meditation</h4>
+            <p>Age-appropriate mindfulness to help children process big emotions safely.</p>
+            <span class="wellness-tag">Kids</span>
+          </a>
+          <a href="#" class="overlay-card overlay-card-link">
+            <h4>Kids Yoga</h4>
+            <p>Playful, body-positive movement for young ones who need a safe outlet.</p>
+            <span class="wellness-tag">Kids</span>
+          </a>
+        </div>
+
+        <h3 class="carousel-label">Wellness Programs (Bursaries Available)</h3>
+        <div class="overlay-cards">
+          <a href="#" class="overlay-card overlay-card-link">
+            <h4>Mindful about Menopause</h4>
+            <p>Support for navigating hormonal changes with compassion and awareness.</p>
+            <span class="wellness-tag">Program</span>
+          </a>
+          <a href="#" class="overlay-card overlay-card-link">
+            <h4>Let Go of Anxiety</h4>
+            <p>Tools and practices for managing anxiety rooted in lived experience.</p>
+            <span class="wellness-tag">Program</span>
+          </a>
+          <a href="#" class="overlay-card overlay-card-link">
+            <h4>Vibrant: Inflammatory Lifestyle</h4>
+            <p>Holistic practices addressing the physical toll of chronic stress and trauma.</p>
+            <span class="wellness-tag">Program</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Wellness: Meditation for Sleep -->
+  <div class="overlay" id="overlay-sleep" aria-hidden="true" role="dialog" aria-label="Sleep and meditation resources">
+    <div class="overlay-backdrop"></div>
+    <div class="overlay-panel">
+      <button class="overlay-close" aria-label="Close">&times;</button>
+      <div class="overlay-content">
+        <span class="overline">Rest Your Mind</span>
+        <h2>For the nights that won't quiet down.</h2>
+        <p>
+          Hypervigilance doesn't switch off just because you're safe now.
+          These sessions are made for the 2am moments when your body is still scanning for danger.
+        </p>
+
+        <div class="overlay-cards">
+          <a href="#" class="overlay-card overlay-card-link">
+            <h4>Yoga Nidra: Guided Meditation for Sleep</h4>
+            <p>A deep relaxation practice that guides you into restful sleep without forcing it.</p>
+            <span class="wellness-tag">All levels</span>
+          </a>
+          <a href="#" class="overlay-card overlay-card-link">
+            <h4>Yoga Class for Sleep</h4>
+            <p>Gentle, floor-based movement to release the tension your body holds onto at night.</p>
+            <span class="wellness-tag">Beginner</span>
+          </a>
+          <a href="#" class="overlay-card overlay-card-link">
+            <h4>Body Scan for Letting Go</h4>
+            <p>A guided meditation that moves through each part of your body, releasing the tension you didn't know you were carrying.</p>
+            <span class="wellness-tag">All levels</span>
+          </a>
+          <a href="#" class="overlay-card overlay-card-link">
+            <h4>Rain Sounds with Gentle Guidance</h4>
+            <p>Soft spoken cues layered over rain sounds to ease you out of hypervigilance and into rest.</p>
+            <span class="wellness-tag">Beginner</span>
+          </a>
+          <a href="#" class="overlay-card overlay-card-link">
+            <h4>Safe Place Visualization</h4>
+            <p>A guided imagery practice that helps you build an internal sense of safety your body can return to each night.</p>
+            <span class="wellness-tag">All levels</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+  <script>lucide.createIcons();</script>
+</body>
+</html>
