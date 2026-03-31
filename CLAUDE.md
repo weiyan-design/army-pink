@@ -326,86 +326,81 @@ Awareness (social media, website, campus events)
 
 ## 6. Completed Work
 
-### Landing Page (Built 2026-03-20, iterated 2026-03-21, refined 2026-03-22)
+### Landing Page v1.0 (Built 2026-03-20 through 2026-03-22)
+
+Original version with Journey/Safety/Wellness/Community sections. Committed as `army_pink_checkin_1.0`.
+
+### Landing Page v2.0 (Redesigned 2026-03-31)
+
+Major redesign replacing Journey, Safety, Wellness, and Community sections with new Figma-based layout. Committed as `army_pink_checkin_2.0`. Pushed to GitHub: `weiyan-design/army-pink` (private repo).
 
 **Files:**
 - `index.html` — page structure and content
 - `styles.css` — all styling (mobile-first, responsive)
-- `script.js` — mobile menu, breathing exercise, scroll reveals, overlay system, carousel scrolling
-- `army pink hero bg.png` — original hero background image (blurred nature scene, not currently in use)
-- `army pink hero bg 2.png` — dark illustration hero background (tried and reverted)
+- `script.js` — mobile menu, breathing exercise, scroll reveals, overlay system, carousel scrolling, drag/swipe, story deck animation, daisy rotation
+- `img/` — optimized images (hero, thumb cards, featured cards, story portraits, flower, sun)
+- `vid/` — hero videos (`hero-vid-2-opt.mp4` is the active one, 2.1MB optimized from 15MB original)
 
 **Current page structure (top to bottom):**
 
 1. **Crisis banner** — always visible at top, DV hotline number + text line + thehotline.org link
-2. **Nav** — sticky, logo left, links right (Wellness, Community, About, Support Us CTA)
-3. **Hero** — full-width nature photo background (Unsplash forest canopy) with subtle sway animation, glassmorphism card holding headline + subtext + two CTA buttons (Pathway to Wellness primary, Visit Community ghost), S-wave bottom edge transitioning to next section
-4. **Journey section** ("Where are you right now?") — own section below hero, 3 cards in horizontal row (I just left / I've been out for a while / I'm rebuilding), each with text link labels (Find your footing / Keep going / Build what's yours)
-5. **Safety section** ("What you're feeling is normal") — 3 info cards with Lucide icons (cloud-fog, heart, sprout)
-6. **Wellness section** ("Pathway to Wellness") — Vedanta partnership, 3 clickable wellness cards (Guided Breathing, Trauma-Informed Yoga, Meditation for Sleep) with Lucide icons (wind, flower-2, moon), each opens its own overlay panel
-7. **Community section** — Escape Club, 4 feature cards (Peer Support, Daily Check-Ins, Wellness Events, Moderated & Safe) + left-aligned join CTA
-8. **Mission section** — "We don't sell healing. We connect you to it." + 3 values (Safety First, Survivor-Led, No Barriers)
-9. **Support section** — donate CTA + 3 supporter tiers ($10 Friend / $50 Escape Club / $100+ Champion)
-10. **Footer** — resources, links, copyright
+2. **Nav** — sticky, height 65px, logo left, links right (Pathway to Freedom, Survivor Stories, Team, Our Mission, Partnership), Donate button
+3. **Hero** — looping video background (`hero-vid-2-opt.mp4`), glassmorphism card with headline + subtext + two CTAs, S-wave bottom edge
+4. **Daisy flower** — smiley daisy (`img/flower-4.png`) centered below hero wave, rotates 180deg clockwise on scroll
+5. **Empowering Series** — two-column grid (45% image / 1fr text). Left: arch image (300px 300px 0 0 border-radius) with wavy bottom SVG mask. Right: pill label, heading, description, horizontally scrollable thumb cards (55% width, 1:1 ratio). Cards link to doyogawithme.com
+6. **Featured Classes** — horizontally scrollable row of 5 portrait cards (3/4 ratio, 1rem border-radius). Pill labels positioned top-left. Cards: Yoga Nidra, Ease into Sleep, Box Breathing, Kids Meditation, Kids Yoga. All link to doyogawithme.com in new tabs
+7. **Wellness Programs** — same empowering-grid layout but reversed (text left, arch image right). Uses `empowering-grid-reversed` class (column-reverse on mobile). Thumb cards: Mindful about Menopause, Let Go of Anxiety. Links to doyogawithme courses
+8. **Survivor Stories** — yellow background (#FDD36A), two-column grid (carousel left, text right). Card deck with fan-out animation triggered at viewport center. 3 story cards (story-1/2/3.png) with poker-hand spread. Quote box reveals after fan. Up/down nav buttons cycle stories. "Share your story" CTA
+9. **Mission section** — unchanged from v1 ("We don't sell healing. We connect you to it." + 3 values)
+10. **Support section** — unchanged from v1 (donate CTA + 3 tiers)
+11. **Footer** — unchanged from v1
 
-**Overlay system (expanded):**
-- Any element with `data-overlay` attribute opens the matching overlay (journey cards + wellness cards)
-- Close via X button, backdrop click, or Escape key
-- Body scroll locks while overlay is open
-- Overlay panels max-width 1120px, centered
+**Overlay system (kept from v1, not currently triggered from main page):**
+- Phase 1/2/3 journey overlays still in HTML for future use
+- Wellness overlays (Breathing, Yoga, Sleep) still in HTML for future use
+- Overlay JS (open/close/escape) still functional
 
-**Journey overlays (Phase 1/2/3):**
+**Interactions & animations:**
+- **Scroll reveal** — elements with `.reveal-item` class fade up when entering top 1/3 of viewport (`rootMargin: 0px 0px -33% 0px`)
+- **Daisy rotation** — rotates 180deg clockwise based on hero scroll progress
+- **Card deck fan** — IntersectionObserver triggers fan-out when stories section hits middle viewport. Active card at left with -8deg rotation, others spread right with increasing rotation. Click to select, up/down arrows to cycle
+- **Drag/swipe** — all `.thumb-row` and `.featured-grid` elements support mouse drag (with momentum) and touch swipe. Prevents accidental link clicks during drag. Grab/grabbing cursors
+- **Scroll fade edges** — thumb-row-wrap and featured-wrap show gradient fade + arrow buttons when content overflows
+- **Hover** — all thumb-cards and featured-cards scale to 1.1 with 300ms ease-out
 
-Phase 1 overlay ("I just left") — fully populated with 3 carousel rows:
-- **"Something gentle for your ears"** (5 cards): Fragrant Heart meditation, Insight Timer grounding by Dr. Amelia Kelley, Insight Timer "I Am Safe", Relationship Recovery Podcast EP102, Love and Abuse Podcast
-- **"Words that understand"** (5 cards): DomesticShelters.org recovery stages, DomesticShelters.org trauma bonding, Women's Aid Survivor's Handbook, The Hotline self-care tips, The Hotline safety plan
-- **"Stories like yours"** (5 cards): Leslie Morgan Steiner TED Talk, Chiara Lisowski TEDx, Dr. Ramani YouTube, Hannah Petrillo TEDx, Insight Timer grounding exercise
+**Card styling:**
+- Thumb cards: 55% width, 1:1 aspect ratio, 0.5rem border-radius, gradient overlay (no blur) for text
+- Featured cards: 30% flex basis (min 240px), 3/4 aspect ratio, 1rem border-radius, pill label at top-left with frosted glass effect
+- Both: hover scale 1.1 with 300ms ease-out
 
-Phase 2 overlay — intro text + 3 info cards + resource links. Carousel rows NOT yet added.
+**Image optimization:**
+- All images in `img/` resized with `sips` (heroes to 1200px, featured to 800px, thumbs to 600px)
+- Total img folder ~1MB (down from 31MB originals)
+- Hero video optimized with ffmpeg: 15MB to 2.1MB (libx264, crf 23, 1920px, no audio, faststart)
 
-Phase 3 overlay — intro text + 3 info cards + resource links. Carousel rows NOT yet added.
+**Design decisions (2026-03-31):**
+- Hero changed from static Unsplash image to looping video background
+- Old sections (Journey, Safety, Wellness, Community) replaced with Empowering Series, Featured Classes, Wellness Programs
+- Arch images use 300px 300px 0 0 border-radius with wavy SVG bottom mask
+- Survivor Stories section added with card deck animation, yellow (#FDD36A) background
+- Nav items changed to: Pathway to Freedom, Survivor Stories, Team, Our Mission, Partnership
+- Pill labels used instead of overline text for section headers
+- Thumb overlay changed from blur to solid gradient
+- Wellness Programs uses reversed grid (image right on desktop, image top on mobile via column-reverse)
+- Stories section has -200px margin-top on mobile
+- Attempted but reverted: scroll-driven SVG stroke line (technical issues with z-index/visibility), daisy following user eye across sections (reverted to static position)
 
-**Wellness overlays (new in this session):**
+**Figma reference:** Design file at `https://www.figma.com/design/t6QHVTPWJ68j4plig065Yw/Army-Pink?node-id=4-51` (Figma MCP tools not connected - used screenshots instead)
 
-Guided Breathing overlay — interactive box breathing exercise at top + 5 resource cards:
-- Box Breathing, 5 Minute Stress Relief, 4-7-8 Calming Breath, Grounding Breathwork for Flashbacks, Morning Reset: 3 Minutes to Start Your Day
+**Figma export:** Use "html.to.design" Figma plugin by Builder.io. Serve locally (`npx serve -l 3003` from project dir). Ports 3000-3002 are typically in use.
 
-Trauma-Informed Yoga overlay — 3 grouped sections:
-- Empowering Series (5 classes): Survivor Series, Calm in the Chaos, Busy Place Quiet Mind, Back to the Mat, Inner Strength Series
-- Calm and Strong Kids (2 classes): Kids Meditation, Kids Yoga
-- Wellness Programs with Bursaries (3 programs): Mindful about Menopause, Let Go of Anxiety, Vibrant: Inflammatory Lifestyle
+**Git:**
+- Repo: `weiyan-design/army-pink` (private)
+- Tag `army_pink_checkin_1.0` — original baseline
+- Tag `army_pink_checkin_2.0` — current state after 2026-03-31 redesign
+- Always commit before major changes to enable safe reverts
 
-Meditation for Sleep overlay — 5 resource cards:
-- Yoga Nidra, Yoga Class for Sleep, Body Scan for Letting Go, Rain Sounds with Gentle Guidance, Safe Place Visualization
-
-**Carousel card design (updated):**
-- Tall portrait layout (220x280px) with gradient color backgrounds (unique per card)
-- Dark bottom gradient overlay for text readability
-- White text pinned to bottom (category label, bold title, source)
-- Hover: lifts 6px, scales 1.02x, deepens shadow
-
-**Card styling (all cards site-wide):**
-- Background: `rgba(245, 239, 230, 0.3)` (off-white at 30% opacity)
-- 1px border with beige-dark color
-- Hover effects on interactive cards (lift + shadow + pink border)
-
-**Icons:** All icons use Lucide (loaded via CDN unpkg). Icons used:
-- cloud-fog (safety: the fog), heart (safety: missing them), sprout (safety: healing)
-- wind (wellness: breathing), flower-2 (wellness: yoga), moon (wellness: sleep)
-
-**Design decisions made (cumulative):**
-- Quick exit button and Esc-to-exit were removed by user from the main page (kept only crisis banner)
-- Hero iterated multiple times: tried blurred landscape bg, dark illustration bg, gradient bg, finally settled on Unsplash forest canopy with glassmorphism text card
-- Journey section moved out of hero into its own section with horizontal card layout
-- Mission section moved after Community, before Support (survivor-facing content first, org info later)
-- Nav order: Wellness, Community, About, Support Us (matches page flow)
-- Carousel row labels changed from generic (Audio/Reading/Video) to emotional ("Something gentle for your ears" / "Words that understand" / "Stories like yours")
-- Journey cards got text link labels: "Find your footing" / "Keep going" / "Build what's yours"
-- Box breathing exercise moved from main wellness section into the Guided Breathing overlay panel
-- Community CTA and journey note left-aligned (not centered)
-- Em dashes replaced with hyphens throughout
-
-**Figma export:** Use "html.to.design" Figma plugin by Builder.io. Serve the page locally (`npx serve -l 3003` from project dir) and paste `http://localhost:3003` into the plugin. Ports 3000-3002 are typically in use on this machine.
+**Remarc:** Review comments managed through Remarc MCP (session "Army Pink", ID `0C239638-AF28-4479-AD28-7565FACF305C`). Check for open comments with `remarc_list_comments`.
 
 ---
 
@@ -413,24 +408,28 @@ Meditation for Sleep overlay — 5 resource cards:
 
 ### Portal — Immediate
 - [ ] Populate Phase 2 and Phase 3 overlays with carousel rows like Phase 1
-- [ ] Add actual URLs to all resource card `href` attributes (currently `#` placeholders)
-- [ ] Add actual URLs to wellness overlay card `href` attributes (Vedanta class links)
+- [ ] Add actual URLs to overlay resource cards (currently `#` placeholders)
+- [ ] Replace Unsplash placeholder images for Kids Meditation and Kids Yoga featured cards
 - [ ] Outline co-created "Pathway to Wellness" program with Vedanta
 - [ ] Deploy to public URL for stakeholder review
 
 ### Portal — Design
 - [x] Draft portal wireframe with the four-layer structure
 - [x] Design self-assessment question flow
-- [x] Define quick-exit button implementation
-- [x] Map Vedanta content to embed in Layer 2 (intro meditation/breathing exercise)
-- [x] Hero design with glassmorphism + nature background
-- [x] Wellness cards with overlay panels for Vedanta classes
-- [x] Carousel card redesign (portrait, gradient, hover effects)
+- [x] Hero design with video background + glassmorphism
+- [x] Empowering Series section with arch images
+- [x] Featured Classes scrollable card row
+- [x] Wellness Programs section with reversed layout
+- [x] Survivor Stories section with card deck animation
+- [x] All cards linked to doyogawithme.com
+- [x] Image optimization pipeline (sips + ffmpeg)
+- [ ] Scroll-driven SVG stroke line (attempted, needs rework - z-index issues)
+- [ ] Sun overlay animation on stories section (attempted, reverted)
 
 ### Discord
 - [ ] Build server structure based on channel architecture above
 - [ ] Implement guided airlock onboarding flow
-- [ ] Set up bot stack (Koko, Confessions Bot, Ticket Tool — see REFERENCE_SERVERS_AND_TOOLS.md)
+- [ ] Set up bot stack (Koko, Confessions Bot, Ticket Tool - see REFERENCE_SERVERS_AND_TOOLS.md)
 - [ ] Draft community guidelines with trauma-informed language
 - [ ] Create role and permission structure
 - [ ] Research LaunchPass integration for paid tiers
