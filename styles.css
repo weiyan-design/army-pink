@@ -838,7 +838,7 @@ img {
 
 .stories-grid {
   display: grid;
-  grid-template-columns: 1fr 38%;
+  grid-template-columns: 38% 1fr;
   gap: var(--space-xl);
   align-items: center;
 }
@@ -862,13 +862,16 @@ img {
 
 .stories-deck-area {
   position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .stories-deck {
   position: relative;
   width: 280px;
   height: 380px;
-  margin: 0 auto var(--space-md);
+  margin-bottom: var(--space-md);
 }
 
 .story-card {
@@ -898,9 +901,20 @@ img {
   transition: transform 0.7s cubic-bezier(0.4, 0, 0.2, 1), z-index 0s;
 }
 
-.story-quote-box {
+/* Quote row with arrows on sides */
+.story-quote-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-sm);
   position: relative;
-  min-height: 120px;
+  z-index: 5;
+  margin-top: -60px;
+}
+
+.story-quote-box {
+  width: 450px;
+  max-width: 100%;
   opacity: 0;
   transform: translateY(16px);
   transition: opacity 0.6s ease 0.6s, transform 0.6s ease 0.6s;
@@ -913,7 +927,7 @@ img {
 
 .story-quote {
   display: none;
-  background: rgba(255, 255, 255, 0.7);
+  background: rgba(255, 255, 255, 0.85);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   border: 1px solid var(--beige-dark);
@@ -953,13 +967,6 @@ img {
 .story-author span {
   font-size: 0.8rem;
   color: var(--text-muted);
-}
-
-.stories-nav {
-  display: flex;
-  justify-content: center;
-  gap: var(--space-xs);
-  margin-top: var(--space-sm);
 }
 
 .stories-btn {
@@ -1229,7 +1236,6 @@ img {
 
   .section-stories {
     padding: var(--space-xl) 0;
-    margin-top: -200px;
   }
 
   .section {
