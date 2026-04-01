@@ -352,8 +352,13 @@ Major redesign replacing Journey, Safety, Wellness, and Community sections with 
 7. **Wellness Programs** — same empowering-grid layout but reversed (text left, arch image right). Uses `empowering-grid-reversed` class (column-reverse on mobile). Thumb cards: Mindful about Menopause, Let Go of Anxiety. Links to doyogawithme courses
 8. **Survivor Stories** — yellow background (#FDD36A), two-column grid (text left 38%, deck right). Card deck with fan-out animation triggered at viewport center. 3 story cards (story-1/2/3.png) with poker-hand spread. Quote box (450px, glassmorphism) overlays cards from below with z-index 5 and -60px margin-top. Left/right chevron arrows flank the quote box. Deck centered via flexbox. "Share your story" CTA. No negative margin-top on mobile
 9. **Mission section** — unchanged from v1 ("We don't sell healing. We connect you to it." + 3 values)
-10. **Support section** — unchanged from v1 (donate CTA + 3 tiers)
-11. **Footer** — unchanged from v1
+10. **Footer** — unchanged from v1
+
+**Support section removed** — donate functionality now lives in slide-up panel triggered by nav Donate button.
+
+**Slide-up panels:**
+- **Class panel** — triggered by clicking any thumb-card or featured-card (10 total). Cards converted from `<a>` to `<button>` with `data-slide-panel` + data attributes. Panel shows image, category pill, title, level, description, "Start class" CTA linking to doyogawithme.com. Desktop: right-aligned 480px max-width. Close: backdrop, Escape, swipe down, handle tap.
+- **Donate panel** — triggered by nav Donate button (`data-donate-panel`). Pink-pale background. Header: love.svg centered, star.svg decorations, rock.svg hand (slides up from -70px to -40px with 0.2s delay), butterfly.svg. 3 selectable radio tier cards (Friend $10, Escape Club $50 pre-selected, Champion $100+). Selected tier gets pink border. Cancel + Continue buttons. Tax-deductible note at bottom. SVG assets: `img/butterfly.svg`, `img/love.svg`, `img/rock.svg`, `img/star.svg`.
 
 **Overlay system (kept from v1, not currently triggered from main page):**
 - Phase 1/2/3 journey overlays still in HTML for future use
@@ -363,7 +368,7 @@ Major redesign replacing Journey, Safety, Wellness, and Community sections with 
 **Interactions & animations:**
 - **Scroll reveal** — elements with `.reveal-item` class fade up when entering top 1/3 of viewport (`rootMargin: 0px 0px -33% 0px`)
 - **Daisy rotation** — rotates 180deg clockwise based on hero scroll progress
-- **Card deck fan** — IntersectionObserver triggers fan-out when stories section hits middle viewport. Active card at left with -8deg rotation, others spread right with increasing rotation. Click to select, up/down arrows to cycle
+- **Card deck fan** — IntersectionObserver triggers fan-out when stories section hits middle viewport. Active card at left with -8deg rotation, others spread right with increasing rotation. Click to select, left/right arrows to cycle
 - **Drag/swipe** — all `.thumb-row` and `.featured-grid` elements support mouse drag (with momentum) and touch swipe. Prevents accidental link clicks during drag. Grab/grabbing cursors
 - **Scroll fade edges** — thumb-row-wrap and featured-wrap show gradient fade + arrow buttons when content overflows
 - **Hover** — all thumb-cards and featured-cards scale to 1.1 with 300ms ease-out

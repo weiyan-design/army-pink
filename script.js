@@ -403,6 +403,166 @@
     fanObserver.observe(storiesSection);
   }
 
+  // --- Donate Slide-Up Panel ---
+  var donatePanel = document.getElementById('donate-panel');
+  var donateBackdrop = document.getElementById('donate-panel-backdrop');
+
+  function openDonatePanel() {
+    donatePanel.classList.add('active');
+    donatePanel.setAttribute('aria-hidden', 'false');
+    donateBackdrop.classList.add('active');
+    document.body.classList.add('overlay-open');
+  }
+
+  function closeDonatePanel() {
+    donatePanel.classList.remove('active');
+    donatePanel.setAttribute('aria-hidden', 'true');
+    donateBackdrop.classList.remove('active');
+    document.body.classList.remove('overlay-open');
+  }
+
+  if (donatePanel && donateBackdrop) {
+    document.querySelectorAll('[data-donate-panel]').forEach(function (btn) {
+      btn.addEventListener('click', function (e) {
+        e.preventDefault();
+        openDonatePanel();
+      });
+    });
+
+    donateBackdrop.addEventListener('click', closeDonatePanel);
+
+    donatePanel.querySelector('.donate-cancel').addEventListener('click', closeDonatePanel);
+
+    donatePanel.querySelector('.slide-panel-handle').addEventListener('click', closeDonatePanel);
+
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape' && donatePanel.classList.contains('active')) {
+        closeDonatePanel();
+      }
+    });
+
+    // Swipe down to dismiss
+    var dStartY = 0, dCurrentY = 0, dSwiping = false;
+    donatePanel.addEventListener('touchstart', function (e) {
+      if (donatePanel.scrollTop > 0) return;
+      dStartY = e.touches[0].pageY;
+      dSwiping = true;
+      donatePanel.style.transition = 'none';
+    }, { passive: true });
+
+    donatePanel.addEventListener('touchmove', function (e) {
+      if (!dSwiping) return;
+      dCurrentY = e.touches[0].pageY;
+      var dy = dCurrentY - dStartY;
+      if (dy > 0) donatePanel.style.transform = 'translateY(' + dy + 'px)';
+    }, { passive: true });
+
+    donatePanel.addEventListener('touchend', function () {
+      if (!dSwiping) return;
+      dSwiping = false;
+      donatePanel.style.transition = '';
+      if (dCurrentY - dStartY > 100) {
+        closeDonatePanel();
+      } else {
+        donatePanel.style.transform = '';
+      }
+    });
+  }
+
+  // --- Class Slide-Up Panel ---
+  var slidePanel = document.getElementById('slide-panel');
+  var slideBackdrop = document.getElementById('slide-panel-backdrop');
+  var slidePanelImg = document.getElementById('slide-panel-img');
+  var slidePanelTitle = document.getElementById('slide-panel-title');
+  var slidePanelCategory = document.getElementById('slide-panel-category');
+  var slidePanelLevel = document.getElementById('slide-panel-level');
+  var slidePanelDesc = document.getElementById('slide-panel-desc');
+  var slidePanelLink = document.getElementById('slide-panel-link');
+
+  function openSlidePanel(data) {
+    slidePanelImg.src = data.img;
+    slidePanelImg.alt = data.title;
+    slidePanelTitle.textContent = data.title;
+    slidePanelCategory.textContent = data.category;
+    slidePanelLevel.textContent = data.level;
+    slidePanelDesc.textContent = data.desc;
+    slidePanelLink.href = data.link;
+    slidePanel.classList.add('active');
+    slidePanel.setAttribute('aria-hidden', 'false');
+    slideBackdrop.classList.add('active');
+    document.body.classList.add('overlay-open');
+  }
+
+  function closeSlidePanel() {
+    slidePanel.classList.remove('active');
+    slidePanel.setAttribute('aria-hidden', 'true');
+    slideBackdrop.classList.remove('active');
+    document.body.classList.remove('overlay-open');
+  }
+
+  if (slidePanel && slideBackdrop) {
+    // Open on card click
+    document.querySelectorAll('[data-slide-panel]').forEach(function (card) {
+      card.addEventListener('click', function (e) {
+        e.preventDefault();
+        openSlidePanel({
+          title: this.dataset.title,
+          category: this.dataset.category,
+          level: this.dataset.level,
+          desc: this.dataset.desc,
+          link: this.dataset.link,
+          img: this.dataset.img
+        });
+      });
+    });
+
+    // Close on backdrop click
+    slideBackdrop.addEventListener('click', closeSlidePanel);
+
+    // Close on Escape
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape' && slidePanel.classList.contains('active')) {
+        closeSlidePanel();
+      }
+    });
+
+    // Swipe down to dismiss
+    var panelStartY = 0;
+    var panelCurrentY = 0;
+    var panelSwiping = false;
+
+    slidePanel.addEventListener('touchstart', function (e) {
+      if (slidePanel.scrollTop > 0) return;
+      panelStartY = e.touches[0].pageY;
+      panelSwiping = true;
+      slidePanel.style.transition = 'none';
+    }, { passive: true });
+
+    slidePanel.addEventListener('touchmove', function (e) {
+      if (!panelSwiping) return;
+      panelCurrentY = e.touches[0].pageY;
+      var dy = panelCurrentY - panelStartY;
+      if (dy > 0) {
+        slidePanel.style.transform = 'translateY(' + dy + 'px)';
+      }
+    }, { passive: true });
+
+    slidePanel.addEventListener('touchend', function () {
+      if (!panelSwiping) return;
+      panelSwiping = false;
+      slidePanel.style.transition = '';
+      var dy = panelCurrentY - panelStartY;
+      if (dy > 100) {
+        closeSlidePanel();
+      } else {
+        slidePanel.style.transform = '';
+      }
+    });
+
+    // Handle click on drag handle to close
+    slidePanel.querySelector('.slide-panel-handle').addEventListener('click', closeSlidePanel);
+  }
+
   // --- Hero Flower Scroll Rotation ---
   var flower = document.querySelector('.hero-flower');
   if (flower) {
