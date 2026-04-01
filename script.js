@@ -586,3 +586,190 @@
     });
   });
 })();
+
+/* ============================================
+   Scroll Stroke + Flowers — GSAP ScrollTrigger
+   ============================================ */
+window.addEventListener('load', function () {
+  if (typeof gsap === 'undefined' || typeof ScrollTrigger === 'undefined') return;
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  if (window.innerWidth < 769) return;
+
+  gsap.registerPlugin(ScrollTrigger);
+
+  var strokeWrap = document.getElementById('stroke-wrap');
+  var strokeSvg = document.getElementById('stroke-svg');
+  var pathEl = document.getElementById('stroke-path');
+  if (!strokeWrap || !strokeSvg || !pathEl) return;
+
+  var hero = document.querySelector('.hero');
+  var empowering = document.querySelector('.section-empowering');
+  var featured = document.querySelector('.section-featured');
+  var programs = document.querySelector('.section-programs');
+  var stories = document.querySelector('.section-stories');
+  var mission = document.querySelector('.section-mission');
+  var endSection = mission || stories;
+  if (!hero || !endSection) return;
+
+  // Flower elements
+  var flower1 = document.getElementById('stroke-flower-1');
+  var flower2 = document.getElementById('stroke-flower-2');
+  var flower3 = document.getElementById('stroke-flower-3');
+
+  function buildStroke() {
+    var w = document.documentElement.clientWidth;
+    var endY = endSection.offsetTop;
+    var totalH = endY + 50;
+
+    strokeWrap.style.height = totalH + 'px';
+    strokeSvg.style.height = totalH + 'px';
+    strokeSvg.setAttribute('viewBox', '0 0 ' + w + ' ' + totalH);
+
+    // Daisy position (center of hero bottom)
+    var daisyY = hero.offsetTop + hero.offsetHeight - 40;
+    var daisyX = w * 0.5;
+
+    var heroBot = hero.offsetTop + hero.offsetHeight;
+    var empTop = empowering ? empowering.offsetTop : heroBot + 100;
+    var empH = empowering ? empowering.offsetHeight : 600;
+    var empMid = empTop + empH * 0.45;
+    var empBot = empTop + empH;
+    var featTop = featured ? featured.offsetTop : empBot;
+    var featH = featured ? featured.offsetHeight : 400;
+    var featMid = featTop + featH * 0.5;
+    var featBot = featTop + featH;
+    var progTop = programs ? programs.offsetTop : featBot;
+    var progH = programs ? programs.offsetHeight : 600;
+    var progMid = progTop + progH * 0.45;
+    var progBot = progTop + progH;
+    var storTop = stories ? stories.offsetTop : progBot;
+    var storH = stories ? stories.offsetHeight : 500;
+    var storMid = storTop + storH * 0.45;
+    var storBot = storTop + storH;
+
+    // Edges
+    var rFar = w * 0.97;
+    var rEdge = w * 0.88;
+    var rMid = w * 0.72;
+    var center = w * 0.5;
+    var lMid = w * 0.28;
+    var lEdge = w * 0.12;
+    var lFar = w * 0.03;
+
+    var d = [
+      // Start behind daisy at hero bottom center
+      'M', daisyX, daisyY,
+
+      // Gentle curve right and down toward empowering
+      'C', daisyX + w * 0.15, daisyY + 80,
+           rEdge, heroBot + 40,
+           rMid, empTop + 20,
+
+      // Sweep left, curving around empowering arch image
+      'C', center, empTop + 80,
+           lMid, empMid - 100,
+           lFar, empMid,
+
+      // Smooth curve back right along empowering bottom
+      'C', lFar, empMid + 120,
+           lEdge, empBot - 60,
+           rMid, empBot + 10,
+
+      // Gentle S-curve to featured section right edge
+      'C', rEdge, empBot + 50,
+           rFar, featTop - 20,
+           rFar, featTop + 60,
+
+      // Sweep left behind featured cards
+      'C', rMid, featMid - 20,
+           lMid, featMid + 10,
+           lFar, featMid + 40,
+
+      // Smooth curve right toward programs
+      'C', lFar, featBot - 40,
+           lMid, featBot + 20,
+           center, featBot + 50,
+
+      // Sweep right to programs arch
+      'C', rMid, progTop - 40,
+           rFar, progTop + 30,
+           rFar, progMid - 20,
+
+      // Curve around programs arch image
+      'C', rFar, progMid + 60,
+           rMid, progMid + 100,
+           center, progBot + 10,
+
+      // Sweep right into stories section, wrapping the card images
+      'C', lMid, progBot + 50,
+           lEdge, storTop + 20,
+           center, storTop + 60,
+
+      // Curve right around story card deck
+      'C', rMid, storTop + 100,
+           rFar, storMid - 40,
+           rFar, storMid + 20,
+
+      // Sweep down to end of stories
+      'C', rFar, storMid + 80,
+           rMid, storBot - 40,
+           center, storBot - 10
+    ].join(' ');
+
+    pathEl.setAttribute('d', d);
+
+    var length = pathEl.getTotalLength();
+    pathEl.style.strokeDasharray = length;
+    pathEl.style.strokeDashoffset = length;
+
+    // Position flowers at key points along the path
+    // Flower 1: right side near featured top (~30%)
+    var pt1 = pathEl.getPointAtLength(length * 0.30);
+    flower1.style.left = (pt1.x - 24) + 'px';
+    flower1.style.top = (pt1.y - 24) + 'px';
+
+    // Flower 2: right side near programs (~55%)
+    var pt2 = pathEl.getPointAtLength(length * 0.55);
+    flower2.style.left = (pt2.x - 24) + 'px';
+    flower2.style.top = (pt2.y - 24) + 'px';
+
+    // Flower 3: end of stories section (~95%)
+    var pt3 = pathEl.getPointAtLength(length * 0.95);
+    flower3.style.left = (pt3.x - 24) + 'px';
+    flower3.style.top = (pt3.y - 24) + 'px';
+
+    return length;
+  }
+
+  var pathLength = buildStroke();
+
+  // Animate stroke on scroll
+  var strokeAnim = gsap.to(pathEl, {
+    strokeDashoffset: 0,
+    ease: 'none',
+    scrollTrigger: {
+      trigger: hero,
+      endTrigger: stories || endSection,
+      scrub: 3,
+      start: 'center center',
+      end: 'bottom center',
+      onUpdate: function (self) {
+        var p = self.progress;
+        // Show flowers as stroke passes their position
+        if (p > 0.28 && flower1) flower1.classList.add('visible');
+        if (p > 0.53 && flower2) flower2.classList.add('visible');
+        if (p > 0.90 && flower3) flower3.classList.add('visible');
+      }
+    }
+  });
+
+  // Rebuild on resize
+  var resizeTimer;
+  window.addEventListener('resize', function () {
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(function () {
+      pathLength = buildStroke();
+      ScrollTrigger.refresh();
+    }, 300);
+  });
+});

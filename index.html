@@ -9,6 +9,8 @@
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
   <script src="https://unpkg.com/lucide@latest"></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
 </head>
 <body>
 
@@ -502,6 +504,30 @@
         <div class="overlay-cards"><a href="#" class="overlay-card overlay-card-link"><h4>Yoga Nidra: Guided Meditation for Sleep</h4><p>A deep relaxation practice that guides you into restful sleep without forcing it.</p><span class="wellness-tag">All levels</span></a><a href="#" class="overlay-card overlay-card-link"><h4>Yoga Class for Sleep</h4><p>Gentle, floor-based movement to release the tension your body holds onto at night.</p><span class="wellness-tag">Beginner</span></a><a href="#" class="overlay-card overlay-card-link"><h4>Body Scan for Letting Go</h4><p>A guided meditation releasing tension you didn't know you were carrying.</p><span class="wellness-tag">All levels</span></a><a href="#" class="overlay-card overlay-card-link"><h4>Rain Sounds with Gentle Guidance</h4><p>Soft spoken cues layered over rain sounds to ease you into rest.</p><span class="wellness-tag">Beginner</span></a><a href="#" class="overlay-card overlay-card-link"><h4>Safe Place Visualization</h4><p>Build an internal sense of safety your body can return to each night.</p><span class="wellness-tag">All levels</span></a></div>
       </div>
     </div>
+  </div>
+
+  <!-- ===== SCROLL STROKE + FLOWERS ===== -->
+  <div class="stroke-wrap" id="stroke-wrap" aria-hidden="true">
+    <svg class="stroke-svg" id="stroke-svg" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <filter id="brush" x="-3%" y="-3%" width="106%" height="106%">
+          <feTurbulence type="turbulence" baseFrequency="0.025" numOctaves="3" seed="7" result="turb"/>
+          <feDisplacementMap in="SourceGraphic" in2="turb" scale="2.5" xChannelSelector="R" yChannelSelector="G"/>
+        </filter>
+      </defs>
+      <path id="stroke-path" d=""
+        stroke="#1a1a1a"
+        stroke-width="4"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        filter="url(#brush)"
+        opacity="1"
+        fill="none"
+      />
+    </svg>
+    <img src="img/flower-2-sm.png" class="stroke-flower" id="stroke-flower-1" alt="" />
+    <img src="img/flower-5.png" class="stroke-flower" id="stroke-flower-2" alt="" />
+    <img src="img/flower-2-sm.png" class="stroke-flower" id="stroke-flower-3" alt="" />
   </div>
 
   <!-- ===== DONATE SLIDE-UP PANEL ===== -->
