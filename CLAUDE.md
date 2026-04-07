@@ -357,8 +357,10 @@ Major redesign replacing Journey, Safety, Wellness, and Community sections with 
 **Support section removed** — donate functionality now lives in slide-up panel triggered by nav Donate button.
 
 **Slide-up panels:**
-- **Class panel** — triggered by clicking any thumb-card or featured-card (10 total). Cards converted from `<a>` to `<button>` with `data-slide-panel` + data attributes. Panel shows image, category pill, title, level, description, "Start class" CTA linking to doyogawithme.com. Desktop: right-aligned 480px max-width. Close: backdrop, Escape, swipe down, handle tap.
+- **Class panel** — HTML/CSS/JS still in codebase but currently unused. All thumb-cards and featured-cards are now `<a>` tags linking directly to doyogawithme.com in new tabs. Panel code kept for potential future use.
 - **Donate panel** — triggered by nav Donate button (`data-donate-panel`). Pink-pale background. Header: love.svg centered, star.svg decorations, rock.svg hand (slides up from -70px to -40px with 0.2s delay), butterfly.svg. 3 selectable radio tier cards (Friend $10, Escape Club $50 pre-selected, Champion $100+). Selected tier gets pink border. Cancel + Continue buttons. Tax-deductible note at bottom. SVG assets: `img/butterfly.svg`, `img/love.svg`, `img/rock.svg`, `img/star.svg`.
+
+**All card links are direct `<a>` tags** — thumb-cards and featured-cards link directly to doyogawithme.com in new tabs (not slide-up panels).
 
 **Overlay system (kept from v1, not currently triggered from main page):**
 - Phase 1/2/3 journey overlays still in HTML for future use
@@ -392,18 +394,24 @@ Major redesign replacing Journey, Safety, Wellness, and Community sections with 
 - Pill labels used instead of overline text for section headers
 - Thumb overlay changed from blur to solid gradient
 - Wellness Programs uses reversed grid (image right on desktop, image top on mobile via column-reverse)
-- Stories section has -200px margin-top on mobile
-- Attempted but reverted: scroll-driven SVG stroke line (technical issues with z-index/visibility), daisy following user eye across sections (reverted to static position)
+- Stories section mobile: no negative margin-top (was -200px, removed to fix overlap)
+- Attempted but reverted: scroll-driven SVG stroke line (multiple attempts with GSAP ScrollTrigger + feTurbulence brush filter — z-index issues with section backgrounds), daisy following user eye across sections, sun.png overlay on stories section, class slide-up panels (built then reverted to direct links)
 
-**Figma reference:** Design file at `https://www.figma.com/design/t6QHVTPWJ68j4plig065Yw/Army-Pink?node-id=4-51` (Figma MCP tools not connected - used screenshots instead)
+**Figma reference:** Design file at `https://www.figma.com/design/t6QHVTPWJ68j4plig065Yw/Army-Pink?node-id=4-51`. Figma MCP tools now connected (as of 2026-04-07).
 
 **Figma export:** Use "html.to.design" Figma plugin by Builder.io. Serve locally (`npx serve -l 3003` from project dir). Ports 3000-3002 are typically in use.
 
+**Deployment:**
+- **Netlify:** Live at `https://zingy-sherbet-559514.netlify.app`. Deploy with `netlify deploy --prod --dir .` from project dir. Netlify CLI installed globally.
+- **GitHub:** Repo `weiyan-design/army-pink` (private). GitHub Pages not available on free plan for private repos.
+
 **Git:**
 - Repo: `weiyan-design/army-pink` (private)
-- Tag `army_pink_checkin_1.0` — original baseline
-- Tag `army_pink_checkin_2.0` — current state after 2026-03-31 redesign
+- Tag `army_pink_checkin_1.0` — original baseline (2026-03-20)
+- Tag `army_pink_checkin_2.0` — redesign with new sections (2026-03-31)
+- Latest commits go beyond the tag (donate panel, card link changes, stroke attempts)
 - Always commit before major changes to enable safe reverts
+- IMPORTANT: When user says "revert back", clarify scope — they usually mean last few changes, NOT full git checkout to a tag. A full revert wiped uncommitted work once already.
 
 **Remarc:** Review comments managed through Remarc MCP (session "Army Pink", ID `0C239638-AF28-4479-AD28-7565FACF305C`). Check for open comments with `remarc_list_comments`.
 
@@ -416,7 +424,8 @@ Major redesign replacing Journey, Safety, Wellness, and Community sections with 
 - [ ] Add actual URLs to overlay resource cards (currently `#` placeholders)
 - [ ] Replace Unsplash placeholder images for Kids Meditation and Kids Yoga featured cards
 - [ ] Outline co-created "Pathway to Wellness" program with Vedanta
-- [ ] Deploy to public URL for stakeholder review
+- [ ] Clean up unused class slide-up panel code (HTML/CSS/JS) if not needed
+- [ ] Connect Donate panel "continue" button to actual payment flow
 
 ### Portal — Design
 - [x] Draft portal wireframe with the four-layer structure
@@ -428,7 +437,9 @@ Major redesign replacing Journey, Safety, Wellness, and Community sections with 
 - [x] Survivor Stories section with card deck animation
 - [x] All cards linked to doyogawithme.com
 - [x] Image optimization pipeline (sips + ffmpeg)
-- [ ] Scroll-driven SVG stroke line (attempted, needs rework - z-index issues)
+- [x] Donate slide-up panel with tier selection
+- [x] Deployed to Netlify public URL
+- [ ] Scroll-driven SVG stroke line with flowers (attempted multiple times, z-index issues — needs different approach, possibly per-section SVG segments instead of one global overlay)
 - [ ] Sun overlay animation on stories section (attempted, reverted)
 
 ### Discord

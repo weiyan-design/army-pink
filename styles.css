@@ -58,59 +58,6 @@ body {
   position: relative;
 }
 
-/* --- Scroll Stroke Line --- */
-.stroke-wrap {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  pointer-events: none;
-  z-index: 1;
-  overflow: visible;
-}
-
-.stroke-svg {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  display: block;
-}
-
-.stroke-flower {
-  position: absolute;
-  width: 48px;
-  height: 48px;
-  opacity: 0;
-  transform: scale(0) rotate(-30deg);
-  transition: opacity 0.5s ease, transform 0.5s ease;
-  z-index: 2;
-}
-
-.stroke-flower.visible {
-  opacity: 1;
-  transform: scale(1) rotate(0deg);
-}
-
-/* Sections: content above stroke, backgrounds below */
-.section-empowering,
-.section-featured,
-.section-programs,
-.section-stories {
-  position: relative;
-}
-
-.section-empowering > .container,
-.section-featured > .container,
-.section-programs > .container,
-.section-stories > .container {
-  position: relative;
-  z-index: 2;
-}
-
-@media (max-width: 768px) {
-  .stroke-wrap { display: none; }
-}
 
 a {
   color: var(--pink-dark);
