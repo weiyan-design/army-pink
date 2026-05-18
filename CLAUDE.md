@@ -397,19 +397,73 @@ Major redesign replacing Journey, Safety, Wellness, and Community sections with 
 - Stories section mobile: no negative margin-top (was -200px, removed to fix overlap)
 - Attempted but reverted: scroll-driven SVG stroke line (multiple attempts with GSAP ScrollTrigger + feTurbulence brush filter — z-index issues with section backgrounds), daisy following user eye across sections, sun.png overlay on stories section, class slide-up panels (built then reverted to direct links)
 
+---
+
+### Landing Page v3.0 + Astro Migration (2026-05-18)
+
+**Nav updates:**
+- Links changed to: Home, Mission, Escape Club, Wellness Portal, Partners (Team removed)
+- Logo replaced: text "Army Pink" → `img/AP_Logo.png` (18px height, width auto, aspect-ratio locked to original 1475×170)
+- Nav height increased from 65px to 80px
+- Footer also uses logo image (18px, no background wrapper needed if PNG has transparency — currently shows as-is)
+
+**Footer rebuilt (5-column grid):**
+- **Brand column:** AP logo + tagline + social icons (Instagram, Pinterest, YouTube, LinkedIn) as circular icon buttons, pink on hover
+- **Resources:** DV Hotline 1-800-799-7233, thehotline.org, Safety Planning, Crisis Text Line
+- **About:** mirrors nav links (Home, Mission, Escape Club, Wellness Portal, Partners, Team)
+- **Connect:** Volunteer, Perks, FAQ, Contact Us
+- **Legal:** Privacy, SMS Terms & Conditions, Disclaimer
+- Mobile: brand spans full width, link columns go 2-up grid
+
+**Safe Exit button:**
+- Fixed bottom-right corner on both desktop and mobile (moved from top-right after it covered Donate button at some breakpoints)
+- Desktop: red pill button (`#c62828`) with exit-door SVG + "Quick Exit" text, tooltip "Press ESC to exit" to its left
+- Mobile: red circular FAB (54px), tooltip fades in on hover/focus
+- Click → `window.location.replace('https://www.google.com')` — replaces history entry so back button skips Army Pink
+- ESC key → same redirect, but only when NO overlay or panel is currently active (panels still close normally with ESC)
+- JS: `safeExit()` function at top of `script.js` IIFE; button listener on `#safeExitBtn`
+
+**Crisis banner:**
+- Added: "Remember to **clear your browser history** when finished." at end of banner text
+
+**Astro migration (2026-05-18):**
+- Migrated from single flat HTML to Astro 5 static site generator
+- `src/layouts/Layout.astro` — shared template rendered on every page: `<head>`, crisis banner, safe exit, nav, footer, donate panel, script tags
+- `src/pages/index.astro` — wellness portal content (imports Layout, passes `title` prop)
+- `public/` — static assets served as-is: `styles.css`, `script.js`, `img/`, `vid/`
+- `astro.config.mjs` — `output: 'static'`, no adapter needed
+- `netlify.toml` — `command = "npm run build"`, `publish = "dist"` — Netlify now auto-builds
+- Old root `index.html`, `styles.css`, `script.js` kept as backup (not served, Netlify uses `dist/`)
+
+**To add a new page:**
+Create `src/pages/[name].astro`:
+```astro
+---
+import Layout from '../layouts/Layout.astro';
+---
+<Layout title="Page Title — Army Pink">
+  <!-- page content -->
+</Layout>
+```
+Nav, footer, crisis banner, quick exit appear automatically.
+
+**Dev server:** `npm run dev` (from project root, serves at localhost:4321)
+**Build:** `npm run build` (outputs to `dist/`)
+
 **Figma reference:** Design file at `https://www.figma.com/design/t6QHVTPWJ68j4plig065Yw/Army-Pink?node-id=4-51`. Figma MCP tools now connected (as of 2026-04-07).
 
 **Figma export:** Use "html.to.design" Figma plugin by Builder.io. Serve locally (`npx serve -l 3003` from project dir). Ports 3000-3002 are typically in use.
 
 **Deployment:**
-- **Netlify:** Live at `https://zingy-sherbet-559514.netlify.app`. Deploy with `netlify deploy --prod --dir .` from project dir. Netlify CLI installed globally.
+- **Netlify:** Live at `https://zingy-sherbet-559514.netlify.app`
+- Deploy command: `netlify deploy --prod` (reads `netlify.toml`, builds and deploys `dist/`)
+- Netlify CLI installed globally. `netlify.toml` at project root.
 - **GitHub:** Repo `weiyan-design/army-pink` (private). GitHub Pages not available on free plan for private repos.
 
 **Git:**
 - Repo: `weiyan-design/army-pink` (private)
 - Tag `army_pink_checkin_1.0` — original baseline (2026-03-20)
 - Tag `army_pink_checkin_2.0` — redesign with new sections (2026-03-31)
-- Latest commits go beyond the tag (donate panel, card link changes, stroke attempts)
 - Always commit before major changes to enable safe reverts
 - IMPORTANT: When user says "revert back", clarify scope — they usually mean last few changes, NOT full git checkout to a tag. A full revert wiped uncommitted work once already.
 
@@ -439,8 +493,20 @@ Major redesign replacing Journey, Safety, Wellness, and Community sections with 
 - [x] Image optimization pipeline (sips + ffmpeg)
 - [x] Donate slide-up panel with tier selection
 - [x] Deployed to Netlify public URL
+- [x] Nav + footer rebuilt with correct links, logo, social icons
+- [x] Safe Exit button (bottom-right fixed, ESC key, history replacement)
+- [x] Crisis banner browser history reminder
+- [x] Migrated to Astro — shared Layout.astro template
 - [ ] Scroll-driven SVG stroke line with flowers (attempted multiple times, z-index issues — needs different approach, possibly per-section SVG segments instead of one global overlay)
 - [ ] Sun overlay animation on stories section (attempted, reverted)
+
+### Multi-page Build (next major phase)
+- [ ] `src/pages/mission.astro` — About Army Pink, team bios, values
+- [ ] `src/pages/escape-club.astro` — Discord community, tier structure, how to join
+- [ ] `src/pages/wellness-portal.astro` — move current index content here; make index a true homepage
+- [ ] `src/pages/partners.astro` — Vedanta + other partners
+- [ ] `src/pages/donate.astro` — full donation flow (expand current panel)
+- [ ] `src/pages/volunteer.astro`, `faq.astro`, `contact.astro`, `perks.astro` — footer pages
 
 ### Discord
 - [ ] Build server structure based on channel architecture above

@@ -1,0 +1,10 @@
+node_modules/
+dist/
+.astro/
+.DS_Store
+
+# Unused original video files (optimized versions committed)
+public/vid/hero-vid.mp4
+public/vid/hero-vid-2.mp4
+public/vid/hero-vid-opt.mp4
+public/vid/safe exit is a right (1).mp4

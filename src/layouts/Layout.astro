@@ -1,0 +1,203 @@
+---
+interface Props {
+  title?: string;
+  description?: string;
+}
+
+const {
+  title = 'Army Pink — Pathway to Freedom',
+  description = 'Army Pink is a survivor-led initiative addressing the #1 unmet need for survivors: safe, immediate transportation out of dangerous situations. We turn compassion into action by providing urgent rides and structured wellness support, helping survivors of domestic abuse leave danger and begin again with dignity, guidance, and connection.',
+} = Astro.props;
+---
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{title}</title>
+  <meta name="description" content={description} />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/styles.css" />
+  <script src="https://unpkg.com/lucide@latest" is:inline></script>
+</head>
+<body>
+
+  <!-- ===== CRISIS BANNER ===== -->
+  <div class="crisis-banner" role="complementary" aria-label="Crisis resources">
+    <p>
+      If you are in immediate danger, call <strong>911</strong>. &nbsp;
+      National DV Hotline: <a href="tel:18007997233"><strong>1-800-799-7233</strong></a> &nbsp;|&nbsp;
+      Text <strong>START</strong> to <strong>88788</strong> &nbsp;|&nbsp;
+      <a href="https://www.thehotline.org" target="_blank" rel="noopener">thehotline.org</a> &nbsp;|&nbsp;
+      Remember to <strong>clear your browser history</strong> when finished.
+    </p>
+  </div>
+
+  <!-- ===== SAFE EXIT ===== -->
+  <div class="safe-exit-wrap" role="complementary" aria-label="Safe exit">
+    <span class="safe-exit-tooltip" aria-hidden="true">Press ESC to exit</span>
+    <button class="safe-exit-btn" id="safeExitBtn" aria-label="Immediately leave this site">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+        <polyline points="16 17 21 12 16 7"/>
+        <line x1="21" y1="12" x2="9" y2="12"/>
+      </svg>
+      <span>Quick Exit</span>
+    </button>
+  </div>
+
+  <!-- ===== NAVIGATION ===== -->
+  <nav class="main-nav" aria-label="Main navigation">
+    <div class="nav-inner">
+      <a href="/" class="logo" aria-label="Army Pink home">
+        <img src="/img/AP_Logo.png" alt="Army Pink" class="logo-img" />
+      </a>
+      <button class="mobile-menu-toggle" aria-label="Toggle menu" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+      <ul class="nav-links">
+        <li><a href="/">Home</a></li>
+        <li><a href="/mission">Mission</a></li>
+        <li><a href="/escape-club">Escape Club</a></li>
+        <li><a href="/wellness-portal">Wellness Portal</a></li>
+        <li><a href="/partners">Partners</a></li>
+      </ul>
+      <a href="#" class="btn btn-primary nav-donate" data-donate-panel>Donate</a>
+    </div>
+  </nav>
+
+  <!-- PAGE CONTENT -->
+  <slot />
+
+  <!-- ===== FOOTER ===== -->
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-grid">
+
+        <div class="footer-brand">
+          <div class="footer-logo-wrap">
+            <img src="/img/AP_Logo.png" alt="Army Pink" class="logo-img" />
+          </div>
+          <p>Supporting domestic violence survivors through safety, transportation, and wellness.</p>
+          <div class="footer-social">
+            <a href="https://www.instagram.com/armypink" target="_blank" rel="noopener" aria-label="Instagram">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg>
+            </a>
+            <a href="https://www.pinterest.com/armypink/" target="_blank" rel="noopener" aria-label="Pinterest">
+              <svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M12 0C5.373 0 0 5.373 0 12c0 5.084 3.163 9.426 7.627 11.174-.105-.949-.2-2.405.042-3.441.218-.937 1.407-5.965 1.407-5.965s-.359-.719-.359-1.782c0-1.668.967-2.914 2.171-2.914 1.023 0 1.518.769 1.518 1.69 0 1.029-.655 2.568-.994 3.995-.283 1.194.599 2.169 1.777 2.169 2.133 0 3.772-2.249 3.772-5.495 0-2.873-2.064-4.882-5.012-4.882-3.414 0-5.418 2.561-5.418 5.207 0 1.031.397 2.138.893 2.738a.36.36 0 0 1 .083.345l-.333 1.36c-.053.22-.174.267-.402.161-1.499-.698-2.436-2.889-2.436-4.649 0-3.785 2.75-7.262 7.929-7.262 4.163 0 7.398 2.967 7.398 6.931 0 4.136-2.607 7.464-6.227 7.464-1.216 0-2.359-.632-2.75-1.378l-.748 2.853c-.271 1.043-1.002 2.35-1.492 3.146C9.57 23.812 10.763 24 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0z"/></svg>
+            </a>
+            <a href="https://www.youtube.com/@armypink" target="_blank" rel="noopener" aria-label="YouTube">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22.54 6.42a2.78 2.78 0 0 0-1.95-1.96C18.88 4 12 4 12 4s-6.88 0-8.59.46a2.78 2.78 0 0 0-1.95 1.96A29 29 0 0 0 1 12a29 29 0 0 0 .46 5.58A2.78 2.78 0 0 0 3.41 19.54C5.12 20 12 20 12 20s6.88 0 8.59-.46a2.78 2.78 0 0 0 1.95-1.96A29 29 0 0 0 23 12a29 29 0 0 0-.46-5.58z"/><polygon points="9.75 15.02 15.5 12 9.75 8.98 9.75 15.02" fill="currentColor" stroke="none"/></svg>
+            </a>
+            <a href="https://www.linkedin.com/company/army-pink/" target="_blank" rel="noopener" aria-label="LinkedIn">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>
+            </a>
+          </div>
+        </div>
+
+        <div class="footer-links">
+          <h4>Resources</h4>
+          <ul>
+            <li><a href="tel:18007997233">DV Hotline: 1-800-799-7233</a></li>
+            <li><a href="https://www.thehotline.org" target="_blank" rel="noopener">thehotline.org</a></li>
+            <li><a href="#">Safety Planning</a></li>
+            <li><a href="#">Crisis Text Line: Text START to 88788</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-links">
+          <h4>About</h4>
+          <ul>
+            <li><a href="/">Home</a></li>
+            <li><a href="/mission">Mission</a></li>
+            <li><a href="/escape-club">Escape Club</a></li>
+            <li><a href="/wellness-portal">Wellness Portal</a></li>
+            <li><a href="/partners">Partners</a></li>
+            <li><a href="/team">Team</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-links">
+          <h4>Connect</h4>
+          <ul>
+            <li><a href="#">Volunteer</a></li>
+            <li><a href="#">Perks</a></li>
+            <li><a href="#">FAQ</a></li>
+            <li><a href="#">Contact Us</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-links">
+          <h4>Legal</h4>
+          <ul>
+            <li><a href="#">Privacy</a></li>
+            <li><a href="#">SMS Terms &amp; Conditions</a></li>
+            <li><a href="#">Disclaimer</a></li>
+          </ul>
+        </div>
+
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; 2026 Army Pink. All rights reserved. 501(c)(3) nonprofit.</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ===== DONATE SLIDE-UP PANEL ===== -->
+  <div class="slide-panel-backdrop" id="donate-panel-backdrop"></div>
+  <div class="slide-panel donate-panel" id="donate-panel" aria-hidden="true">
+    <div class="slide-panel-handle"></div>
+    <div class="donate-panel-header">
+      <img src="/img/star.svg" class="donate-deco donate-star-1" alt="" aria-hidden="true" />
+      <img src="/img/star.svg" class="donate-deco donate-star-2" alt="" aria-hidden="true" />
+      <img src="/img/love.svg" class="donate-hero-img" alt="Love" />
+      <img src="/img/rock.svg" class="donate-deco donate-rock" alt="" aria-hidden="true" />
+    </div>
+    <div class="donate-panel-body">
+      <img src="/img/butterfly.svg" class="donate-deco donate-butterfly" alt="" aria-hidden="true" />
+      <label class="donate-tier">
+        <input type="radio" name="donate-tier" value="friend" />
+        <div class="donate-tier-card">
+          <div class="donate-tier-price">$10<small>/mo</small></div>
+          <div class="donate-tier-info">
+            <strong>Friend</strong>
+            <p>Monthly impact updates and supporter badge</p>
+          </div>
+        </div>
+      </label>
+      <label class="donate-tier">
+        <input type="radio" name="donate-tier" value="escape-club" checked />
+        <div class="donate-tier-card donate-tier-featured">
+          <div class="donate-tier-price">$50<small>/mo</small></div>
+          <div class="donate-tier-info">
+            <strong>Escape Club Member</strong>
+            <p>Expert workshops, small groups, and impact reports</p>
+          </div>
+        </div>
+      </label>
+      <label class="donate-tier">
+        <input type="radio" name="donate-tier" value="champion" />
+        <div class="donate-tier-card">
+          <div class="donate-tier-price">$100+<small>/mo</small></div>
+          <div class="donate-tier-info">
+            <strong>Champion</strong>
+            <p>Advisory input, recognition, and leadership calls</p>
+          </div>
+        </div>
+      </label>
+      <div class="donate-actions">
+        <button type="button" class="btn btn-ghost donate-cancel">cancel</button>
+        <a href="#" class="btn btn-primary donate-continue">continue</a>
+      </div>
+      <p class="donate-note">Army Pink is a 501(c)(3) nonprofit. Donations are tax-deductible through our fiscal sponsor, Charity On Top.</p>
+    </div>
+  </div>
+
+  <script src="/script.js" is:inline></script>
+  <script is:inline>lucide.createIcons();</script>
+
+</body>
+</html>
