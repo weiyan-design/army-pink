@@ -471,6 +471,55 @@ Nav, footer, crisis banner, quick exit appear automatically.
 
 ---
 
+### Multi-page Build (2026-05-19)
+
+**Three inner pages built** using the wellness portal's design system as the visual foundation. All pages use `Layout.astro` (nav, footer, crisis banner, safe exit auto-included). Content drafted from CLAUDE.md research — placeholder copy where real content is needed (team bios, Discord link, partner logos).
+
+**`/mission` (`src/pages/mission.astro`):**
+- Page hero with mission statement
+- Impact stats bar: 7× average escapes, #1 unmet need, $0 cost to survivors
+- Origin story — 2-col prose grid (text + arch image)
+- 4 values section (reuses `.mission-values` pattern from index)
+- Team grid — 4 placeholder cards (Wei Yan as Founder, 3 role placeholders)
+- CTA → Donate panel + Escape Club link
+
+**`/escape-club` (`src/pages/escape-club.astro`):**
+- Page hero
+- "What is the Escape Club" — prose grid with community description
+- 4 membership tier cards (Survivor free, Friend $10, Escape Club $50 featured, Champion $100+)
+- 3-step join flow (guided airlock onboarding explained simply)
+- CTA → Discord join (placeholder `#`) + Friend tier donate
+
+**`/partners` (`src/pages/partners.astro`):**
+- Page hero
+- PBS/NPR philosophy quote block
+- 2-col prose: "Survivor spaces stay sacred" + "Impact-centered attribution"
+- Vedanta featured partner card (arch image + description + "co-creating Pathway to Wellness" framing)
+- Do Yoga With Me as technology partner + 2 "coming soon" dashed placeholder cards
+- 4 partnership model cards (Subsidized Access, Embedded Content, Co-Created Program, Corporate Sponsorship)
+- CTA → mailto:wei@weiyandesign.com + Mission link
+
+**New CSS components added to `public/styles.css`:**
+- `.page-hero` — inner page header (pink-pale → beige gradient, centered, pill + h1 + p + actions)
+- `.prose-grid` / `.prose-grid-reversed` — 2-col text+image layout with arch image (same pattern as empowering sections)
+- `.stat-row` / `.stat-item` / `.stat-number` — impact statistics display
+- `.team-grid` / `.team-card` / `.team-avatar` — team member cards with initial avatar placeholder
+- `.tier-grid` / `.tier-card` / `.tier-featured` / `.tier-badge` — membership tier cards
+- `.steps-list` / `.step` / `.step-number` — numbered how-to-join steps
+- `.partner-featured-card` / `.partner-grid` / `.partner-card` — partner display components
+- `.philosophy-block` — left-bordered pull quote block
+- `.cta-section` / `.cta-actions` — full-width CTA banner (pink-pale background)
+- All new components are responsive (stack to 1-col on mobile)
+
+**Content gaps to fill in (real content needed):**
+- `/mission`: Real team names, bios, headshots; actual impact stats once programs launch
+- `/escape-club`: Real Discord invite link; confirm tier pricing and features with leadership
+- `/partners`: Vedanta logo/photo; confirm partnership description with them before publishing
+
+**Git:** Committed as `ca7a4a7` — "Add Mission, Escape Club, and Partners pages". Pushed to `weiyan-design/army-pink`.
+
+---
+
 ## 7. Recommended Next Steps
 
 ### Portal — Immediate
@@ -500,13 +549,17 @@ Nav, footer, crisis banner, quick exit appear automatically.
 - [ ] Scroll-driven SVG stroke line with flowers (attempted multiple times, z-index issues — needs different approach, possibly per-section SVG segments instead of one global overlay)
 - [ ] Sun overlay animation on stories section (attempted, reverted)
 
-### Multi-page Build (next major phase)
-- [ ] `src/pages/mission.astro` — About Army Pink, team bios, values
-- [ ] `src/pages/escape-club.astro` — Discord community, tier structure, how to join
+### Multi-page Build
+- [x] `src/pages/mission.astro` — story, values, team placeholders, stats, CTA
+- [x] `src/pages/escape-club.astro` — community intro, 4 tiers, 3-step join flow, CTA
+- [x] `src/pages/partners.astro` — philosophy, Vedanta featured, 4 partnership models, CTA
 - [ ] `src/pages/wellness-portal.astro` — move current index content here; make index a true homepage
-- [ ] `src/pages/partners.astro` — Vedanta + other partners
-- [ ] `src/pages/donate.astro` — full donation flow (expand current panel)
-- [ ] `src/pages/volunteer.astro`, `faq.astro`, `contact.astro`, `perks.astro` — footer pages
+- [ ] `src/pages/donate.astro` — full donation flow (expand current panel into a page)
+- [ ] `src/pages/volunteer.astro` — what volunteering looks like, signup form
+- [ ] `src/pages/faq.astro` — common questions (safety, privacy, community, rides)
+- [ ] `src/pages/contact.astro` — contact form / email
+- [ ] `src/pages/perks.astro` — supporter perks by tier
+- [ ] Fill real content into mission/escape-club/partners (team bios, Discord link, Vedanta details)
 
 ### Discord
 - [ ] Build server structure based on channel architecture above
