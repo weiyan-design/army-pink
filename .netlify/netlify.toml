@@ -7,8 +7,10 @@ redirects = []
 [functions."*"]
 
 [build]
-publish = "/Users/weiyan/Documents/Vibe Code/Army Pink"
-publishOrigin = "default"
+publish = "/Users/weiyan/Documents/Vibe Code/Army Pink/dist"
+publishOrigin = "config"
+commandOrigin = "config"
+command = "npm run build"
 
 [build.environment]
 

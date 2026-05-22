@@ -2,24 +2,32 @@
 import Layout from '../layouts/Layout.astro';
 ---
 
-<Layout title="Army Pink — Pathway to Freedom">
+<Layout title="Wellness Portal — Army Pink">
 
   <!-- ===== HERO ===== -->
-  <div class="hero-scroll-wrap">
-    <header class="hero" id="home">
-      <div class="hero-video-wrap">
-        <video class="hero-video" autoplay muted loop playsinline>
-          <source src="/vid/Home_Hero_Vid.mp4" type="video/mp4" />
-        </video>
+  <header class="hero" id="home">
+    <video class="hero-video" autoplay muted loop playsinline>
+      <source src="/vid/hero-vid-2-opt.mp4" type="video/mp4" />
+    </video>
+    <div class="container">
+      <div class="hero-glass">
+        <h1>You already did the hardest part.</h1>
+        <p class="hero-sub">
+          Leaving took more courage than most people will ever understand.
+          What comes next doesn't have to be faced alone.
+        </p>
+        <div class="hero-actions">
+          <a href="#wellness" class="btn btn-primary">Pathway to Wellness</a>
+          <a href="#community" class="btn btn-ghost-light">Visit Community</a>
+        </div>
       </div>
-      <button class="hero-mute-btn" id="heroMuteBtn" aria-label="Unmute video">
-        <svg class="hero-mute-icon icon-muted" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><line x1="23" y1="9" x2="17" y2="15"/><line x1="17" y1="9" x2="23" y2="15"/></svg>
-        <svg class="hero-mute-icon icon-unmuted" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>
-      </button>
-      <div class="hero-mission" id="heroMission">
-        <p>We don't sell healing.<br>We connect you to it.</p>
-      </div>
-    </header>
+    </div>
+    <svg class="hero-wave" viewBox="0 0 1440 80" preserveAspectRatio="none" aria-hidden="true">
+      <path d="M0,60 C360,0 540,80 720,40 C900,0 1080,80 1440,20 L1440,80 L0,80 Z" fill="var(--cream)"/>
+    </svg>
+  </header>
+  <div class="hero-flower-wrap">
+    <img src="/img/flower-4.png" class="hero-flower" alt="" aria-hidden="true" />
   </div>
 
   <!-- ===== EMPOWERING SERIES ===== -->

@@ -24,6 +24,19 @@
     if (!hasActivePanel) safeExit();
   });
 
+  // --- Hero Video Mute Toggle ---
+  var heroVideo = document.querySelector('.hero-video');
+  var heroMuteBtn = document.getElementById('heroMuteBtn');
+  if (heroVideo && heroMuteBtn) {
+    heroMuteBtn.classList.add('is-muted');
+    heroMuteBtn.addEventListener('click', function () {
+      heroVideo.muted = !heroVideo.muted;
+      heroMuteBtn.classList.toggle('is-muted', heroVideo.muted);
+      heroMuteBtn.classList.toggle('is-unmuted', !heroVideo.muted);
+      heroMuteBtn.setAttribute('aria-label', heroVideo.muted ? 'Unmute video' : 'Mute video');
+    });
+  }
+
   // --- Mobile Menu Toggle ---
   const menuToggle = document.querySelector('.mobile-menu-toggle');
   const navLinks = document.querySelector('.nav-links');
@@ -581,15 +594,30 @@
     slidePanel.querySelector('.slide-panel-handle').addEventListener('click', closeSlidePanel);
   }
 
-  // --- Hero Flower Scroll Rotation ---
-  var flower = document.querySelector('.hero-flower');
-  if (flower) {
-    var hero = document.querySelector('.hero');
-    window.addEventListener('scroll', function () {
-      var rect = hero.getBoundingClientRect();
-      var progress = Math.min(Math.max(-rect.top / rect.height, 0), 1);
-      flower.style.transform = 'rotate(' + (progress * 180) + 'deg)';
-    }, { passive: true });
+  // --- Hero Scroll Animation (video scale + mission reveal) ---
+  var heroScrollWrap = document.querySelector('.hero-scroll-wrap');
+  var heroVideoWrap = document.querySelector('.hero-video-wrap');
+  var heroMission = document.getElementById('heroMission');
+
+  if (heroScrollWrap && heroVideoWrap) {
+    function updateHeroScroll() {
+      var scrollY = window.scrollY;
+      var scrollSpace = heroScrollWrap.offsetHeight - window.innerHeight;
+      var progress = Math.max(0, Math.min(1, scrollY / scrollSpace));
+
+      var scale = 1 - (0.5 * progress);
+      var radius = Math.round(20 * progress);
+      heroVideoWrap.style.transform = 'scale(' + scale + ')';
+      heroVideoWrap.style.borderRadius = radius + 'px';
+
+      if (heroMission) {
+        heroMission.style.opacity = progress;
+        heroMission.style.transform = 'translateY(' + (40 * (1 - progress)) + 'px)';
+      }
+    }
+
+    window.addEventListener('scroll', updateHeroScroll, { passive: true });
+    updateHeroScroll();
   }
 
   // --- Smooth scroll for anchor links ---
