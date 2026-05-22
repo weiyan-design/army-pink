@@ -37,6 +37,35 @@
     });
   }
 
+  // --- Statement Wipe Reveal (sticky scroll-driven) ---
+  var statementTextEl = document.getElementById('statementText');
+  var statementScrollWrap = document.querySelector('.statement-scroll-wrap');
+  if (statementTextEl && statementScrollWrap) {
+    var words = statementTextEl.textContent.trim().split(/\s+/);
+    statementTextEl.innerHTML = words.map(function (w) {
+      return '<span class="statement-word">' + w + '</span>';
+    }).join(' ');
+
+    var statementWords = statementTextEl.querySelectorAll('.statement-word');
+    var total = statementWords.length;
+    var wipeWindow = 0.18;
+
+    function updateStatement() {
+      var wrapTop = statementScrollWrap.offsetTop;
+      var scrollSpace = statementScrollWrap.offsetHeight - window.innerHeight;
+      var progress = Math.max(0, Math.min(1, (window.scrollY - wrapTop) / scrollSpace));
+
+      statementWords.forEach(function (word, i) {
+        var start = (i / total) * (1 - wipeWindow);
+        var wordProg = Math.max(0, Math.min(1, (progress - start) / wipeWindow));
+        word.style.opacity = 0.12 + 0.88 * wordProg;
+      });
+    }
+
+    window.addEventListener('scroll', updateStatement, { passive: true });
+    updateStatement();
+  }
+
   // --- Mobile Menu Toggle ---
   const menuToggle = document.querySelector('.mobile-menu-toggle');
   const navLinks = document.querySelector('.nav-links');
@@ -594,10 +623,9 @@
     slidePanel.querySelector('.slide-panel-handle').addEventListener('click', closeSlidePanel);
   }
 
-  // --- Hero Scroll Animation (video scale + mission reveal) ---
+  // --- Hero Scroll Animation (video scale + mute button tracking) ---
   var heroScrollWrap = document.querySelector('.hero-scroll-wrap');
   var heroVideoWrap = document.querySelector('.hero-video-wrap');
-  var heroMission = document.getElementById('heroMission');
 
   if (heroScrollWrap && heroVideoWrap) {
     function updateHeroScroll() {
@@ -610,9 +638,12 @@
       heroVideoWrap.style.transform = 'scale(' + scale + ')';
       heroVideoWrap.style.borderRadius = radius + 'px';
 
-      if (heroMission) {
-        heroMission.style.opacity = progress;
-        heroMission.style.transform = 'translateY(' + (40 * (1 - progress)) + 'px)';
+      // Mute button tracks top-right corner of scaled video
+      if (heroMuteBtn) {
+        var vw = window.innerWidth;
+        var vh = window.innerHeight;
+        heroMuteBtn.style.top   = ((vh * (1 - scale)) / 2 + 12) + 'px';
+        heroMuteBtn.style.right = ((vw * (1 - scale)) / 2 + 12) + 'px';
       }
     }
 

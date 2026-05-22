@@ -369,7 +369,8 @@ Major redesign replacing Journey, Safety, Wellness, and Community sections with 
 
 **Interactions & animations:**
 - **Scroll reveal** — elements with `.reveal-item` class fade up when entering top 1/3 of viewport (`rootMargin: 0px 0px -33% 0px`)
-- **Daisy rotation** — rotates 180deg clockwise based on hero scroll progress
+- **Hero scroll animation** — `updateHeroScroll()` in `script.js`. Drives video scale (1→0.5) and border-radius (0→20px) based on scroll progress within `hero-scroll-wrap`. Mute button tracks top-right corner of scaled video via `(vh*(1-scale)/2 + 12, vw*(1-scale)/2 + 12)`.
+- **Statement wipe reveal** — `updateStatement()` in `script.js`. Words split into `<span class="statement-word">` on load. Opacity 0.12→1 staggered top-to-bottom based on scroll progress within `statement-scroll-wrap`. `wipeWindow = 0.18`.
 - **Card deck fan** — IntersectionObserver triggers fan-out when stories section hits middle viewport. Active card at left with -8deg rotation, others spread right with increasing rotation. Click to select, left/right arrows to cycle
 - **Drag/swipe** — all `.thumb-row` and `.featured-grid` elements support mouse drag (with momentum) and touch swipe. Prevents accidental link clicks during drag. Grab/grabbing cursors
 - **Scroll fade edges** — thumb-row-wrap and featured-wrap show gradient fade + arrow buttons when content overflows
@@ -520,6 +521,48 @@ Nav, footer, crisis banner, quick exit appear automatically.
 
 ---
 
+### Home Page Redesign + Statement Section (2026-05-21)
+
+**Wellness Portal page created:**
+- `src/pages/wellness-portal.astro` — exact copy of `index.astro` content, title "Wellness Portal — Army Pink". Committed in `f7074d2`.
+
+**Hero rebuilt (immersive sticky scroll):**
+- Hero video changed to `vid/Home_Hero_Vid.mp4`
+- Removed: hero-glass card (h1 + subtext + CTAs), wave SVG, flower/daisy div
+- Wrapped in `<div class="hero-scroll-wrap">` (height: 200vh) — same sticky scroll pattern as hero gives 100vh of scroll space to drive the animation
+- `.hero` → `position: sticky; top: 0; height: 100vh; background: var(--cream); overflow: hidden`
+- `.hero-video-wrap` — `position: absolute; inset: 0; transform-origin: center center; will-change: transform, border-radius; overflow: hidden`
+- `updateHeroScroll()` in `script.js`: drives `transform: scale(1→0.5)` and `border-radius (0→20px)` on `.hero-video-wrap` based on `scrollY / (wrapHeight - vh)`
+- **Mute/unmute button** (`#heroMuteBtn`): circular frosted button, muted by default (`is-muted` class), SVG icons swap on toggle. Tracks video's top-right corner: `top = (vh*(1-scale)/2 + 12)px`, `right = (vw*(1-scale)/2 + 12)px` — updates every scroll frame in `updateHeroScroll()`
+
+**Statement section (between hero and empowering series):**
+- New CSS token: `--dark-grey: #686565` added to `:root` (alongside existing `--cream: #fdfbf7`)
+- Wrapped in `<div class="statement-scroll-wrap">` (height: 200vh) — sticky scroll pattern, 100vh scroll space
+- `section-statement` → `position: sticky; top: 0; height: 100vh; display: flex; align-items: center; justify-content: center`
+- Copy: "Providing safe, reliable transportation to help survivors escape domestic violence and begin their path to freedom."
+- Font: Playfair Display, `clamp(1.75rem, 4vw, 3.25rem)` fluid scaling, `letter-spacing: -0.028em` (tight editorial tracking), `color: var(--dark-grey)`, `max-width: 960px`, centered
+- **Word-by-word wipe reveal** (`updateStatement()` in `script.js`):
+  - On load, text split into `<span class="statement-word">` elements (`.textContent.split(/\s+/)`)
+  - All words start at `opacity: 0.12`, `transition: opacity 0.12s ease`
+  - Progress = `(scrollY - wrapTop) / (wrapHeight - vh)` — 0→1 as user scrolls through wrapper
+  - Each word `i` of `total` has `start = (i/total) * (1 - 0.18)`. `wordProg = clamp((progress - start) / 0.18, 0, 1)`. `opacity = 0.12 + 0.88 * wordProg`
+  - Effect: top words light up first, followed progressively by words below — top-to-bottom wipe
+- **Scroll behavior**: both hero and statement use tall scroll wrappers with sticky children — scroll is "consumed" by the wrapper while section stays locked, giving a pinned/magnetic feel with no JS scroll hijacking
+
+**Page structure (top to bottom) as of 2026-05-21:**
+1. `hero-scroll-wrap` (200vh) → sticky hero with video scale animation
+2. `statement-scroll-wrap` (200vh) → sticky statement with word wipe reveal
+3. Empowering Series
+4. Featured Classes
+5. Wellness Programs
+6. Survivor Stories
+7. Mission section
+8. Overlays + class slide-up panel (kept, not triggered from main page)
+
+**Git:** Committed as `f7074d2` (wellness portal + hero). Today's statement work uncommitted as of session end — see next commit.
+
+---
+
 ## 7. Recommended Next Steps
 
 ### Portal — Immediate
@@ -546,6 +589,9 @@ Nav, footer, crisis banner, quick exit appear automatically.
 - [x] Safe Exit button (bottom-right fixed, ESC key, history replacement)
 - [x] Crisis banner browser history reminder
 - [x] Migrated to Astro — shared Layout.astro template
+- [x] Immersive sticky hero scroll (video scales 100%→50%, no glass card, no wave/flower)
+- [x] Mute/unmute button tracking video corner
+- [x] Statement section: sticky wipe reveal, `--dark-grey` token, fluid type, tight tracking
 - [ ] Scroll-driven SVG stroke line with flowers (attempted multiple times, z-index issues — needs different approach, possibly per-section SVG segments instead of one global overlay)
 - [ ] Sun overlay animation on stories section (attempted, reverted)
 
@@ -553,7 +599,7 @@ Nav, footer, crisis banner, quick exit appear automatically.
 - [x] `src/pages/mission.astro` — story, values, team placeholders, stats, CTA
 - [x] `src/pages/escape-club.astro` — community intro, 4 tiers, 3-step join flow, CTA
 - [x] `src/pages/partners.astro` — philosophy, Vedanta featured, 4 partnership models, CTA
-- [ ] `src/pages/wellness-portal.astro` — move current index content here; make index a true homepage
+- [x] `src/pages/wellness-portal.astro` — created as copy of home page content
 - [ ] `src/pages/donate.astro` — full donation flow (expand current panel into a page)
 - [ ] `src/pages/volunteer.astro` — what volunteering looks like, signup form
 - [ ] `src/pages/faq.astro` — common questions (safety, privacy, community, rides)
