@@ -1,0 +1,93 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { team } from '../data/team.js';
+---
+
+<Layout title="Our Team — Army Pink" description="The people behind Army Pink — staff, advisors, and volunteers working to ensure every survivor has a safe way out.">
+
+  <section class="page-hero">
+    <span class="pill-label reveal-item">Our Team</span>
+    <h1 class="reveal-item">The people behind<br>Army Pink.</h1>
+    <p class="reveal-item">
+      Staff, advisors, and volunteers working to ensure every survivor has a safe way out.
+      Tap any card to read what they do.
+    </p>
+  </section>
+
+  <section class="tp-section">
+    <div class="tp-section-inner">
+      <div class="tp-grid" id="tp-grid">
+        {team.map((person) => (
+          <button
+            type="button"
+            class="tp-card"
+            data-slug={person.slug}
+            aria-expanded="false"
+            aria-label={`${person.name}, ${person.title}. Click to read bio.`}
+          >
+            <div class="tp-card-inner">
+              <div class="tp-face tp-face--front">
+                <div class="tp-photo">
+                  <img src={person.photo} alt={person.name} loading="lazy" />
+                </div>
+                <div class="tp-meta">
+                  <h3 class="tp-name">{person.name}</h3>
+                  <p class="tp-title">{person.title}</p>
+                  <span class="tp-toggle" aria-hidden="true"></span>
+                </div>
+              </div>
+              <div class="tp-face tp-face--back">
+                <div class="tp-back-header">
+                  <div>
+                    <h3 class="tp-back-name">{person.name}</h3>
+                    <p class="tp-back-title">{person.title}</p>
+                  </div>
+                  <span class="tp-close" aria-hidden="true">×</span>
+                </div>
+                <p class="tp-bio">{person.bio}</p>
+              </div>
+            </div>
+          </button>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <script is:inline>
+    (function () {
+      const grid = document.getElementById('tp-grid');
+      if (!grid) return;
+      let active = null;
+
+      function unflip(card) {
+        if (!card) return;
+        card.classList.remove('is-flipped');
+        card.setAttribute('aria-expanded', 'false');
+      }
+
+      grid.addEventListener('click', (e) => {
+        const card = e.target.closest('.tp-card');
+        if (!card) return;
+        const isFlipped = card.classList.contains('is-flipped');
+        if (active && active !== card) unflip(active);
+        if (isFlipped) {
+          unflip(card);
+          active = null;
+        } else {
+          card.classList.add('is-flipped');
+          card.setAttribute('aria-expanded', 'true');
+          active = card;
+        }
+      });
+
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && active) {
+          unflip(active);
+          active.focus();
+          active = null;
+        }
+      });
+    })();
+  </script>
+
+</Layout>
