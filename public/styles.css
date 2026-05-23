@@ -3123,7 +3123,7 @@ body.overlay-open {
    Inner element flips. Perspective lives on the outer. */
 .tp-card {
   position: relative;
-  aspect-ratio: 4 / 5;
+  aspect-ratio: 3 / 5;
   background: transparent;
   border: 0;
   padding: 0;
@@ -3199,6 +3199,11 @@ body.overlay-open {
   object-fit: cover;
   filter: grayscale(1);
   display: block;
+  transition: filter 0.3s var(--ease);
+}
+
+.tp-card:hover .tp-photo img {
+  filter: grayscale(0);
 }
 
 .tp-meta {
