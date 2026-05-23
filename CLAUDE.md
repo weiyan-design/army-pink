@@ -565,6 +565,17 @@ Nav, footer, crisis banner, quick exit appear automatically.
 
 ## 7. Recommended Next Steps
 
+### Lightship-style Hero — Deferred Cross-Device Work (2026-05-22)
+The hero is being rebuilt with GSAP ScrollTrigger + Lenis to match Lightship's hero (`https://lightshiprv.com/`). Desktop ≥1024px is being built first; the items below are deferred until the desktop animation is functioning as expected.
+- [ ] **Touchscreen fallback** — Lightship disables the scrub animation on touch devices entirely (`isTouchScreen` check). Show a static hero instead. Detect via `('ontouchstart' in window) || navigator.maxTouchPoints > 0`.
+- [ ] **Reduced-motion fallback** — respect `prefers-reduced-motion`. Disable ScrollTrigger timeline; show static hero.
+- [ ] **Dynamic viewport units** — set `--svh`/`--dvh`/`--lvh` CSS custom props for iOS Safari's collapsing address bar. Replace `100vh` with `100svh` in hero CSS.
+- [ ] **Crisis-banner offset** — Lightship handles their top banner show/hide by translating the hero down by `bannerHeight`. Apply same pattern to Army Pink's crisis banner.
+- [ ] **Mobile grid simplification** — hide the 4 side/grid images under ~1024px (Lightship does this). Mobile shows just the video + title.
+- [ ] **ResizeObserver on hero** — recompute clip target metrics when the hero element itself resizes (not just window). Catches font-loading, scrollbar, or container changes that plain `resize` listener misses.
+- [ ] **Per-breakpoint tuning** — test at 320, 768, 1024, 1280, 1440, 1920, 2560. Adjust clip target size, image grid layout, title type scale, padding per breakpoint.
+- [ ] **Test on real devices** — iOS Safari (address bar quirks), Chrome Android, desktop Safari (clip-path performance), Firefox, Edge.
+
 ### Portal — Immediate
 - [ ] Populate Phase 2 and Phase 3 overlays with carousel rows like Phase 1
 - [ ] Add actual URLs to overlay resource cards (currently `#` placeholders)
@@ -592,6 +603,7 @@ Nav, footer, crisis banner, quick exit appear automatically.
 - [x] Immersive sticky hero scroll (video scales 100%→50%, no glass card, no wave/flower)
 - [x] Mute/unmute button tracking video corner
 - [x] Statement section: sticky wipe reveal, `--dark-grey` token, fluid type, tight tracking
+- [x] Hero rebuilt: video shrinks to 9:16 portrait (cols 5–8), 4 side images animate in on scroll
 - [ ] Scroll-driven SVG stroke line with flowers (attempted multiple times, z-index issues — needs different approach, possibly per-section SVG segments instead of one global overlay)
 - [ ] Sun overlay animation on stories section (attempted, reverted)
 
@@ -620,6 +632,60 @@ Nav, footer, crisis banner, quick exit appear automatically.
 - [ ] Draft grant narrative connecting Vedanta partnership to clinical outcomes
 - [ ] Identify 2-3 corporate sponsor prospects for Champion tier
 - [ ] Define success metrics for first 6 months
+
+---
+
+### Hero Scroll Rebuild (2026-05-22)
+
+**What was built:** replaced the immersive scale-down video with a new scroll-driven sequence — video shrinks to a 9:16 portrait card (phone shape) in the center of the viewport while 4 images slide in from either side.
+
+---
+
+**Hero scroll animation (final state):**
+
+- `hero-scroll-wrap` remains 200vh tall (sticky pattern, same as before)
+- Video transitions from `100vw × 100vh` fullscreen → `4-column × 9:16 portrait` centered in a 1120px container
+- JS animates `left`, `top`, `width`, `height`, `border-radius` on `.hero-video-wrap` (NOT `scale()`) so video becomes a true portrait rectangle, not a scaled-down 16:9 box
+- Height capped at `94vh` on wide screens: `endH = Math.min(endW * 16/9, vh * 0.94)`, with `object-fit: cover` filling the container regardless
+
+**12-column grid:**
+- Container: `heroW = Math.min(vw, 1120)`, `heroOff = (vw - heroW) / 2`, `colW = heroW / 12`
+- **Video:** cols 5–8 → `endLeft = heroOff + 4*colW`, `endW = 4*colW`
+- **TL:** 16:9, cols 1–4 → `left = heroOff + spaceMd`, right edge = `endLeft − 20px`
+- **BL:** 4:3, cols 2–4 → `left = heroOff + colW`, right edge = `endLeft − 20px`
+- **TR:** 4:3, cols 8–11 → `left = endLeft + endW + 20px`, `width = 3*colW − 20px`
+- **BR:** 4:3, cols 9–12 → `left = endLeft + endW + 20px`, `width = 4*colW − spaceMd − 20px`
+
+**Gap rule (20px everywhere):**
+- All image positions computed in JS (not CSS), derived from actual `endLeft` and `endW`
+- `leftImgRight = endLeft − 20`, `rightImgLeft = endLeft + endW + 20`
+- `Math.max(0, ...)` prevents negative widths at very narrow breakpoints
+- Resize listener added (`window.addEventListener('resize', updateHeroScroll)`) so positions recalculate on viewport change without scroll
+
+**Side image slide-in:**
+- Images hidden (`opacity: 0`) until scroll `progress > 0.4` (video ~80% to portrait by then)
+- Stagger delays: TL=0, TR=+0.04, BL=+0.07, BR=+0.10 (within 0.40–1.0 range)
+- `translateX` from `±65vw` to `0`, eased with `easeOutCubic`
+- Left images: `dist = −vw * 0.65`; right images: `dist = +vw * 0.65`
+- Hidden on mobile (`≤768px`) via `display: none` — not enough room beside portrait video
+
+**Unsplash images (freedom/escape vibe):**
+- TL (16:9): `photo-1506905925346-21bda4d32df4` — Swiss Alps mountains
+- BL (4:3): `photo-1441974231531-c6227db76b6e` — sunlit forest path
+- TR (4:3): `photo-1469854523086-cc02fe5d8800` — mountain road
+- BR (4:3): `photo-1476041800959-2f6bb412c8ce` — winding forest road
+
+**What was attempted and reverted:**
+- Atmospheric CSS gradient background (deep reddish-orange → golden-orange, diagonal bands, canvas grain) — built and reverted in favor of returning to the video hero
+
+**Z-index stack in hero:**
+- `.hero-video-wrap`: `z-index: 2` (sits on top of any image overlap)
+- `.hero-side-img`: `z-index: 1`
+- `.hero-mute-btn`: `z-index: 3`
+
+**Architecture note (important):**
+- Image `left` and `width` are owned entirely by JS — CSS for `.hero-side-img--*` only sets `aspect-ratio` and `top`
+- This is intentional: CSS and JS computing the same layout independently leads to rounding divergence at certain breakpoints. Single source of truth = JS.
 
 ---
 

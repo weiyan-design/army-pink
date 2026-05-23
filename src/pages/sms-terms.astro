@@ -1,0 +1,187 @@
+---
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout title="SMS Terms of Service — Army Pink" description="Army Pink SMS Terms of Service — message frequency, opt-out, message and data rates, and TCPA compliance.">
+
+  <div class="legal-layout container">
+
+    <!-- LEFT: STICKY SIDEBAR -->
+    <aside class="legal-sidebar" aria-label="SMS Terms sections">
+      <nav class="legal-nav">
+        <ol>
+          <li><a href="#program" data-section-link>Program description</a></li>
+          <li><a href="#consent" data-section-link>Consent</a></li>
+          <li><a href="#frequency" data-section-link>Message frequency</a></li>
+          <li><a href="#rates" data-section-link>Message and data rates</a></li>
+          <li><a href="#opt-out" data-section-link>How to opt out</a></li>
+          <li><a href="#help" data-section-link>How to get help</a></li>
+          <li><a href="#privacy" data-section-link>Privacy</a></li>
+          <li><a href="#carriers" data-section-link>Supported carriers</a></li>
+          <li><a href="#changes" data-section-link>Changes to these terms</a></li>
+          <li><a href="#contact" data-section-link>Contact us</a></li>
+        </ol>
+      </nav>
+    </aside>
+
+    <!-- RIGHT: CONTENT -->
+    <article class="legal-content">
+
+      <header class="legal-header">
+        <h1>SMS Terms of Service</h1>
+        <p class="legal-updated">Last updated: May 22, 2026 &nbsp;·&nbsp; TCPA compatible</p>
+        <p class="legal-intro">
+          How Army Pink's text messaging program works, and how you can opt out at any time.
+        </p>
+      </header>
+
+      <!-- §1 -->
+      <section class="privacy-section" id="program">
+        <h2>1. Program description</h2>
+        <p>
+          Army Pink's SMS program delivers messages directly related to your safe
+          transportation rides and wellness support services — including appointment
+          confirmations, ride coordination, and program updates you've requested.
+        </p>
+        <p>
+          Messages are transmitted through our delivery provider, <strong>Twilio,
+          Inc.</strong>, under a data processing agreement limiting Twilio's use of
+          your information solely to message delivery.
+        </p>
+      </section>
+
+      <!-- §2 -->
+      <section class="privacy-section" id="consent">
+        <h2>2. Consent</h2>
+        <p>
+          By providing your phone number and confirming consent, you agree to receive
+          SMS messages from Army Pink. Providing your phone number and consenting to
+          receive SMS messages is <strong>not a condition of eligibility</strong> for
+          Army Pink services.
+        </p>
+      </section>
+
+      <!-- §3 -->
+      <section class="privacy-section" id="frequency">
+        <h2>3. Message frequency</h2>
+        <p>
+          Message frequency varies based on your service appointments and the support
+          you've requested. You will not receive marketing or promotional messages
+          unless you've separately opted in.
+        </p>
+      </section>
+
+      <!-- §4 -->
+      <section class="privacy-section" id="rates">
+        <h2>4. Message and data rates</h2>
+        <p>
+          Message and data rates may apply, depending on your mobile carrier and
+          service plan. Army Pink does not charge for messages — any cost is set by
+          your carrier.
+        </p>
+      </section>
+
+      <!-- §5 -->
+      <section class="privacy-section" id="opt-out">
+        <h2>5. How to opt out</h2>
+        <p>
+          You may revoke consent and opt out at any time by texting
+          <strong>STOP</strong> to any Army Pink message. You will receive one final
+          confirmation message, and no further messages will be sent.
+        </p>
+        <p>
+          <strong>Opting out will not affect your access to services.</strong>
+        </p>
+        <p>
+          To resume receiving messages after opting out, text <strong>START</strong>
+          to any Army Pink number you previously received messages from, or contact
+          us directly.
+        </p>
+      </section>
+
+      <!-- §6 -->
+      <section class="privacy-section" id="help">
+        <h2>6. How to get help</h2>
+        <p>For support with our SMS program:</p>
+        <ul>
+          <li>Text <strong>HELP</strong> to any Army Pink message</li>
+          <li>Email <a href="mailto:support@armypink.org">support@armypink.org</a></li>
+          <li>Call <a href="tel:12135795051">(213) 579-5051</a></li>
+        </ul>
+      </section>
+
+      <!-- §7 -->
+      <section class="privacy-section" id="privacy">
+        <h2>7. Privacy</h2>
+        <p>
+          Your phone number and any personally identifying information collected in
+          connection with our SMS program will not be sold, rented, or disclosed to any
+          third party, except as described in our
+          <a href="/privacy">Privacy Notice</a>.
+        </p>
+      </section>
+
+      <!-- §8 -->
+      <section class="privacy-section" id="carriers">
+        <h2>8. Supported carriers</h2>
+        <p>
+          Army Pink's SMS program is compatible with major U.S. wireless carriers,
+          including AT&amp;T, Verizon, T-Mobile, and Sprint, as well as their regional
+          affiliates. Carriers are not liable for delayed or undelivered messages.
+        </p>
+      </section>
+
+      <!-- §9 -->
+      <section class="privacy-section" id="changes">
+        <h2>9. Changes to these terms</h2>
+        <p>
+          We may update these terms from time to time. When we make material changes,
+          we will update the "last updated" date at the top of this page. Continued use
+          of our SMS program after changes constitutes acceptance of the revised terms.
+        </p>
+      </section>
+
+      <!-- §10 -->
+      <section class="privacy-section" id="contact">
+        <h2>10. Contact us</h2>
+        <address class="privacy-contact">
+          <strong>Army Pink</strong><br>
+          Email: <a href="mailto:support@armypink.org">support@armypink.org</a><br>
+          Phone: <a href="tel:12135795051">(213) 579-5051</a>
+        </address>
+      </section>
+
+    </article>
+  </div>
+
+  <!-- Sticky sidebar active-section highlight -->
+  <script is:inline>
+    (function () {
+      var links = document.querySelectorAll('[data-section-link]');
+      if (!links.length) return;
+      var sections = Array.from(links).map(function (a) {
+        return document.querySelector(a.getAttribute('href'));
+      }).filter(Boolean);
+
+      function setActive(id) {
+        links.forEach(function (a) {
+          a.classList.toggle('is-active', a.getAttribute('href') === '#' + id);
+        });
+      }
+
+      var observer = new IntersectionObserver(function (entries) {
+        var visible = entries
+          .filter(function (e) { return e.isIntersecting; })
+          .sort(function (a, b) { return a.boundingClientRect.top - b.boundingClientRect.top; });
+        if (visible[0]) setActive(visible[0].target.id);
+      }, {
+        rootMargin: '-100px 0px -60% 0px',
+        threshold: 0
+      });
+
+      sections.forEach(function (s) { observer.observe(s); });
+      if (sections[0]) setActive(sections[0].id);
+    })();
+  </script>
+
+</Layout>

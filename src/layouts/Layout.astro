@@ -127,16 +127,16 @@ const {
             <li><a href="#">Volunteer</a></li>
             <li><a href="#">Perks</a></li>
             <li><a href="#">FAQ</a></li>
-            <li><a href="#">Contact Us</a></li>
+            <li><a href="/contact">Contact Us</a></li>
           </ul>
         </div>
 
         <div class="footer-links">
           <h4>Legal</h4>
           <ul>
-            <li><a href="#">Privacy</a></li>
-            <li><a href="#">SMS Terms &amp; Conditions</a></li>
-            <li><a href="#">Disclaimer</a></li>
+            <li><a href="/privacy">Privacy</a></li>
+            <li><a href="/sms-terms">SMS Terms &amp; Conditions</a></li>
+            <li><a href="/disclaimer">Disclaimer</a></li>
           </ul>
         </div>
 
@@ -193,9 +193,25 @@ const {
         <button type="button" class="btn btn-ghost donate-cancel">cancel</button>
         <a href="#" class="btn btn-primary donate-continue">continue</a>
       </div>
-      <p class="donate-note">Army Pink is a 501(c)(3) nonprofit. Donations are tax-deductible through our fiscal sponsor, Charity On Top.</p>
+      <p class="donate-note">Army Pink is a 501(c)(3) nonprofit. Donations are processed securely through Givebutter and are tax-deductible.</p>
     </div>
   </div>
+
+  <!-- Lenis smooth scroll (drives the curtain + char-reveal feel) -->
+  <script type="module" is:inline>
+    if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      const { default: Lenis } = await import('https://esm.sh/lenis@1.1.13');
+      const lenis = new Lenis({
+        duration: 1.1,
+        easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+        smoothWheel: true,
+        smoothTouch: false,
+      });
+      function raf(time) { lenis.raf(time); requestAnimationFrame(raf); }
+      requestAnimationFrame(raf);
+      window.lenis = lenis;
+    }
+  </script>
 
   <script src="/script.js" is:inline></script>
   <script is:inline>lucide.createIcons();</script>

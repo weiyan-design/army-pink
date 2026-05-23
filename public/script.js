@@ -24,46 +24,54 @@
     if (!hasActivePanel) safeExit();
   });
 
-  // --- Hero Video Mute Toggle ---
-  var heroVideo = document.querySelector('.hero-video');
-  var heroMuteBtn = document.getElementById('heroMuteBtn');
-  if (heroVideo && heroMuteBtn) {
-    heroMuteBtn.classList.add('is-muted');
-    heroMuteBtn.addEventListener('click', function () {
-      heroVideo.muted = !heroVideo.muted;
-      heroMuteBtn.classList.toggle('is-muted', heroVideo.muted);
-      heroMuteBtn.classList.toggle('is-unmuted', !heroVideo.muted);
-      heroMuteBtn.setAttribute('aria-label', heroVideo.muted ? 'Unmute video' : 'Mute video');
-    });
-  }
-
-  // --- Statement Wipe Reveal (sticky scroll-driven) ---
+  // --- Statement char-blur reveal (sticky scroll-driven) ---
   var statementTextEl = document.getElementById('statementText');
   var statementScrollWrap = document.querySelector('.statement-scroll-wrap');
   if (statementTextEl && statementScrollWrap) {
-    var words = statementTextEl.textContent.trim().split(/\s+/);
-    statementTextEl.innerHTML = words.map(function (w) {
-      return '<span class="statement-word">' + w + '</span>';
-    }).join(' ');
+    var raw = statementTextEl.textContent.trim();
+    var html = '';
+    for (var i = 0; i < raw.length; i++) {
+      var ch = raw[i];
+      if (ch === ' ') {
+        html += '<span class="statement-space"> </span>';
+      } else {
+        html += '<span class="statement-char">' + ch + '</span>';
+      }
+    }
+    statementTextEl.innerHTML = html;
 
-    var statementWords = statementTextEl.querySelectorAll('.statement-word');
-    var total = statementWords.length;
-    var wipeWindow = 0.18;
+    var chars = statementTextEl.querySelectorAll('.statement-char');
+    var total = chars.length;
+    var REVEAL_WINDOW = 0.12;
+    var MAX_BLUR = 8;
 
     function updateStatement() {
-      var wrapTop = statementScrollWrap.offsetTop;
+      var rect = statementScrollWrap.getBoundingClientRect();
       var scrollSpace = statementScrollWrap.offsetHeight - window.innerHeight;
-      var progress = Math.max(0, Math.min(1, (window.scrollY - wrapTop) / scrollSpace));
+      var progress = Math.max(0, Math.min(1, -rect.top / scrollSpace));
 
-      statementWords.forEach(function (word, i) {
-        var start = (i / total) * (1 - wipeWindow);
-        var wordProg = Math.max(0, Math.min(1, (progress - start) / wipeWindow));
-        word.style.opacity = 0.12 + 0.88 * wordProg;
-      });
+      for (var i = 0; i < total; i++) {
+        var start = (i / total) * (1 - REVEAL_WINDOW);
+        var p = Math.max(0, Math.min(1, (progress - start) / REVEAL_WINDOW));
+        var blur = MAX_BLUR * (1 - p);
+        chars[i].style.setProperty('--blur', blur.toFixed(2) + 'px');
+      }
     }
 
     window.addEventListener('scroll', updateStatement, { passive: true });
+    window.addEventListener('resize', updateStatement);
     updateStatement();
+  }
+
+  // --- Hero mute toggle ---
+  var heroVideo = document.querySelector('.home-hero-video');
+  var heroMuteBtn = document.getElementById('heroMuteBtn');
+  if (heroVideo && heroMuteBtn) {
+    heroMuteBtn.addEventListener('click', function () {
+      heroVideo.muted = !heroVideo.muted;
+      heroMuteBtn.classList.toggle('is-muted', heroVideo.muted);
+      heroMuteBtn.setAttribute('aria-pressed', String(!heroVideo.muted));
+    });
   }
 
   // --- Mobile Menu Toggle ---
@@ -621,34 +629,6 @@
 
     // Handle click on drag handle to close
     slidePanel.querySelector('.slide-panel-handle').addEventListener('click', closeSlidePanel);
-  }
-
-  // --- Hero Scroll Animation (video scale + mute button tracking) ---
-  var heroScrollWrap = document.querySelector('.hero-scroll-wrap');
-  var heroVideoWrap = document.querySelector('.hero-video-wrap');
-
-  if (heroScrollWrap && heroVideoWrap) {
-    function updateHeroScroll() {
-      var scrollY = window.scrollY;
-      var scrollSpace = heroScrollWrap.offsetHeight - window.innerHeight;
-      var progress = Math.max(0, Math.min(1, scrollY / scrollSpace));
-
-      var scale = 1 - (0.5 * progress);
-      var radius = Math.round(20 * progress);
-      heroVideoWrap.style.transform = 'scale(' + scale + ')';
-      heroVideoWrap.style.borderRadius = radius + 'px';
-
-      // Mute button tracks top-right corner of scaled video
-      if (heroMuteBtn) {
-        var vw = window.innerWidth;
-        var vh = window.innerHeight;
-        heroMuteBtn.style.top   = ((vh * (1 - scale)) / 2 + 12) + 'px';
-        heroMuteBtn.style.right = ((vw * (1 - scale)) / 2 + 12) + 'px';
-      }
-    }
-
-    window.addEventListener('scroll', updateHeroScroll, { passive: true });
-    updateHeroScroll();
   }
 
   // --- Smooth scroll for anchor links ---

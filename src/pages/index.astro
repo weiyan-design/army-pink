@@ -4,20 +4,25 @@ import Layout from '../layouts/Layout.astro';
 
 <Layout title="Army Pink — Pathway to Freedom">
 
-  <!-- ===== HERO ===== -->
-  <div class="hero-scroll-wrap">
-    <header class="hero" id="home">
-      <div class="hero-video-wrap">
-        <video class="hero-video" autoplay muted loop playsinline>
-          <source src="/vid/Home_Hero_Vid.mp4" type="video/mp4" />
-        </video>
-      </div>
-      <button class="hero-mute-btn" id="heroMuteBtn" aria-label="Unmute video">
-        <svg class="hero-mute-icon icon-muted" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><line x1="23" y1="9" x2="17" y2="15"/><line x1="17" y1="9" x2="23" y2="15"/></svg>
-        <svg class="hero-mute-icon icon-unmuted" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>
-      </button>
-    </header>
-  </div>
+  <!-- ===== HERO (fullscreen sticky video) ===== -->
+  <section id="home" class="home-hero" aria-label="Hero">
+    <video
+      class="home-hero-video"
+      src="/vid/Home_Hero_Vid.mp4"
+      autoplay muted loop playsinline preload="auto"
+      aria-hidden="true"
+    ></video>
+    <button
+      type="button"
+      class="home-hero-mute is-muted"
+      id="heroMuteBtn"
+      aria-label="Toggle sound"
+      aria-pressed="false"
+    >
+      <svg class="icon-mute"   viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><line x1="23" y1="9" x2="17" y2="15"/><line x1="17" y1="9" x2="23" y2="15"/></svg>
+      <svg class="icon-unmute" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>
+    </button>
+  </section>
 
   <!-- ===== STATEMENT ===== -->
   <div class="statement-scroll-wrap">
