@@ -22,6 +22,7 @@ const {
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="/styles.css" />
   <script src="https://unpkg.com/lucide@latest" is:inline></script>
+  <script async src="https://widgets.givebutter.com/latest.umd.cjs?acct=yLfulzFp7eIMG8jn" is:inline></script>
 </head>
 <body>
 
@@ -147,54 +148,10 @@ const {
     </div>
   </footer>
 
-  <!-- ===== DONATE SLIDE-UP PANEL ===== -->
-  <div class="slide-panel-backdrop" id="donate-panel-backdrop"></div>
-  <div class="slide-panel donate-panel" id="donate-panel" aria-hidden="true">
-    <div class="slide-panel-handle"></div>
-    <div class="donate-panel-header">
-      <img src="/img/star.svg" class="donate-deco donate-star-1" alt="" aria-hidden="true" />
-      <img src="/img/star.svg" class="donate-deco donate-star-2" alt="" aria-hidden="true" />
-      <img src="/img/love.svg" class="donate-hero-img" alt="Love" />
-      <img src="/img/rock.svg" class="donate-deco donate-rock" alt="" aria-hidden="true" />
-    </div>
-    <div class="donate-panel-body">
-      <img src="/img/butterfly.svg" class="donate-deco donate-butterfly" alt="" aria-hidden="true" />
-      <label class="donate-tier">
-        <input type="radio" name="donate-tier" value="friend" />
-        <div class="donate-tier-card">
-          <div class="donate-tier-price">$10<small>/mo</small></div>
-          <div class="donate-tier-info">
-            <strong>Friend</strong>
-            <p>Monthly impact updates and supporter badge</p>
-          </div>
-        </div>
-      </label>
-      <label class="donate-tier">
-        <input type="radio" name="donate-tier" value="escape-club" checked />
-        <div class="donate-tier-card donate-tier-featured">
-          <div class="donate-tier-price">$50<small>/mo</small></div>
-          <div class="donate-tier-info">
-            <strong>Escape Club Member</strong>
-            <p>Expert workshops, small groups, and impact reports</p>
-          </div>
-        </div>
-      </label>
-      <label class="donate-tier">
-        <input type="radio" name="donate-tier" value="champion" />
-        <div class="donate-tier-card">
-          <div class="donate-tier-price">$100+<small>/mo</small></div>
-          <div class="donate-tier-info">
-            <strong>Champion</strong>
-            <p>Advisory input, recognition, and leadership calls</p>
-          </div>
-        </div>
-      </label>
-      <div class="donate-actions">
-        <button type="button" class="btn btn-ghost donate-cancel">cancel</button>
-        <a href="#" class="btn btn-primary donate-continue">continue</a>
-      </div>
-      <p class="donate-note">Army Pink is a 501(c)(3) nonprofit. Donations are processed securely through Givebutter and are tax-deductible.</p>
-    </div>
+  <!-- Hidden Givebutter trigger — clicked programmatically by [data-donate-panel] handlers.
+       Archived slide-up panel design at src/_archive/donate-panel.md -->
+  <div class="givebutter-trigger-wrap" aria-hidden="true">
+    <givebutter-button id="gb-trigger" campaign="GHP0EF"></givebutter-button>
   </div>
 
   <!-- Lenis smooth scroll (drives the curtain + char-reveal feel) -->

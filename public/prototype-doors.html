@@ -1,0 +1,739 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Wellness Portal — Door Prototype (Coverflow v2)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500&family=Playfair+Display:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --cream: #fdfbf7;
+    --pink-pale: #ffe1de;
+    --dark-grey: #686565;
+    --pink-accent: #e07b8a;
+    --soft-line: rgba(104, 101, 101, 0.18);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { background: var(--cream); }
+  body {
+    color: var(--dark-grey);
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* ───────── Sticky scroll wrapper ───────── */
+  .hub-scroll-wrap {
+    height: 400vh;
+    position: relative;
+  }
+
+  .hub {
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    gap: 1.5rem;
+    overflow: hidden;
+    background: var(--cream);
+  }
+
+  /* ───────── Backdrop: canvas-lit + grain ───────── */
+  .hub-bg-canvas {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    display: block;
+    width: 100%;
+    height: 100%;
+  }
+  .hub-grain {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+    opacity: 0.12;
+    mix-blend-mode: multiply;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='240' height='240'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.42  0 0 0 0 0.40  0 0 0 0 0.40  0 0 0 1 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+    background-size: 240px 240px;
+  }
+
+  .hub-headline {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: clamp(1.5rem, 2.6vw, 2.4rem);
+    font-weight: 400;
+    color: var(--dark-grey);
+    text-align: center;
+    letter-spacing: -0.025em;
+    flex-shrink: 0;
+  }
+
+  /* ───────── Carousel stage (arches only) ───────── */
+  /* Flex: 1 so the stage absorbs whatever vertical space is left after
+     the info-stack claims its content height. JS then sizes the arch
+     as a fraction of stage height — never overflows, always dominant.
+     NOTE: no overflow:hidden here — .hub already clips side arches that
+     translate off-screen, and clipping the stage chops the wavy bottom
+     and dome peak when arch sizing is even slightly off. */
+  .stage {
+    position: relative;
+    width: 100%;
+    flex: 1 1 auto;
+    min-height: 0;
+    perspective: 1500px;
+    perspective-origin: 50% 50%;
+    z-index: 2;
+  }
+  .info-stack { z-index: 2; flex: 0 0 auto; }
+
+  .arch {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    /* Both dimensions set explicitly by JS to remove any aspect-ratio
+       derivation ambiguity. Fallback values used until fitArchSize runs. */
+    height: var(--arch-h, 60vh);
+    width: var(--arch-w, 48vh);
+    cursor: pointer;
+    transform-origin: center center;
+    will-change: transform, opacity;
+  }
+
+  .arch svg { width: 100%; height: 100%; display: block; }
+
+  /* ───────── Info block (text below arches) ───────── */
+  .info-stack {
+    position: relative;
+    width: 100%;
+    max-width: 520px;
+    min-height: 190px;
+    text-align: center;
+    flex-shrink: 0;
+  }
+
+  .info {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 400ms ease;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.6rem;
+  }
+  .info.is-active {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  .info h2 {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: clamp(1.4rem, 2vw, 1.9rem);
+    font-weight: 500;
+    color: var(--dark-grey);
+    letter-spacing: -0.015em;
+  }
+  .info p {
+    font-size: 0.95rem;
+    line-height: 1.55;
+    color: var(--dark-grey);
+    opacity: 0.85;
+    max-width: 440px;
+  }
+  .info button {
+    margin-top: 0.4rem;
+    padding: 0.8rem 1.6rem;
+    background: var(--pink-accent);
+    color: white;
+    border-radius: 999px;
+    font-size: 0.95rem;
+    font-weight: 500;
+    border: none;
+    cursor: pointer;
+    font-family: inherit;
+    transition: background 200ms ease, transform 200ms ease;
+  }
+  .info button:hover { background: #d56676; transform: translateY(-1px); }
+
+  /* ───────── Right-side dot rail + counter ───────── */
+  .dot-rail {
+    position: fixed;
+    right: 2rem;
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.85rem;
+    z-index: 5;
+  }
+  .dot {
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    border: 1px solid var(--dark-grey);
+    background: transparent;
+    cursor: pointer;
+    padding: 0;
+    transition: background 300ms ease, transform 300ms ease;
+  }
+  .dot.is-active {
+    background: var(--dark-grey);
+    transform: scale(1.4);
+  }
+  .dot-counter {
+    margin-top: 0.5rem;
+    font-size: 0.7rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--dark-grey);
+    opacity: 0.6;
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* ───────── Tuner ───────── */
+  .tuner {
+    position: fixed;
+    bottom: 1rem;
+    left: 1rem;
+    background: rgba(255, 255, 255, 0.96);
+    backdrop-filter: blur(10px);
+    border: 1px solid var(--soft-line);
+    border-radius: 12px;
+    padding: 1rem 1.25rem 1.1rem;
+    font-family: 'Inter', sans-serif;
+    z-index: 10;
+    min-width: 290px;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.06);
+    max-height: calc(100vh - 2rem);
+    overflow-y: auto;
+  }
+  .tuner h3 {
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: 0.7rem;
+    color: #999;
+    font-weight: 500;
+  }
+  .tuner-section + .tuner-section {
+    margin-top: 0.7rem;
+    padding-top: 0.7rem;
+    border-top: 1px solid var(--soft-line);
+  }
+  .tuner-row {
+    display: grid;
+    grid-template-columns: 110px 1fr 44px;
+    gap: 0.5rem;
+    align-items: center;
+    margin-bottom: 0.4rem;
+  }
+  .tuner-row label { color: var(--dark-grey); font-size: 0.78rem; }
+  .tuner-row input[type=range] { width: 100%; accent-color: var(--pink-accent); }
+  .tuner-row span {
+    font-variant-numeric: tabular-nums;
+    font-size: 0.74rem;
+    color: #999;
+    text-align: right;
+  }
+  .tuner-actions {
+    margin-top: 0.7rem;
+    display: flex;
+    gap: 0.4rem;
+  }
+  .tuner-actions button {
+    flex: 1;
+    padding: 0.4rem 0.6rem;
+    font-size: 0.75rem;
+    border: 1px solid var(--soft-line);
+    background: white;
+    border-radius: 6px;
+    cursor: pointer;
+    color: var(--dark-grey);
+    font-family: inherit;
+  }
+  .tuner-actions button:hover { background: var(--cream); }
+
+  /* ───────── Below-fold ───────── */
+  .below-fold {
+    min-height: 100vh;
+    padding: 5rem 2rem;
+    background: var(--pink-pale);
+    text-align: center;
+  }
+  .below-fold h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(1.6rem, 3vw, 2.4rem);
+    color: var(--dark-grey);
+    margin-bottom: 1rem;
+    font-weight: 500;
+    letter-spacing: -0.02em;
+  }
+  .below-fold p {
+    max-width: 520px;
+    margin: 0 auto;
+    line-height: 1.6;
+    opacity: 0.8;
+  }
+
+  @media (max-width: 768px) {
+    .dot-rail { display: none; }
+    .tuner { min-width: auto; right: 1rem; max-width: calc(100vw - 2rem); }
+    /* No .arch override — JS handles arch sizing for all viewports.
+       The earlier `width: 75vw` here was overriding the JS-set --arch-w,
+       producing a square element that cropped the dome and wave via
+       preserveAspectRatio="slice". */
+  }
+</style>
+</head>
+<body>
+
+<div class="hub-scroll-wrap" id="hubWrap">
+  <section class="hub">
+    <canvas class="hub-bg-canvas" id="hubBgCanvas"></canvas>
+    <div class="hub-grain"></div>
+
+    <!-- Arches only — these rotate/translate/scale -->
+    <div class="stage" id="stage">
+      <div class="arch" data-arch="0">
+        <svg viewBox="0 0 320 400" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
+          <defs>
+            <clipPath id="archClip-0" clipPathUnits="userSpaceOnUse">
+              <path id="archPath-0" d="" />
+            </clipPath>
+          </defs>
+          <image href="https://images.unsplash.com/photo-1545389336-cf090694435e?w=900&q=80"
+                 x="0" y="0" width="320" height="400"
+                 preserveAspectRatio="xMidYMid slice"
+                 clip-path="url(#archClip-0)" />
+        </svg>
+      </div>
+      <div class="arch" data-arch="1">
+        <svg viewBox="0 0 320 400" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
+          <defs>
+            <clipPath id="archClip-1" clipPathUnits="userSpaceOnUse">
+              <path id="archPath-1" d="" />
+            </clipPath>
+          </defs>
+          <image href="https://images.unsplash.com/photo-1499209974431-9dddcece7f88?w=900&q=80"
+                 x="0" y="0" width="320" height="400"
+                 preserveAspectRatio="xMidYMid slice"
+                 clip-path="url(#archClip-1)" />
+        </svg>
+      </div>
+      <div class="arch" data-arch="2">
+        <svg viewBox="0 0 320 400" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
+          <defs>
+            <clipPath id="archClip-2" clipPathUnits="userSpaceOnUse">
+              <path id="archPath-2" d="" />
+            </clipPath>
+          </defs>
+          <image href="https://images.unsplash.com/photo-1506126613408-eca07ce68773?w=900&q=80"
+                 x="0" y="0" width="320" height="400"
+                 preserveAspectRatio="xMidYMid slice"
+                 clip-path="url(#archClip-2)" />
+        </svg>
+      </div>
+    </div>
+
+    <!-- Info block, fixed position below the stage. Only active one fades in. -->
+    <div class="info-stack">
+      <div class="info is-active" data-info="0">
+        <h2>The Calm Room</h2>
+        <p>Pause and ground. Soft soundscapes, breathing, and quiet visuals for the moments that feel like too much.</p>
+        <button>Step inside →</button>
+      </div>
+      <div class="info" data-info="1">
+        <h2>Pathway to Freedom Library</h2>
+        <p>Workbooks, guides, and the flagship 28-Day Journey — organized by what you need today.</p>
+        <button>Step inside →</button>
+      </div>
+      <div class="info" data-info="2">
+        <h2>Wellness Experiences</h2>
+        <p>One-year free access to partner platforms — guided practices, healing classes, and trauma-informed experts.</p>
+        <button>Step inside →</button>
+      </div>
+    </div>
+
+    <div class="dot-rail">
+      <button class="dot is-active" data-dot="0" aria-label="Calm Room"></button>
+      <button class="dot" data-dot="1" aria-label="Resource Library"></button>
+      <button class="dot" data-dot="2" aria-label="Wellness Experiences"></button>
+      <div class="dot-counter" id="dotCounter">1 / 3</div>
+    </div>
+  </section>
+</div>
+
+<div class="below-fold">
+  <h2>The Wellness Portal at a glance</h2>
+  <p>Preview grid + 28-Day Journey card + Escape Club nudge would live here.</p>
+</div>
+
+<div class="tuner">
+  <h3>Wave tuner — live</h3>
+  <div class="tuner-section">
+    <div class="tuner-row">
+      <label>Amplitude</label>
+      <input type="range" id="ampRange" min="0" max="30" step="0.5" value="5" />
+      <span id="ampVal">5</span>
+    </div>
+    <div class="tuner-row">
+      <label>Frequency</label>
+      <input type="range" id="freqRange" min="1" max="8" step="0.1" value="2.1" />
+      <span id="freqVal">2.1</span>
+    </div>
+    <div class="tuner-row">
+      <label>Speed</label>
+      <input type="range" id="speedRange" min="0" max="0.03" step="0.001" value="0.017" />
+      <span id="speedVal">0.017</span>
+    </div>
+    <div class="tuner-row">
+      <label>Breath amp</label>
+      <input type="range" id="breathRange" min="0" max="10" step="0.5" value="2.5" />
+      <span id="breathVal">2.5</span>
+    </div>
+    <div class="tuner-row">
+      <label>Breath cycle</label>
+      <input type="range" id="breathCycleRange" min="2" max="20" step="0.5" value="5" />
+      <span id="breathCycleVal">5s</span>
+    </div>
+  </div>
+
+  <h3 style="margin-top:0.9rem">Carousel tuner</h3>
+  <div class="tuner-section">
+    <div class="tuner-row">
+      <label>Fill ratio (%)</label>
+      <input type="range" id="widthRange" min="50" max="100" step="1" value="92" />
+      <span id="widthVal">92</span>
+    </div>
+    <div class="tuner-row">
+      <label>Spread (vw)</label>
+      <input type="range" id="spreadRange" min="30" max="80" step="0.5" value="46" />
+      <span id="spreadVal">46</span>
+    </div>
+    <div class="tuner-row">
+      <label>Tilt (deg)</label>
+      <input type="range" id="tiltRange" min="0" max="45" step="0.5" value="5" />
+      <span id="tiltVal">5</span>
+    </div>
+    <div class="tuner-row">
+      <label>Side scale</label>
+      <input type="range" id="sideScaleRange" min="0.3" max="1" step="0.01" value="0.59" />
+      <span id="sideScaleVal">0.59</span>
+    </div>
+  </div>
+
+  <h3 style="margin-top:0.9rem">Backdrop tuner</h3>
+  <div class="tuner-section">
+    <div class="tuner-row">
+      <label>Light intensity</label>
+      <input type="range" id="lightOpRange" min="0" max="1" step="0.01" value="0.55" />
+      <span id="lightOpVal">0.55</span>
+    </div>
+    <div class="tuner-row">
+      <label>Light size</label>
+      <input type="range" id="lightSizeRange" min="0.2" max="1" step="0.01" value="0.6" />
+      <span id="lightSizeVal">0.6</span>
+    </div>
+    <div class="tuner-row">
+      <label>Grain opacity</label>
+      <input type="range" id="grainOpRange" min="0" max="0.5" step="0.01" value="0.3" />
+      <span id="grainOpVal">0.3</span>
+    </div>
+  </div>
+
+  <div class="tuner-actions">
+    <button id="resetBtn">Reset</button>
+    <button id="pauseBtn">Pause animation</button>
+  </div>
+</div>
+
+<script>
+(() => {
+  const VIEW_W = 320;
+  const VIEW_H = 400;
+
+  const DEFAULTS = {
+    amplitude: 5,
+    frequency: 2.1,
+    speed: 0.017,
+    breathAmp: 2.5,
+    breathCycle: 5,
+    width: 92,        /* now interpreted as fill ratio % of stage height */
+    spread: 46,
+    tilt: 5,
+    sideScale: 0.59,
+    lightOp: 0.55,
+    lightSize: 0.6,
+    grainOp: 0.3
+  };
+
+  const cfg = { ...DEFAULTS };
+  let phase = 0;
+  let activeIdx = 0;
+  let paused = false;
+  const startTime = performance.now();
+
+  // ─── Wave path generator ───
+  // The arch fills the viewBox almost completely now:
+  //   • topPad 2 — small buffer so dome peak isn't flush against y=0
+  //   • bottomPad 8 — just enough room for max wave amplitude (~15px ÷ 2)
+  // Previous bottomPad of 30 left a fat empty band at the bottom of the
+  // element that read as "the arch is cut short."
+  function buildArchPath(width, height, waveAmp, waveFreq, ph) {
+    const topPad = 2;
+    const bottomPad = 8;
+    const r = width / 2;
+    const archY = r + topPad;
+    const waveCenter = height - bottomPad;
+    const samples = 60;
+    let d = `M 0 ${archY} A ${r} ${r} 0 0 1 ${width} ${archY} L ${width} ${waveCenter}`;
+    for (let i = 0; i <= samples; i++) {
+      const x = width - (i / samples) * width;
+      const t = (i / samples) * Math.PI * 2 * waveFreq + ph;
+      const y = waveCenter + Math.sin(t) * waveAmp;
+      d += ` L ${x.toFixed(2)} ${y.toFixed(2)}`;
+    }
+    return d + ' Z';
+  }
+
+  const paths = [0, 1, 2].map(i => document.getElementById(`archPath-${i}`));
+  const STATIC_PHASE = [0.0, 1.7, 3.4];
+
+  function renderStatic(i) {
+    paths[i].setAttribute('d',
+      buildArchPath(VIEW_W, VIEW_H, cfg.amplitude, cfg.frequency, STATIC_PHASE[i])
+    );
+  }
+  paths.forEach((_, i) => renderStatic(i));
+
+  // ─── Backdrop canvas (cream-on-cream drifting lights) ───
+  const bgCanvas = document.getElementById('hubBgCanvas');
+  const bgCtx = bgCanvas.getContext('2d');
+  const grainEl = document.querySelector('.hub-grain');
+
+  function resizeBgCanvas() {
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    const w = bgCanvas.offsetWidth;
+    const h = bgCanvas.offsetHeight;
+    bgCanvas.width = w * dpr;
+    bgCanvas.height = h * dpr;
+    bgCtx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  }
+
+  function drawBackdrop(progress) {
+    const w = bgCanvas.offsetWidth;
+    const h = bgCanvas.offsetHeight;
+    if (!w || !h) return;
+
+    // base cream wash
+    bgCtx.fillStyle = '#fdfbf7';
+    bgCtx.fillRect(0, 0, w, h);
+
+    const radius = Math.max(w, h) * cfg.lightSize;
+    const a = cfg.lightOp;
+
+    // light 1 — drifts upper-left → lower-right as progress 0 → 1
+    const l1x = w * (0.22 + progress * 0.56);
+    const l1y = h * (0.30 + progress * 0.40);
+    const g1 = bgCtx.createRadialGradient(l1x, l1y, 0, l1x, l1y, radius);
+    g1.addColorStop(0,    `rgba(255, 252, 244, ${a})`);
+    g1.addColorStop(0.45, `rgba(255, 252, 244, ${a * 0.35})`);
+    g1.addColorStop(1,    'rgba(255, 252, 244, 0)');
+    bgCtx.fillStyle = g1;
+    bgCtx.fillRect(0, 0, w, h);
+
+    // light 2 — drifts lower-right → upper-left (opposite direction)
+    const l2x = w * (0.78 - progress * 0.56);
+    const l2y = h * (0.70 - progress * 0.40);
+    const g2 = bgCtx.createRadialGradient(l2x, l2y, 0, l2x, l2y, radius * 0.85);
+    g2.addColorStop(0,    `rgba(248, 244, 232, ${a * 0.9})`);
+    g2.addColorStop(0.45, `rgba(248, 244, 232, ${a * 0.3})`);
+    g2.addColorStop(1,    'rgba(248, 244, 232, 0)');
+    bgCtx.fillStyle = g2;
+    bgCtx.fillRect(0, 0, w, h);
+  }
+
+  // ─── Carousel ───
+  const archEls = Array.from(document.querySelectorAll('.arch'));
+  const infoEls = Array.from(document.querySelectorAll('.info'));
+  const dotEls  = Array.from(document.querySelectorAll('.dot'));
+  const wrap    = document.getElementById('hubWrap');
+  const counter = document.getElementById('dotCounter');
+
+  // ─── Arch sizing — JS height budget + width cap ───
+  // Two constraints; smaller wins. Continuous, no media-query mode switch.
+  //   1. Height budget — fill cfg.width% of stage height (drives wide screens)
+  //   2. Width cap — center arch never exceeds 60% of stage width
+  //      (so side arches always peek at edges; drives portrait viewports)
+  const stage = document.querySelector('.stage');
+  const ARCH_MAX_WIDTH_RATIO = 0.6;
+  const ARCH_ASPECT_W_OVER_H = 0.8;  // 4/5 aspect → width = height × 0.8
+
+  function fitArchSize() {
+    const stageH = stage.offsetHeight;
+    const stageW = stage.offsetWidth;
+    if (!stageH || !stageW) return;
+
+    const heightBudget = stageH * (cfg.width / 100);
+    const widthCap = (stageW * ARCH_MAX_WIDTH_RATIO) / ARCH_ASPECT_W_OVER_H;
+    const archH = Math.max(240, Math.min(heightBudget, widthCap));
+    const archW = archH * ARCH_ASPECT_W_OVER_H;
+
+    archEls.forEach(el => {
+      el.style.setProperty('--arch-h', archH + 'px');
+      el.style.setProperty('--arch-w', archW + 'px');
+    });
+  }
+  // initial fit happens after layout settles (called from onResize below)
+
+  function wrapSlot(s) {
+    while (s > 1.5)  s -= 3;
+    while (s < -1.5) s += 3;
+    return s;
+  }
+
+  function setActive(idx) {
+    if (idx === activeIdx) return;
+    renderStatic(activeIdx);
+    activeIdx = idx;
+    infoEls.forEach((d, i) => d.classList.toggle('is-active', i === idx));
+    dotEls.forEach((d, i) => d.classList.toggle('is-active', i === idx));
+    counter.textContent = `${idx + 1} / 3`;
+  }
+
+  function applyCarousel(scrollProgress) {
+    const cycle = scrollProgress * 2;  // 0..2 visits each door's center
+
+    archEls.forEach((el, i) => {
+      const slot = wrapSlot(i - cycle);
+      const abs = Math.abs(slot);
+
+      const tx = slot * cfg.spread;
+      const ry = slot * -cfg.tilt;
+      const sc = abs >= 1 ? cfg.sideScale : 1 - (1 - cfg.sideScale) * abs;
+
+      let op;
+      if (abs <= 1) op = 1 - abs * 0.45;                   // 1.0 → 0.55
+      else          op = Math.max(0, 0.55 - (abs - 1) * 1.1); // 0.55 → 0 at slot 1.5
+
+      const z = 100 - Math.round(abs * 50);
+
+      el.style.transform =
+        `translate(-50%, -50%) translateX(${tx}vw) rotateY(${ry}deg) scale(${sc})`;
+      el.style.opacity = op.toFixed(3);
+      el.style.zIndex = z;
+    });
+
+    const idx = ((Math.round(cycle) % 3) + 3) % 3;
+    setActive(idx);
+  }
+
+  // ─── Wave animation ───
+  function tick(now) {
+    if (!paused) {
+      phase += cfg.speed;
+      const elapsed = (now - startTime) / 1000;
+      const breathT = (elapsed / cfg.breathCycle) * Math.PI * 2;
+      const liveAmp = cfg.amplitude + Math.sin(breathT) * cfg.breathAmp;
+      paths[activeIdx].setAttribute('d',
+        buildArchPath(VIEW_W, VIEW_H, liveAmp, cfg.frequency, phase)
+      );
+    }
+    requestAnimationFrame(tick);
+  }
+  requestAnimationFrame(tick);
+
+  // ─── Scroll ───
+  function onScroll() {
+    const rect = wrap.getBoundingClientRect();
+    const total = wrap.offsetHeight - window.innerHeight;
+    const scrolled = Math.min(Math.max(-rect.top, 0), total);
+    const progress = total > 0 ? scrolled / total : 0;
+    applyCarousel(progress);
+    drawBackdrop(progress);
+  }
+  function onResize() {
+    resizeBgCanvas();
+    fitArchSize();
+    onScroll();
+  }
+  window.addEventListener('scroll', onScroll, { passive: true });
+  window.addEventListener('resize', onResize, { passive: true });
+  // Initial paint sequence: size canvas, fit arches, then position carousel + draw backdrop
+  resizeBgCanvas();
+  fitArchSize();
+  onScroll();
+
+  // ─── Clicks ───
+  function scrollToDoor(i) {
+    const total = wrap.offsetHeight - window.innerHeight;
+    const target = wrap.offsetTop + total * (i / 2) + 20;
+    window.scrollTo({ top: target, behavior: 'smooth' });
+  }
+  archEls.forEach((el, i) => el.addEventListener('click', () => scrollToDoor(i)));
+  dotEls.forEach((el, i) => el.addEventListener('click', () => scrollToDoor(i)));
+  infoEls.forEach((info) => {
+    const btn = info.querySelector('button');
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      alert(`Stepping into: ${info.querySelector('h2').textContent}`);
+    });
+  });
+
+  // ─── Tuner ───
+  function bind(idBase, key, suffix) {
+    const range = document.getElementById(idBase + 'Range');
+    const out = document.getElementById(idBase + 'Val');
+    const apply = () => {
+      cfg[key] = parseFloat(range.value);
+      out.textContent = suffix ? range.value + suffix : range.value;
+      if (key === 'width') fitArchSize();
+      if (key === 'grainOp') grainEl.style.opacity = cfg.grainOp;
+      // re-render static doors to reflect amp/freq changes
+      paths.forEach((_, i) => { if (i !== activeIdx) renderStatic(i); });
+      // re-apply carousel + backdrop on layout/backdrop-changing keys
+      if (['width','spread','tilt','sideScale','lightOp','lightSize'].includes(key)) onScroll();
+    };
+    range.addEventListener('input', apply);
+    return () => { range.value = DEFAULTS[key]; apply(); };
+  }
+
+  const resetters = [
+    bind('amp', 'amplitude'),
+    bind('freq', 'frequency'),
+    bind('speed', 'speed'),
+    bind('breath', 'breathAmp'),
+    bind('breathCycle', 'breathCycle', 's'),
+    bind('width', 'width'),
+    bind('spread', 'spread'),
+    bind('tilt', 'tilt'),
+    bind('sideScale', 'sideScale'),
+    bind('lightOp', 'lightOp'),
+    bind('lightSize', 'lightSize'),
+    bind('grainOp', 'grainOp')
+  ];
+
+  document.getElementById('resetBtn').addEventListener('click', () => {
+    resetters.forEach(r => r());
+  });
+
+  const pauseBtn = document.getElementById('pauseBtn');
+  pauseBtn.addEventListener('click', () => {
+    paused = !paused;
+    pauseBtn.textContent = paused ? 'Resume animation' : 'Pause animation';
+  });
+})();
+</script>
+
+</body>
+</html>

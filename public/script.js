@@ -19,7 +19,7 @@
   document.addEventListener('keydown', function (e) {
     if (e.key !== 'Escape') return;
     var hasActivePanel = document.querySelector(
-      '.overlay.active, .donate-panel.active, .slide-panel.active'
+      '.overlay.active, .slide-panel.active'
     );
     if (!hasActivePanel) safeExit();
   });
@@ -28,19 +28,29 @@
   var statementTextEl = document.getElementById('statementText');
   var statementScrollWrap = document.querySelector('.statement-scroll-wrap');
   if (statementTextEl && statementScrollWrap) {
-    var raw = statementTextEl.textContent.trim();
-    var html = '';
-    for (var i = 0; i < raw.length; i++) {
-      var ch = raw[i];
-      if (ch === ' ') {
-        html += '<span class="statement-space"> </span>';
-      } else {
-        html += '<span class="statement-char">' + ch + '</span>';
+    function splitToChars(el) {
+      var raw = el.textContent.trim();
+      var words = raw.split(/\s+/);
+      var html = '';
+      for (var w = 0; w < words.length; w++) {
+        html += '<span class="statement-word">';
+        var word = words[w];
+        for (var c = 0; c < word.length; c++) {
+          html += '<span class="statement-char">' + word[c] + '</span>';
+        }
+        html += '</span>';
+        if (w < words.length - 1) html += '<span class="statement-space"> </span>';
       }
+      el.innerHTML = html;
     }
-    statementTextEl.innerHTML = html;
 
-    var chars = statementTextEl.querySelectorAll('.statement-char');
+    var statementSection = statementTextEl.closest('.section-statement');
+    var statementPillEl = statementSection && statementSection.querySelector('.pill-label');
+    if (statementPillEl) splitToChars(statementPillEl);
+    splitToChars(statementTextEl);
+
+    // Chars from pill first (DOM order), then statement text — sharpens top-to-bottom.
+    var chars = statementSection.querySelectorAll('.statement-char');
     var total = chars.length;
     var REVEAL_WINDOW = 0.12;
     var MAX_BLUR = 8;
@@ -63,14 +73,54 @@
     updateStatement();
   }
 
-  // --- Hero mute toggle ---
+  // --- Hero click-to-toggle + spacebar (while hero in view) ---
   var heroVideo = document.querySelector('.home-hero-video');
-  var heroMuteBtn = document.getElementById('heroMuteBtn');
-  if (heroVideo && heroMuteBtn) {
-    heroMuteBtn.addEventListener('click', function () {
-      heroVideo.muted = !heroVideo.muted;
-      heroMuteBtn.classList.toggle('is-muted', heroVideo.muted);
-      heroMuteBtn.setAttribute('aria-pressed', String(!heroVideo.muted));
+  var heroSection = document.querySelector('.home-hero');
+  if (heroVideo && heroSection) {
+    function syncHeroState() {
+      heroSection.classList.toggle('is-paused', heroVideo.paused || heroVideo.ended);
+      heroSection.classList.toggle('is-muted', heroVideo.muted);
+    }
+
+    // Muted autoplay (allowed by browsers); sync state either way.
+    var attempt = heroVideo.play();
+    if (attempt && typeof attempt.then === 'function') {
+      attempt.then(syncHeroState).catch(syncHeroState);
+    } else {
+      syncHeroState();
+    }
+
+    heroVideo.addEventListener('play', syncHeroState);
+    heroVideo.addEventListener('pause', syncHeroState);
+    heroVideo.addEventListener('volumechange', syncHeroState);
+
+    function toggleHeroVideo() {
+      // First interaction while muted: turn sound on, keep playing — don't pause.
+      if (heroVideo.muted) {
+        heroVideo.muted = false;
+        if (heroVideo.paused) heroVideo.play().catch(function () {});
+        return;
+      }
+      if (heroVideo.paused) {
+        heroVideo.play().catch(function () {});
+      } else {
+        heroVideo.pause();
+      }
+    }
+
+    heroSection.addEventListener('click', toggleHeroVideo);
+
+    // Spacebar: toggle only while hero is in view and no input/button is focused.
+    document.addEventListener('keydown', function (e) {
+      if (e.key !== ' ' && e.code !== 'Space') return;
+      if (window.scrollY >= window.innerHeight - 40) return;
+      var ae = document.activeElement;
+      var tag = ae && ae.tagName;
+      if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'BUTTON' ||
+          tag === 'SELECT' || tag === 'A' || (ae && ae.isContentEditable)) return;
+      if (document.querySelector('.overlay.active, .slide-panel.active')) return;
+      e.preventDefault();
+      toggleHeroVideo();
     });
   }
 
@@ -471,71 +521,26 @@
     fanObserver.observe(storiesSection);
   }
 
-  // --- Donate Slide-Up Panel ---
-  var donatePanel = document.getElementById('donate-panel');
-  var donateBackdrop = document.getElementById('donate-panel-backdrop');
-
-  function openDonatePanel() {
-    donatePanel.classList.add('active');
-    donatePanel.setAttribute('aria-hidden', 'false');
-    donateBackdrop.classList.add('active');
-    document.body.classList.add('overlay-open');
-  }
-
-  function closeDonatePanel() {
-    donatePanel.classList.remove('active');
-    donatePanel.setAttribute('aria-hidden', 'true');
-    donateBackdrop.classList.remove('active');
-    document.body.classList.remove('overlay-open');
-  }
-
-  if (donatePanel && donateBackdrop) {
-    document.querySelectorAll('[data-donate-panel]').forEach(function (btn) {
-      btn.addEventListener('click', function (e) {
-        e.preventDefault();
-        openDonatePanel();
-      });
-    });
-
-    donateBackdrop.addEventListener('click', closeDonatePanel);
-
-    donatePanel.querySelector('.donate-cancel').addEventListener('click', closeDonatePanel);
-
-    donatePanel.querySelector('.slide-panel-handle').addEventListener('click', closeDonatePanel);
-
-    document.addEventListener('keydown', function (e) {
-      if (e.key === 'Escape' && donatePanel.classList.contains('active')) {
-        closeDonatePanel();
+  // --- Donate: trigger Givebutter popup ---
+  document.querySelectorAll('[data-donate-panel]').forEach(function (btn) {
+    btn.addEventListener('click', function (e) {
+      e.preventDefault();
+      var gb = document.getElementById('gb-trigger');
+      // Try in order: descendant button (light DOM), shadow-root button, host element itself
+      var target = null;
+      if (gb) {
+        target = gb.querySelector('button, a');
+        if (!target && gb.shadowRoot) target = gb.shadowRoot.querySelector('button, a');
+        if (!target) target = gb;
       }
-    });
-
-    // Swipe down to dismiss
-    var dStartY = 0, dCurrentY = 0, dSwiping = false;
-    donatePanel.addEventListener('touchstart', function (e) {
-      if (donatePanel.scrollTop > 0) return;
-      dStartY = e.touches[0].pageY;
-      dSwiping = true;
-      donatePanel.style.transition = 'none';
-    }, { passive: true });
-
-    donatePanel.addEventListener('touchmove', function (e) {
-      if (!dSwiping) return;
-      dCurrentY = e.touches[0].pageY;
-      var dy = dCurrentY - dStartY;
-      if (dy > 0) donatePanel.style.transform = 'translateY(' + dy + 'px)';
-    }, { passive: true });
-
-    donatePanel.addEventListener('touchend', function () {
-      if (!dSwiping) return;
-      dSwiping = false;
-      donatePanel.style.transition = '';
-      if (dCurrentY - dStartY > 100) {
-        closeDonatePanel();
+      if (target && typeof target.click === 'function') {
+        target.click();
       } else {
-        donatePanel.style.transform = '';
+        // Fallback: hosted page in a new tab
+        window.open('https://givebutter.com/pathwaytofreedom', '_blank', 'noopener');
       }
     });
-  }
+  });
 
   // --- Class Slide-Up Panel ---
   var slidePanel = document.getElementById('slide-panel');
@@ -641,6 +646,98 @@
         target.scrollIntoView({ behavior: 'smooth', block: 'start' });
       }
     });
+  });
+
+  // --- Feature Carousel (Stripe-style active-tile rotator) ---
+  // Active card always sits leftmost (widest slot). Clicking a card rotates
+  // the array so the clicked card moves to slot 0; cards that were to its left
+  // wrap around to the rightmost narrow slots. Slot widths are fixed and
+  // stepped (widest → narrowest, left → right).
+  var FC_SLOT_WEIGHTS = [10, 5, 2, 1, 0.8];
+  var FC_GAP = 8;
+  var FC_MOBILE_MAX = 768;
+
+  document.querySelectorAll('[data-feature-carousel]').forEach(function (root) {
+    var track   = root.querySelector('.fc-track');
+    var cards   = Array.prototype.slice.call(root.querySelectorAll('.fc-card'));
+    var caption = root.querySelector('.fc-caption');
+    var prev    = root.querySelector('.fc-arrow--prev');
+    var next    = root.querySelector('.fc-arrow--next');
+    if (!track || cards.length === 0) return;
+
+    var captions = cards.map(function (c) { return c.getAttribute('data-caption') || ''; });
+    var active = 0;
+    var N = cards.length;
+
+    // Pad slot weights if there are more cards than configured weights
+    var weights = [];
+    for (var w = 0; w < N; w++) {
+      weights.push(FC_SLOT_WEIGHTS[w] !== undefined ? FC_SLOT_WEIGHTS[w] : 0.5);
+    }
+    var totalWeight = weights.reduce(function (a, b) { return a + b; }, 0);
+
+    function layout() {
+      var isMobile = window.innerWidth <= FC_MOBILE_MAX;
+
+      if (isMobile) {
+        cards.forEach(function (card, idx) {
+          var isActive = idx === active;
+          card.style.display = isActive ? '' : 'none';
+          card.style.left = '0px';
+          card.style.width = '100%';
+          card.classList.toggle('is-active', isActive);
+        });
+        return;
+      }
+
+      var trackW = track.clientWidth;
+      var totalGap = FC_GAP * (N - 1);
+      var availW = Math.max(0, trackW - totalGap);
+
+      var slotWidths = weights.map(function (wt) { return (wt / totalWeight) * availW; });
+      var slotLefts = [];
+      var accum = 0;
+      for (var s = 0; s < N; s++) {
+        slotLefts.push(accum);
+        accum += slotWidths[s] + FC_GAP;
+      }
+
+      cards.forEach(function (card, idx) {
+        var slot = ((idx - active) % N + N) % N;
+        card.style.display = '';
+        card.style.left = slotLefts[slot] + 'px';
+        card.style.width = slotWidths[slot] + 'px';
+        card.classList.toggle('is-active', slot === 0);
+      });
+    }
+
+    function setActive(i) {
+      var newActive = ((i % N) + N) % N;
+      if (newActive === active) return;
+      active = newActive;
+      layout();
+      if (caption) {
+        caption.classList.add('is-fading');
+        setTimeout(function () {
+          caption.textContent = captions[active];
+          caption.classList.remove('is-fading');
+        }, 180);
+      }
+    }
+
+    if (prev) prev.addEventListener('click', function () { setActive(active - 1); });
+    if (next) next.addEventListener('click', function () { setActive(active + 1); });
+    cards.forEach(function (card, idx) {
+      card.addEventListener('click', function () {
+        if (idx !== active) setActive(idx);
+      });
+    });
+
+    // Initial layout, then enable transitions and fade cards in
+    layout();
+    requestAnimationFrame(function () { track.classList.add('fc-track--ready'); });
+
+    window.addEventListener('resize', layout);
   });
 })();
 

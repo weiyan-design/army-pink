@@ -4,34 +4,104 @@ import Layout from '../layouts/Layout.astro';
 
 <Layout title="Army Pink — Pathway to Freedom">
 
-  <!-- ===== HERO (fullscreen sticky video) ===== -->
-  <section id="home" class="home-hero" aria-label="Hero">
+  <!-- ===== HERO (fullscreen sticky video — click anywhere to toggle) ===== -->
+  <section id="home" class="home-hero" aria-label="Hero video — click or press space to play and pause">
     <video
       class="home-hero-video"
       src="/vid/Home_Hero_Vid.mp4"
       autoplay muted loop playsinline preload="auto"
       aria-hidden="true"
     ></video>
-    <button
-      type="button"
-      class="home-hero-mute is-muted"
-      id="heroMuteBtn"
-      aria-label="Toggle sound"
-      aria-pressed="false"
-    >
-      <svg class="icon-mute"   viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><line x1="23" y1="9" x2="17" y2="15"/><line x1="17" y1="9" x2="23" y2="15"/></svg>
-      <svg class="icon-unmute" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>
-    </button>
+    <div class="home-hero-play-overlay" aria-hidden="true">
+      <svg class="overlay-icon-play" viewBox="0 0 24 24" fill="currentColor"><polygon points="7 4 20 12 7 20 7 4"/></svg>
+      <svg class="overlay-icon-mute" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" fill="currentColor"/><line x1="23" y1="9" x2="17" y2="15"/><line x1="17" y1="9" x2="23" y2="15"/></svg>
+      <span class="overlay-hint">Click for sound</span>
+    </div>
   </section>
 
   <!-- ===== STATEMENT ===== -->
   <div class="statement-scroll-wrap">
     <section class="section-statement" id="statement">
       <div class="container">
+        <span class="pill-label">Our Mission</span>
         <p class="statement-text" id="statementText">Providing safe, reliable transportation to help survivors escape domestic violence and begin their path to freedom.</p>
       </div>
     </section>
   </div>
+
+  <!-- ===== WELLNESS PORTAL TEASER ===== -->
+  <section class="feature-carousel feature-carousel--pink" data-feature-carousel>
+    <svg class="fc-wave" viewBox="0 0 1440 80" preserveAspectRatio="none" aria-hidden="true">
+      <path d="M0,36 C360,0 720,76 1080,36 C1260,16 1380,46 1440,36 L1440,80 L0,80 Z"/>
+    </svg>
+    <div class="container">
+      <div class="fc-header">
+        <h2>Leaving is just the beginning.</h2>
+        <a href="/wellness-portal" class="btn btn-ghost">Start your journey</a>
+      </div>
+      <div class="fc-track">
+        <article class="fc-card is-active" data-caption="Trauma-informed yoga that helps your nervous system unwind, one breath at a time.">
+          <img src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=600&h=1000&fit=crop&q=80" alt="" loading="lazy" />
+        </article>
+        <article class="fc-card" data-caption="Mindfulness practices for the days when sitting still feels impossible.">
+          <img src="https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=600&h=1000&fit=crop&q=80" alt="" loading="lazy" />
+        </article>
+        <article class="fc-card" data-caption="Breathing exercises for the 2am moments your body refuses to settle.">
+          <img src="https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?w=600&h=1000&fit=crop&q=80" alt="" loading="lazy" />
+        </article>
+        <article class="fc-card" data-caption="Sleep practices for bodies still scanning for danger.">
+          <img src="https://images.unsplash.com/photo-1476041800959-2f6bb412c8ce?w=600&h=1000&fit=crop&q=80" alt="" loading="lazy" />
+        </article>
+        <article class="fc-card" data-caption="Movement that meets you where you are — no performance, no pressure.">
+          <img src="https://images.unsplash.com/photo-1545389336-cf090694435e?w=600&h=1000&fit=crop&q=80" alt="" loading="lazy" />
+        </article>
+      </div>
+      <div class="fc-footer">
+        <p class="fc-caption">Trauma-informed yoga that helps your nervous system unwind, one breath at a time.</p>
+        <div class="fc-controls">
+          <button class="fc-arrow fc-arrow--prev" aria-label="Previous">&lsaquo;</button>
+          <button class="fc-arrow fc-arrow--next" aria-label="Next">&rsaquo;</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== ESCAPE CLUB TEASER ===== -->
+  <section class="feature-carousel feature-carousel--cream" data-feature-carousel>
+    <svg class="fc-wave" viewBox="0 0 1440 80" preserveAspectRatio="none" aria-hidden="true">
+      <path d="M0,36 C360,0 720,76 1080,36 C1260,16 1380,46 1440,36 L1440,80 L0,80 Z"/>
+    </svg>
+    <div class="container">
+      <div class="fc-header">
+        <h2>Healing is harder alone.</h2>
+        <a href="/escape-club" class="btn btn-ghost">Join the community</a>
+      </div>
+      <div class="fc-track">
+        <article class="fc-card is-active" data-caption="A community of survivors who've walked your path — meeting you in the in-between.">
+          <img src="https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=600&h=1000&fit=crop&q=80" alt="" loading="lazy" />
+        </article>
+        <article class="fc-card" data-caption="Weekly check-ins, kept small enough to feel personal.">
+          <img src="https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?w=600&h=1000&fit=crop&q=80" alt="" loading="lazy" />
+        </article>
+        <article class="fc-card" data-caption="Mentors who remember what year one felt like.">
+          <img src="https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?w=600&h=1000&fit=crop&q=80" alt="" loading="lazy" />
+        </article>
+        <article class="fc-card" data-caption="Cohorts that move at your pace — no one is left behind.">
+          <img src="https://images.unsplash.com/photo-1543269865-cbf427effbad?w=600&h=1000&fit=crop&q=80" alt="" loading="lazy" />
+        </article>
+        <article class="fc-card" data-caption="Peer support designed for the long stretch after the escape.">
+          <img src="https://images.unsplash.com/photo-1502635385003-ee1e6a1a742d?w=600&h=1000&fit=crop&q=80" alt="" loading="lazy" />
+        </article>
+      </div>
+      <div class="fc-footer">
+        <p class="fc-caption">A community of survivors who've walked your path — meeting you in the in-between.</p>
+        <div class="fc-controls">
+          <button class="fc-arrow fc-arrow--prev" aria-label="Previous">&lsaquo;</button>
+          <button class="fc-arrow fc-arrow--next" aria-label="Next">&rsaquo;</button>
+        </div>
+      </div>
+    </div>
+  </section>
 
   <!-- ===== EMPOWERING SERIES ===== -->
   <section class="section section-empowering" id="wellness">

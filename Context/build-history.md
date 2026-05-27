@@ -527,3 +527,96 @@ Reference site studied: **espaciolanube.com** — Vite SPA built with Lenis + Sp
 - Max Townsend bio/photo correction (see anomaly above)
 - Verify flip behavior + orange shadow feel correct on a real browser at multiple breakpoints
 - If `.tp-name` wraps awkwardly at narrow widths, consider clamping `font-size` or shortening titles in `team.js`
+
+---
+
+## Legal Pages + Contact Rebuild (2026-05-25)
+
+Built out the full legal footer and redesigned the contact page. All three legal pages share a Stripe-style two-column layout (sticky sidebar nav + content). Contact page rebuilt with a yellow form card and icon-badge info column. Pushed as commit `4386643`.
+
+**New pages:**
+- `/privacy` (`src/pages/privacy.astro`) — Privacy Notice, TCPA/VAWA/VOCA/FVPSA-compatible. 12 sections.
+- `/sms-terms` (`src/pages/sms-terms.astro`) — SMS Terms of Service with TCPA-required disclosures. 10 sections. Stub status — owner review needed.
+- `/disclaimer` (`src/pages/disclaimer.astro`) — Liability/scope disclaimer. 8 sections (professional advice, wellness, crisis use, third-parties, no guarantees, limitation of liability, changes, contact). Boilerplate §6 needs legal counsel review.
+- `/contact` (`src/pages/contact.astro`) — Netlify Forms with reason dropdown, routes to `support@armypink.org`.
+
+**Privacy page — merged owner's federal-compliance draft with broader website coverage:**
+- Federal confidentiality framework: VAWA, VOCA, FVPSA cited by name (§1)
+- Shelter location protection clause — VAWA §40002(b)(2) (§2)
+- "Informed, written, and reasonably time-limited consent" — FVPSA standard verbatim (§1, §6)
+- TCPA SMS notice — "not a condition of eligibility", STOP/HELP, "message and data rates may apply" (§5)
+- Twilio referenced as SMS provider bound by DPA (§5, §6)
+- Aggregate funder reporting clause — critical for VAWA/VOCA/FVPSA grant reviewers (§4, §6)
+- Mandatory abuse/neglect reporting carve-out, in addition to court orders (§6)
+- Givebutter referenced as donation processor (§3, §6, §8)
+- Standard website privacy coverage retained: cookies/analytics, third-party links, your rights, children's privacy
+
+**Two-column legal layout** (`public/styles.css` — `.legal-layout` block):
+- Grid: 240px sticky sidebar + 1fr content, gap `var(--space-xl)`
+- Sidebar `position: sticky; top: 100px`, flat list of section anchor links
+- Active link via IntersectionObserver (`rootMargin: '-100px 0px -60% 0px'`) — `.is-active` gets pink left-border + pink-pale background
+- Content max-width 760px, h1 large Playfair Display (`clamp(2.4rem, 5vw, 3.5rem)`, weight 700, tight tracking)
+- Section spacing: `margin-bottom: var(--space-md); padding-bottom: var(--space-md)`, **no border-bottom**
+- Mobile (<900px): sidebar `display: none` (hidden entirely, not collapsed to top)
+- CTA section removed from all three legal pages — they end at the last section
+
+**Inline JS shared across legal pages:**
+Each page ends with a small IIFE that finds `[data-section-link]` anchors, observes their target sections, and toggles `.is-active` on whichever is closest to viewport top. No external dependencies.
+
+**Contact page** (`/contact`):
+- Two-column grid `grid-template-columns: 1fr 2fr` (info left, form right), `align-items: stretch`
+- LEFT — `.contact-aside` info column, no card background:
+  - 4 methods: Email, Community, Response time, For partners
+  - Each `.contact-method` is a flex row: 44×44 `.contact-method-icon` (pink-pale bg, pink-dark icon) + `.contact-method-body` (h3 + description)
+  - Lucide SVG icons inlined: mail, message-circle, clock, users
+  - `.contact-aside-socials` at bottom: 4 38px circle icon buttons (Instagram, LinkedIn, YouTube, Pinterest), reused footer-social SVG paths. `margin-top: auto` pushes them to bottom of the flex column.
+- RIGHT — `.contact-card` (`#FDD36A`, `border-radius: 24px`, `padding: clamp(--space-md, 3vw, --space-lg)`):
+  - h1 "Let's start a conversation." (Playfair Display, `clamp(2rem, 4vw, 3rem)`, weight 700)
+  - Intro: "Whether you're here to volunteer, partner, ask a question, or simply say hello, we'd love to hear from you."
+  - Form fields: reason dropdown (general / volunteer / partnership / press-media / other) + name (optional) + email (required) + message (required) + hidden honeypot
+  - Inputs: white bg, `border-radius: 10px`, focus state = pink border + pink-pale glow ring
+  - `.contact-submit` full-width pink button, `padding: 1rem 1.5rem`
+  - Privacy note centered below button
+
+**Netlify Forms wiring:**
+- Form attributes: `data-netlify="true"`, `netlify-honeypot="bot-field"`, hidden `<input type="hidden" name="form-name" value="contact">`
+- `action="/contact?sent=true"` — after submit, inline script swaps `.contact-card` for `.contact-success` confirmation card (pink-pale, checkmark icon)
+- Build verified — all three Netlify form attributes present in `dist/contact/index.html`
+- **Manual step required**: Netlify dashboard → Site → Forms → Settings → notification email → `support@armypink.org`. The HTML doesn't route by itself.
+
+**Footer wiring** (`src/layouts/Layout.astro`):
+- `#` → `/privacy` (Legal column)
+- `#` → `/sms-terms` (Legal column)
+- `#` → `/disclaimer` (Legal column)
+- `#` → `/contact` (Connect column)
+
+**Donate panel Givebutter swap:**
+- Donate panel note text updated mid-session: "Donations are tax-deductible through our fiscal sponsor, Charity On Top" → "Donations are processed securely through Givebutter and are tax-deductible".
+- Note: the donate panel itself was later archived entirely during the Espacio session — Givebutter widget popup now handles donations directly. The text change predates that archive.
+
+**Shared contact info across all legal pages:**
+- Email: `support@armypink.org`
+- Phone: `(213) 579-5051`
+
+**Files touched this session:**
+- `src/pages/privacy.astro` — new
+- `src/pages/sms-terms.astro` — new
+- `src/pages/disclaimer.astro` — new
+- `src/pages/contact.astro` — full rebuild
+- `src/layouts/Layout.astro` — 4 footer link updates + donate panel note swap
+- `public/styles.css` — `.legal-layout` block, contact page rebuild, removed prior `.privacy-toc` / `.privacy-doc` / `.contact-callout` blocks
+
+**Decisions made along the way:**
+- Owner provided a TCPA-compliant draft heavy on SMS/federal compliance but missing website coverage. Decision: merge rather than replace — owner's text leads (federal sections come first), prior draft's coverage layered in (cookies, analytics, children's privacy).
+- "Other ways to reach us" title removed; aside background card removed; columns swapped (info now on left, form on right).
+- Yellow `#FDD36A` applied to the right form card only — NOT edge-to-edge — per Untitled UI contact page reference image.
+- Form fields kept boxed (not underline) per explicit choice.
+- Submit button stays Army-Pink pink (not dark navy like reference) — brand consistency.
+- Privacy page hero removed; title moved into the right column, matching Stripe legal layout reference.
+
+**Followups**
+- Owner review: `/sms-terms` content (TCPA disclosures are template-grade; owner may have their own copy).
+- Legal counsel review: `/disclaimer` §6 limitation-of-liability clause (boilerplate).
+- Netlify dashboard: set `support@armypink.org` as form notification recipient.
+- Verify `support@armypink.org` mailbox exists / forwards correctly — referenced on all four new pages.
+- Confirm phone `(213) 579-5051` is correct.

@@ -4,31 +4,100 @@ import Layout from '../layouts/Layout.astro';
 
 <Layout title="Wellness Portal — Army Pink">
 
-  <!-- ===== HERO ===== -->
-  <header class="hero" id="home">
-    <video class="hero-video" autoplay muted loop playsinline>
-      <source src="/vid/hero-vid-2-opt.mp4" type="video/mp4" />
-    </video>
-    <div class="container">
-      <div class="hero-glass">
-        <h1>You already did the hardest part.</h1>
-        <p class="hero-sub">
-          Leaving took more courage than most people will ever understand.
-          What comes next doesn't have to be faced alone.
-        </p>
-        <div class="hero-actions">
-          <a href="#wellness" class="btn btn-primary">Pathway to Wellness</a>
-          <a href="#community" class="btn btn-ghost-light">Visit Community</a>
+  <!-- ===== HERO: COVERFLOW CAROUSEL ===== -->
+  <div class="wp-hub-scroll-wrap" id="wpHubWrap">
+    <section class="wp-hub" id="home">
+      <canvas class="wp-hub-bg-canvas" id="wpHubBgCanvas"></canvas>
+
+      <div class="wp-stage" id="wpStage">
+        <div class="wp-arch" data-arch="0">
+          <svg viewBox="0 0 320 400" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
+            <defs>
+              <clipPath id="wpArchClip-0" clipPathUnits="userSpaceOnUse">
+                <path id="wpArchPath-0" d="" />
+              </clipPath>
+            </defs>
+            <image href="https://images.unsplash.com/photo-1545389336-cf090694435e?w=900&q=80"
+                   x="0" y="0" width="320" height="400"
+                   preserveAspectRatio="xMidYMid slice"
+                   clip-path="url(#wpArchClip-0)" />
+          </svg>
+        </div>
+        <div class="wp-arch" data-arch="1">
+          <svg viewBox="0 0 320 400" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
+            <defs>
+              <clipPath id="wpArchClip-1" clipPathUnits="userSpaceOnUse">
+                <path id="wpArchPath-1" d="" />
+              </clipPath>
+            </defs>
+            <image href="https://images.unsplash.com/photo-1499209974431-9dddcece7f88?w=900&q=80"
+                   x="0" y="0" width="320" height="400"
+                   preserveAspectRatio="xMidYMid slice"
+                   clip-path="url(#wpArchClip-1)" />
+          </svg>
+        </div>
+        <div class="wp-arch" data-arch="2">
+          <svg viewBox="0 0 320 400" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
+            <defs>
+              <clipPath id="wpArchClip-2" clipPathUnits="userSpaceOnUse">
+                <path id="wpArchPath-2" d="" />
+              </clipPath>
+            </defs>
+            <image href="https://images.unsplash.com/photo-1506126613408-eca07ce68773?w=900&q=80"
+                   x="0" y="0" width="320" height="400"
+                   preserveAspectRatio="xMidYMid slice"
+                   clip-path="url(#wpArchClip-2)" />
+          </svg>
         </div>
       </div>
-    </div>
-    <svg class="hero-wave" viewBox="0 0 1440 80" preserveAspectRatio="none" aria-hidden="true">
-      <path d="M0,60 C360,0 540,80 720,40 C900,0 1080,80 1440,20 L1440,80 L0,80 Z" fill="var(--cream)"/>
-    </svg>
-  </header>
-  <div class="hero-flower-wrap">
-    <img src="/img/flower-4.png" class="hero-flower" alt="" aria-hidden="true" />
+
+      <div class="wp-info-stack">
+        <div class="wp-info is-active" data-info="0">
+          <h2>The Calm Room</h2>
+          <p>Pause and ground. Soft soundscapes, breathing, and quiet visuals for the moments that feel like too much.</p>
+          <a href="/wellness-portal/calm-room" class="wp-info-cta" data-room="calm-room">Step inside →</a>
+        </div>
+        <div class="wp-info" data-info="1">
+          <h2>Pathway to Freedom Library</h2>
+          <p>Workbooks, guides, and the flagship 28-Day Journey — organized by what you need today.</p>
+          <a href="/wellness-portal/library" class="wp-info-cta" data-room="library">Step inside →</a>
+        </div>
+        <div class="wp-info" data-info="2">
+          <h2>Wellness Experiences</h2>
+          <p>One-year free access to partner platforms — guided practices, healing classes, and trauma-informed experts.</p>
+          <a href="/wellness-portal/wellness-experiences" class="wp-info-cta" data-room="experiences">Step inside →</a>
+        </div>
+      </div>
+
+      <div class="wp-dot-rail">
+        <button class="wp-dot is-active" data-dot="0" aria-label="Calm Room"></button>
+        <button class="wp-dot" data-dot="1" aria-label="Resource Library"></button>
+        <button class="wp-dot" data-dot="2" aria-label="Wellness Experiences"></button>
+        <div class="wp-dot-counter" id="wpDotCounter">1 / 3</div>
+      </div>
+    </section>
   </div>
+
+  <!-- ===== ARCH OPEN/CLOSE OVERLAY ===== -->
+  <!-- Overlay container holds only the animating arch (the photo/clip clone).
+       The close button sits as a sibling so it isn't tied to the arch's opacity. -->
+  <div class="wp-overlay" id="wpOverlay" aria-hidden="true">
+    <div class="wp-overlay-arch" id="wpOverlayArch">
+      <svg viewBox="0 0 320 400" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
+        <defs>
+          <clipPath id="wpOverlayClip" clipPathUnits="userSpaceOnUse">
+            <path id="wpOverlayPath" d="" />
+          </clipPath>
+        </defs>
+        <image id="wpOverlayImage" href=""
+               x="0" y="0" width="320" height="400"
+               preserveAspectRatio="xMidYMid slice"
+               clip-path="url(#wpOverlayClip)" />
+      </svg>
+    </div>
+  </div>
+  <!-- Close button removed — back navigation now lives on each sub-page -->
+
 
   <!-- ===== EMPOWERING SERIES ===== -->
   <section class="section section-empowering" id="wellness">
@@ -384,5 +453,550 @@ import Layout from '../layouts/Layout.astro';
       <a href="#" id="slide-panel-link" class="btn btn-primary" target="_blank" rel="noopener">Start class</a>
     </div>
   </div>
+
+  <!-- ===== HERO STYLES (scoped to this page) ===== -->
+  <style>
+    .wp-hub-scroll-wrap {
+      height: 400vh;
+      position: relative;
+    }
+
+    .wp-hub {
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 0;
+      gap: 1.5rem;
+      overflow: hidden;
+      background: var(--cream);
+    }
+
+    .wp-hub-bg-canvas {
+      position: absolute;
+      inset: 0;
+      z-index: 0;
+      pointer-events: none;
+      display: block;
+      width: 100%;
+      height: 100%;
+    }
+
+    .wp-stage {
+      position: relative;
+      width: 100%;
+      flex: 1 1 auto;
+      min-height: 0;
+      perspective: 1500px;
+      perspective-origin: 50% 50%;
+      z-index: 2;
+    }
+
+    .wp-arch {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      height: var(--wp-arch-h, 60vh);
+      width: var(--wp-arch-w, 48vh);
+      cursor: pointer;
+      transform-origin: center center;
+      will-change: transform, opacity;
+    }
+    .wp-arch svg { width: 100%; height: 100%; display: block; }
+
+    .wp-info-stack {
+      position: relative;
+      width: 100%;
+      max-width: 520px;
+      min-height: 190px;
+      text-align: center;
+      flex: 0 0 auto;
+      z-index: 2;
+      padding: 0 1rem;
+    }
+
+    .wp-info {
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 400ms ease;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.6rem;
+    }
+    .wp-info.is-active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .wp-info h2 {
+      font-family: var(--font-display);
+      font-size: clamp(1.4rem, 2vw, 1.9rem);
+      font-weight: 500;
+      color: var(--dark-grey);
+      letter-spacing: -0.015em;
+    }
+    .wp-info p {
+      font-size: 0.95rem;
+      line-height: 1.55;
+      color: var(--dark-grey);
+      opacity: 0.85;
+      max-width: 440px;
+    }
+    .wp-info-cta {
+      margin-top: 0.4rem;
+      padding: 0.8rem 1.6rem;
+      background: var(--pink);
+      color: white;
+      border-radius: 999px;
+      font-size: 0.95rem;
+      font-weight: 500;
+      text-decoration: none;
+      transition: background 200ms ease, transform 200ms ease;
+      display: inline-block;
+    }
+    .wp-info-cta:hover {
+      background: var(--pink-dark);
+      color: white;
+      transform: translateY(-1px);
+    }
+
+    .wp-dot-rail {
+      position: fixed;
+      right: 2rem;
+      top: 50%;
+      transform: translateY(-50%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.85rem;
+      z-index: 5;
+    }
+    .wp-dot {
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      border: 1px solid var(--dark-grey);
+      background: transparent;
+      cursor: pointer;
+      padding: 0;
+      transition: background 300ms ease, transform 300ms ease;
+    }
+    .wp-dot.is-active {
+      background: var(--dark-grey);
+      transform: scale(1.4);
+    }
+    .wp-dot-counter {
+      margin-top: 0.5rem;
+      font-size: 0.7rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--dark-grey);
+      opacity: 0.6;
+      font-variant-numeric: tabular-nums;
+    }
+
+    @media (max-width: 768px) {
+      .wp-dot-rail { display: none; }
+    }
+
+    /* ───────── Arch open/close overlay ─────────
+       The overlay container is a transparent positioning layer for the
+       animating arch clone. We use `visibility` (instant) instead of
+       `opacity` for the container so there's no fade-in flash when the
+       source arch hands off to the clone. */
+    .wp-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 800;
+      pointer-events: none;
+      visibility: hidden;
+    }
+    .wp-overlay.is-open {
+      visibility: visible;
+      pointer-events: auto;
+    }
+
+    .wp-overlay-arch {
+      position: fixed;
+      opacity: 1;
+      /* top/left/width/height inline-set by JS; transitions animate them.
+         opacity transitions AFTER the expansion (500ms delay) so the arch
+         only fades out once it's reached fullscreen. */
+      transition:
+        top    700ms cubic-bezier(0.65, 0, 0.35, 1),
+        left   700ms cubic-bezier(0.65, 0, 0.35, 1),
+        width  700ms cubic-bezier(0.65, 0, 0.35, 1),
+        height 700ms cubic-bezier(0.65, 0, 0.35, 1),
+        opacity 350ms ease 500ms;
+      will-change: top, left, width, height, opacity;
+    }
+    .wp-overlay-arch svg { width: 100%; height: 100%; display: block; }
+    .wp-overlay.is-arch-hidden .wp-overlay-arch { opacity: 0; }
+
+    /* Carousel sibling UI fades while overlay is open, lets the arch take the spotlight */
+    .wp-hub.is-arch-opening .wp-stage,
+    .wp-hub.is-arch-opening .wp-info-stack,
+    .wp-hub.is-arch-opening .wp-dot-rail {
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 400ms ease;
+    }
+    /* Hide the active arch in the carousel during overlay (clone is showing) */
+    .wp-arch.is-overlay-source { visibility: hidden; }
+  </style>
+
+  <!-- ===== HERO SCRIPT ===== -->
+  <script is:inline>
+    (() => {
+      const VIEW_W = 320;
+      const VIEW_H = 400;
+
+      const cfg = {
+        amplitude: 5,
+        frequency: 2.1,
+        speed: 0.017,
+        breathAmp: 2.5,
+        breathCycle: 5,
+        fillRatio: 92,
+        spread: 46,
+        tilt: 5,
+        sideScale: 0.59,
+        lightOp: 0.55,
+        lightSize: 0.6,
+      };
+
+      let phase = 0;
+      let activeIdx = 0;
+      const startTime = performance.now();
+
+      function buildArchPath(width, height, waveAmp, waveFreq, ph) {
+        const topPad = 2;
+        const bottomPad = 8;
+        const r = width / 2;
+        const archY = r + topPad;
+        const waveCenter = height - bottomPad;
+        const samples = 60;
+        let d = `M 0 ${archY} A ${r} ${r} 0 0 1 ${width} ${archY} L ${width} ${waveCenter}`;
+        for (let i = 0; i <= samples; i++) {
+          const x = width - (i / samples) * width;
+          const t = (i / samples) * Math.PI * 2 * waveFreq + ph;
+          const y = waveCenter + Math.sin(t) * waveAmp;
+          d += ` L ${x.toFixed(2)} ${y.toFixed(2)}`;
+        }
+        return d + ' Z';
+      }
+
+      const paths = [0, 1, 2].map(i => document.getElementById('wpArchPath-' + i));
+      const STATIC_PHASE = [0.0, 1.7, 3.4];
+
+      function renderStatic(i) {
+        paths[i].setAttribute('d',
+          buildArchPath(VIEW_W, VIEW_H, cfg.amplitude, cfg.frequency, STATIC_PHASE[i])
+        );
+      }
+      paths.forEach((_, i) => renderStatic(i));
+
+      const bgCanvas = document.getElementById('wpHubBgCanvas');
+      const bgCtx = bgCanvas.getContext('2d');
+
+      function resizeBgCanvas() {
+        const dpr = Math.min(window.devicePixelRatio || 1, 2);
+        const w = bgCanvas.offsetWidth;
+        const h = bgCanvas.offsetHeight;
+        bgCanvas.width = w * dpr;
+        bgCanvas.height = h * dpr;
+        bgCtx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      }
+
+      function drawBackdrop(progress) {
+        const w = bgCanvas.offsetWidth;
+        const h = bgCanvas.offsetHeight;
+        if (!w || !h) return;
+
+        bgCtx.fillStyle = '#fdfbf7';
+        bgCtx.fillRect(0, 0, w, h);
+
+        const radius = Math.max(w, h) * cfg.lightSize;
+        const a = cfg.lightOp;
+
+        const l1x = w * (0.22 + progress * 0.56);
+        const l1y = h * (0.30 + progress * 0.40);
+        const g1 = bgCtx.createRadialGradient(l1x, l1y, 0, l1x, l1y, radius);
+        g1.addColorStop(0,    `rgba(255, 252, 244, ${a})`);
+        g1.addColorStop(0.45, `rgba(255, 252, 244, ${a * 0.35})`);
+        g1.addColorStop(1,    'rgba(255, 252, 244, 0)');
+        bgCtx.fillStyle = g1;
+        bgCtx.fillRect(0, 0, w, h);
+
+        const l2x = w * (0.78 - progress * 0.56);
+        const l2y = h * (0.70 - progress * 0.40);
+        const g2 = bgCtx.createRadialGradient(l2x, l2y, 0, l2x, l2y, radius * 0.85);
+        g2.addColorStop(0,    `rgba(248, 244, 232, ${a * 0.9})`);
+        g2.addColorStop(0.45, `rgba(248, 244, 232, ${a * 0.3})`);
+        g2.addColorStop(1,    'rgba(248, 244, 232, 0)');
+        bgCtx.fillStyle = g2;
+        bgCtx.fillRect(0, 0, w, h);
+      }
+
+      const archEls = Array.from(document.querySelectorAll('.wp-arch'));
+      const infoEls = Array.from(document.querySelectorAll('.wp-info'));
+      const dotEls  = Array.from(document.querySelectorAll('.wp-dot'));
+      const wrap    = document.getElementById('wpHubWrap');
+      const counter = document.getElementById('wpDotCounter');
+      const stage   = document.getElementById('wpStage');
+
+      const ARCH_MAX_WIDTH_RATIO = 0.6;
+      const ARCH_ASPECT_W_OVER_H = 0.8;
+
+      function fitArchSize() {
+        const stageH = stage.offsetHeight;
+        const stageW = stage.offsetWidth;
+        if (!stageH || !stageW) return;
+        const heightBudget = stageH * (cfg.fillRatio / 100);
+        const widthCap = (stageW * ARCH_MAX_WIDTH_RATIO) / ARCH_ASPECT_W_OVER_H;
+        const archH = Math.max(240, Math.min(heightBudget, widthCap));
+        const archW = archH * ARCH_ASPECT_W_OVER_H;
+        archEls.forEach(el => {
+          el.style.setProperty('--wp-arch-h', archH + 'px');
+          el.style.setProperty('--wp-arch-w', archW + 'px');
+        });
+      }
+
+      function wrapSlot(s) {
+        while (s > 1.5)  s -= 3;
+        while (s < -1.5) s += 3;
+        return s;
+      }
+
+      function setActive(idx) {
+        if (idx === activeIdx) return;
+        renderStatic(activeIdx);
+        activeIdx = idx;
+        infoEls.forEach((d, i) => d.classList.toggle('is-active', i === idx));
+        dotEls.forEach((d, i) => d.classList.toggle('is-active', i === idx));
+        counter.textContent = (idx + 1) + ' / 3';
+      }
+
+      function applyCarousel(scrollProgress) {
+        const cycle = scrollProgress * 2;
+        archEls.forEach((el, i) => {
+          const slot = wrapSlot(i - cycle);
+          const abs = Math.abs(slot);
+          const tx = slot * cfg.spread;
+          const ry = slot * -cfg.tilt;
+          const sc = abs >= 1 ? cfg.sideScale : 1 - (1 - cfg.sideScale) * abs;
+          let op;
+          if (abs <= 1) op = 1 - abs * 0.45;
+          else          op = Math.max(0, 0.55 - (abs - 1) * 1.1);
+          const z = 100 - Math.round(abs * 50);
+          el.style.transform =
+            `translate(-50%, -50%) translateX(${tx}vw) rotateY(${ry}deg) scale(${sc})`;
+          el.style.opacity = op.toFixed(3);
+          el.style.zIndex = z;
+        });
+        const idx = ((Math.round(cycle) % 3) + 3) % 3;
+        setActive(idx);
+      }
+
+      function tick(now) {
+        phase += cfg.speed;
+        const elapsed = (now - startTime) / 1000;
+        const breathT = (elapsed / cfg.breathCycle) * Math.PI * 2;
+        const liveAmp = cfg.amplitude + Math.sin(breathT) * cfg.breathAmp;
+        paths[activeIdx].setAttribute('d',
+          buildArchPath(VIEW_W, VIEW_H, liveAmp, cfg.frequency, phase)
+        );
+        requestAnimationFrame(tick);
+      }
+      requestAnimationFrame(tick);
+
+      function onScroll() {
+        const rect = wrap.getBoundingClientRect();
+        const total = wrap.offsetHeight - window.innerHeight;
+        const scrolled = Math.min(Math.max(-rect.top, 0), total);
+        const progress = total > 0 ? scrolled / total : 0;
+        applyCarousel(progress);
+        drawBackdrop(progress);
+      }
+      function onResize() {
+        resizeBgCanvas();
+        fitArchSize();
+        onScroll();
+      }
+      window.addEventListener('scroll', onScroll, { passive: true });
+      window.addEventListener('resize', onResize, { passive: true });
+      resizeBgCanvas();
+      fitArchSize();
+      onScroll();
+
+      function scrollToDoor(i) {
+        const total = wrap.offsetHeight - window.innerHeight;
+        const target = wrap.offsetTop + total * (i / 2) + 20;
+        window.scrollTo({ top: target, behavior: 'smooth' });
+      }
+      // Arch clicks: active arch opens the room; inactive arches scroll to focus.
+      archEls.forEach((el, i) => {
+        el.addEventListener('click', () => {
+          if (i === activeIdx) openArchAndNavigate();
+          else scrollToDoor(i);
+        });
+      });
+      dotEls.forEach((el, i) => el.addEventListener('click', () => scrollToDoor(i)));
+
+      // ─── Arch open animation + cross-page navigation ───
+      // OPEN flow:
+      //   1. Active arch's photo + clip-path animates from its slot to fullscreen
+      //      (700ms, wave amp 5 → 2). Side carousel UI fades out.
+      //   2. At fullscreen (arch covers entire viewport), sessionStorage records
+      //      which room we're entering. Page navigates to /wellness-portal/<room>.
+      //   3. Sub-page loads. Its WellnessSubpageShared script reads the sessionStorage
+      //      flag, renders the same overlay arch at fullscreen, then fades it out —
+      //      a true cross-page crossfade with the page content underneath.
+      // ENTRY (returning from sub-page):
+      //   1. Sub-page sets sessionStorage `wpArchExit` with roomIndex + photo URL.
+      //   2. Hub loads, reads the flag, scrolls carousel so that room is centered,
+      //      renders the overlay arch at fullscreen, then contracts it to slot.
+      const overlay        = document.getElementById('wpOverlay');
+      const overlayArch    = document.getElementById('wpOverlayArch');
+      const overlayImage   = document.getElementById('wpOverlayImage');
+      const overlayPath    = document.getElementById('wpOverlayPath');
+      const hub            = document.querySelector('.wp-hub');
+      const OPEN_DURATION  = 700;
+      const FULLSCREEN_AMP = 2;
+      const ROOM_PATHS = ['/wellness-portal/calm-room', '/wellness-portal/library', '/wellness-portal/wellness-experiences'];
+      let isAnimating = false;
+      let waveAnimRaf = null;
+
+      function easeInOutCubic(t) {
+        return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+      }
+
+      function animateOverlayWave(startAmp, endAmp, duration) {
+        if (waveAnimRaf) cancelAnimationFrame(waveAnimRaf);
+        const start = performance.now();
+        const staticPhase = 1.2;
+        function tick(now) {
+          const t = Math.min((now - start) / duration, 1);
+          const amp = startAmp + (endAmp - startAmp) * easeInOutCubic(t);
+          overlayPath.setAttribute('d',
+            buildArchPath(VIEW_W, VIEW_H, amp, cfg.frequency, staticPhase)
+          );
+          if (t < 1) waveAnimRaf = requestAnimationFrame(tick);
+          else waveAnimRaf = null;
+        }
+        waveAnimRaf = requestAnimationFrame(tick);
+      }
+
+      function openArchAndNavigate() {
+        if (isAnimating) return;
+        isAnimating = true;
+
+        const idx = activeIdx;
+        const sourceArch = archEls[idx];
+        const sourceImage = sourceArch.querySelector('image');
+        const photoUrl = sourceImage.getAttribute('href');
+        const rect = sourceArch.getBoundingClientRect();
+
+        overlayImage.setAttribute('href', photoUrl);
+        overlayPath.setAttribute('d', paths[idx].getAttribute('d'));
+        overlayArch.style.top    = rect.top    + 'px';
+        overlayArch.style.left   = rect.left   + 'px';
+        overlayArch.style.width  = rect.width  + 'px';
+        overlayArch.style.height = rect.height + 'px';
+
+        sourceArch.classList.add('is-overlay-source');
+        overlay.classList.add('is-open');
+        hub.classList.add('is-arch-opening');
+
+        void overlayArch.offsetHeight;
+        requestAnimationFrame(() => {
+          overlayArch.style.top    = '0px';
+          overlayArch.style.left   = '0px';
+          overlayArch.style.width  = '100vw';
+          overlayArch.style.height = '100vh';
+          animateOverlayWave(cfg.amplitude, FULLSCREEN_AMP, OPEN_DURATION);
+        });
+
+        // At fullscreen: hand off to sub-page via sessionStorage, then navigate.
+        // Sub-page renders the same arch fullscreen on load and fades it out.
+        setTimeout(() => {
+          sessionStorage.setItem('wpArchEntry', JSON.stringify({
+            roomIndex: idx,
+            roomImage: photoUrl
+          }));
+          window.location.href = ROOM_PATHS[idx];
+        }, OPEN_DURATION);
+      }
+
+      document.querySelectorAll('.wp-info-cta').forEach(a => {
+        a.addEventListener('click', (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          openArchAndNavigate();
+        });
+      });
+
+      // ─── Entry from sub-page: contract arch from fullscreen to slot ───
+      // Runs once on page load if sessionStorage flag is set.
+      function runEntryFromSubpage() {
+        const exitRaw = sessionStorage.getItem('wpArchExit');
+        if (!exitRaw) return;
+        sessionStorage.removeItem('wpArchExit');
+        let data;
+        try { data = JSON.parse(exitRaw); } catch (e) { return; }
+        if (!data || typeof data.roomIndex !== 'number') return;
+        const idx = data.roomIndex;
+
+        // 1. Snap carousel scroll so the target door is centered.
+        //    cycle = scrollProgress * 2 = idx → scrollProgress = idx/2
+        const total = wrap.offsetHeight - window.innerHeight;
+        const targetScroll = wrap.offsetTop + total * (idx / 2);
+        window.scrollTo({ top: targetScroll, behavior: 'instant' });
+        // Update carousel state to reflect the new scroll
+        onScroll();
+
+        const sourceArch = archEls[idx];
+
+        // 2. Render overlay arch at fullscreen covering everything
+        overlayImage.setAttribute('href', data.roomImage);
+        overlayPath.setAttribute('d', buildArchPath(VIEW_W, VIEW_H, FULLSCREEN_AMP, cfg.frequency, 1.2));
+        overlayArch.style.top    = '0px';
+        overlayArch.style.left   = '0px';
+        overlayArch.style.width  = '100vw';
+        overlayArch.style.height = '100vh';
+
+        sourceArch.classList.add('is-overlay-source');
+        overlay.classList.add('is-open');
+        hub.classList.add('is-arch-opening');
+        isAnimating = true;
+
+        // 3. After one frame for layout to settle, compute source rect and contract
+        requestAnimationFrame(() => {
+          requestAnimationFrame(() => {
+            const rect = sourceArch.getBoundingClientRect();
+            overlayArch.style.top    = rect.top    + 'px';
+            overlayArch.style.left   = rect.left   + 'px';
+            overlayArch.style.width  = rect.width  + 'px';
+            overlayArch.style.height = rect.height + 'px';
+            animateOverlayWave(FULLSCREEN_AMP, cfg.amplitude, OPEN_DURATION);
+            hub.classList.remove('is-arch-opening');
+
+            setTimeout(() => {
+              overlay.classList.remove('is-open');
+              sourceArch.classList.remove('is-overlay-source');
+              isAnimating = false;
+            }, OPEN_DURATION + 30);
+          });
+        });
+      }
+      runEntryFromSubpage();
+    })();
+  </script>
 
 </Layout>

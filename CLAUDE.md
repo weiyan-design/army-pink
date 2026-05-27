@@ -97,6 +97,6 @@ Wei's reusable visual pattern library lives at `~/Documents/Vibe Code/_design-li
 ## Long-form context (read on demand, not auto-loaded)
 
 - `Context/strategy.md` — survivor emotional journey, portal strategy, free-vs-paid product principles, funder/partner framework, Discord tiers + channel architecture + revenue projections
-- `Context/build-history.md` — dated session journals: landing v1/v2/v3, Astro migration, multi-page build, statement section, hero rebuilds, coverflow doors, Espacio hero, Givebutter swap, team page
+- `Context/build-history.md` — dated session journals: landing v1/v2/v3, Astro migration, multi-page build, statement section, hero rebuilds, coverflow doors, Espacio hero, Givebutter swap, team page, legal pages + contact rebuild
 - `Context/next-steps.md` — open checklists across the portal, multi-page build, Discord, strategy, and recent followups
 - `Context/*.pdf` — source decks and reference documents
