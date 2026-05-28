@@ -63,7 +63,7 @@ import Layout from '../layouts/Layout.astro';
           <a href="/wellness-portal/library" class="wp-info-cta" data-room="library">Step inside →</a>
         </div>
         <div class="wp-info" data-info="2">
-          <h2>Wellness Experiences</h2>
+          <h2>Wellness Programs</h2>
           <p>One-year free access to partner platforms — guided practices, healing classes, and trauma-informed experts.</p>
           <a href="/wellness-portal/wellness-experiences" class="wp-info-cta" data-room="experiences">Step inside →</a>
         </div>
@@ -72,7 +72,7 @@ import Layout from '../layouts/Layout.astro';
       <div class="wp-dot-rail">
         <button class="wp-dot is-active" data-dot="0" aria-label="Calm Room"></button>
         <button class="wp-dot" data-dot="1" aria-label="Resource Library"></button>
-        <button class="wp-dot" data-dot="2" aria-label="Wellness Experiences"></button>
+        <button class="wp-dot" data-dot="2" aria-label="Wellness Programs"></button>
         <div class="wp-dot-counter" id="wpDotCounter">1 / 3</div>
       </div>
     </section>
@@ -83,7 +83,7 @@ import Layout from '../layouts/Layout.astro';
        The close button sits as a sibling so it isn't tied to the arch's opacity. -->
   <div class="wp-overlay" id="wpOverlay" aria-hidden="true">
     <div class="wp-overlay-arch" id="wpOverlayArch">
-      <svg viewBox="0 0 320 400" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
+      <svg viewBox="0 0 320 400" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
         <defs>
           <clipPath id="wpOverlayClip" clipPathUnits="userSpaceOnUse">
             <path id="wpOverlayPath" d="" />
@@ -626,14 +626,14 @@ import Layout from '../layouts/Layout.astro';
       position: fixed;
       opacity: 1;
       /* top/left/width/height inline-set by JS; transitions animate them.
-         opacity transitions AFTER the expansion (500ms delay) so the arch
-         only fades out once it's reached fullscreen. */
+         opacity transitions in lockstep with the expansion so the arch
+         fades from 1 → 0 (open) or 0 → 1 (return) as it morphs. */
       transition:
         top    700ms cubic-bezier(0.65, 0, 0.35, 1),
         left   700ms cubic-bezier(0.65, 0, 0.35, 1),
         width  700ms cubic-bezier(0.65, 0, 0.35, 1),
         height 700ms cubic-bezier(0.65, 0, 0.35, 1),
-        opacity 350ms ease 500ms;
+        opacity 700ms cubic-bezier(0.65, 0, 0.35, 1);
       will-change: top, left, width, height, opacity;
     }
     .wp-overlay-arch svg { width: 100%; height: 100%; display: block; }
@@ -687,6 +687,35 @@ import Layout from '../layouts/Layout.astro';
           const x = width - (i / samples) * width;
           const t = (i / samples) * Math.PI * 2 * waveFreq + ph;
           const y = waveCenter + Math.sin(t) * waveAmp;
+          d += ` L ${x.toFixed(2)} ${y.toFixed(2)}`;
+        }
+        return d + ' Z';
+      }
+
+      // Overlay variant: morphs from arch+wave (morph=0) to a full rectangle (morph=1).
+      // Top dome and bottom wave both flatten in lockstep with `morph`.
+      function buildOverlayPath(width, height, waveAmp, waveFreq, ph, morph) {
+        const m = Math.max(0, Math.min(1, morph));
+        const topPad = 2 * (1 - m);
+        const bottomPad = 8 * (1 - m);
+        const r = width / 2;
+        const liveAmp = waveAmp * (1 - m);
+        const topSamples = 40;
+        let d = '';
+        for (let i = 0; i <= topSamples; i++) {
+          const x = (i / topSamples) * width;
+          const dx = x - r;
+          const archDipY = (r + topPad) - Math.sqrt(Math.max(0, r * r - dx * dx));
+          const y = archDipY * (1 - m);
+          d += (i === 0 ? 'M ' : ' L ') + x.toFixed(2) + ' ' + y.toFixed(2);
+        }
+        const baseY = height - bottomPad;
+        d += ` L ${width.toFixed(2)} ${baseY.toFixed(2)}`;
+        const bottomSamples = 60;
+        for (let i = 0; i <= bottomSamples; i++) {
+          const x = width - (i / bottomSamples) * width;
+          const t = (i / bottomSamples) * Math.PI * 2 * waveFreq + ph;
+          const y = baseY + Math.sin(t) * liveAmp;
           d += ` L ${x.toFixed(2)} ${y.toFixed(2)}`;
         }
         return d + ' Z';
@@ -868,7 +897,6 @@ import Layout from '../layouts/Layout.astro';
       const overlayPath    = document.getElementById('wpOverlayPath');
       const hub            = document.querySelector('.wp-hub');
       const OPEN_DURATION  = 700;
-      const FULLSCREEN_AMP = 2;
       const ROOM_PATHS = ['/wellness-portal/calm-room', '/wellness-portal/library', '/wellness-portal/wellness-experiences'];
       let isAnimating = false;
       let waveAnimRaf = null;
@@ -877,15 +905,16 @@ import Layout from '../layouts/Layout.astro';
         return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
       }
 
-      function animateOverlayWave(startAmp, endAmp, duration) {
+      function animateOverlayShape(startMorph, endMorph, duration) {
         if (waveAnimRaf) cancelAnimationFrame(waveAnimRaf);
         const start = performance.now();
         const staticPhase = 1.2;
         function tick(now) {
           const t = Math.min((now - start) / duration, 1);
-          const amp = startAmp + (endAmp - startAmp) * easeInOutCubic(t);
+          const e = easeInOutCubic(t);
+          const morph = startMorph + (endMorph - startMorph) * e;
           overlayPath.setAttribute('d',
-            buildArchPath(VIEW_W, VIEW_H, amp, cfg.frequency, staticPhase)
+            buildOverlayPath(VIEW_W, VIEW_H, cfg.amplitude, cfg.frequency, staticPhase, morph)
           );
           if (t < 1) waveAnimRaf = requestAnimationFrame(tick);
           else waveAnimRaf = null;
@@ -905,6 +934,7 @@ import Layout from '../layouts/Layout.astro';
 
         overlayImage.setAttribute('href', photoUrl);
         overlayPath.setAttribute('d', paths[idx].getAttribute('d'));
+        overlayArch.style.opacity = '1';
         overlayArch.style.top    = rect.top    + 'px';
         overlayArch.style.left   = rect.left   + 'px';
         overlayArch.style.width  = rect.width  + 'px';
@@ -920,7 +950,8 @@ import Layout from '../layouts/Layout.astro';
           overlayArch.style.left   = '0px';
           overlayArch.style.width  = '100vw';
           overlayArch.style.height = '100vh';
-          animateOverlayWave(cfg.amplitude, FULLSCREEN_AMP, OPEN_DURATION);
+          overlayArch.style.opacity = '0';
+          animateOverlayShape(0, 1, OPEN_DURATION);
         });
 
         // At fullscreen: hand off to sub-page via sessionStorage, then navigate.
@@ -963,9 +994,10 @@ import Layout from '../layouts/Layout.astro';
 
         const sourceArch = archEls[idx];
 
-        // 2. Render overlay arch at fullscreen covering everything
+        // 2. Render overlay arch at fullscreen covering everything (rectangle, invisible)
         overlayImage.setAttribute('href', data.roomImage);
-        overlayPath.setAttribute('d', buildArchPath(VIEW_W, VIEW_H, FULLSCREEN_AMP, cfg.frequency, 1.2));
+        overlayPath.setAttribute('d', buildOverlayPath(VIEW_W, VIEW_H, cfg.amplitude, cfg.frequency, 1.2, 1));
+        overlayArch.style.opacity = '0';
         overlayArch.style.top    = '0px';
         overlayArch.style.left   = '0px';
         overlayArch.style.width  = '100vw';
@@ -984,7 +1016,8 @@ import Layout from '../layouts/Layout.astro';
             overlayArch.style.left   = rect.left   + 'px';
             overlayArch.style.width  = rect.width  + 'px';
             overlayArch.style.height = rect.height + 'px';
-            animateOverlayWave(FULLSCREEN_AMP, cfg.amplitude, OPEN_DURATION);
+            overlayArch.style.opacity = '1';
+            animateOverlayShape(1, 0, OPEN_DURATION);
             hub.classList.remove('is-arch-opening');
 
             setTimeout(() => {

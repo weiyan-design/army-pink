@@ -702,6 +702,10 @@
         accum += slotWidths[s] + FC_GAP;
       }
 
+      // Lock the image's visual size to the widest slot so the picture inside
+      // doesn't resize when the card frame expands/contracts.
+      track.style.setProperty('--fc-active-width', slotWidths[0] + 'px');
+
       cards.forEach(function (card, idx) {
         var slot = ((idx - active) % N + N) % N;
         card.style.display = '';
@@ -738,6 +742,18 @@
     requestAnimationFrame(function () { track.classList.add('fc-track--ready'); });
 
     window.addEventListener('resize', layout);
+  });
+
+  // --- Partner Strip (hover-reveal on desktop via CSS; click toggle for touch) ---
+  document.querySelectorAll('[data-partner-track]').forEach(function (track) {
+    var tiles = Array.prototype.slice.call(track.querySelectorAll('.partner-tile'));
+    tiles.forEach(function (tile) {
+      tile.addEventListener('click', function () {
+        var wasActive = tile.classList.contains('is-active');
+        tiles.forEach(function (t) { t.classList.remove('is-active'); });
+        if (!wasActive) tile.classList.add('is-active');
+      });
+    });
   });
 })();
 

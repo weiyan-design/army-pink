@@ -8,6 +8,20 @@ const {
   title = 'Army Pink — Pathway to Freedom',
   description = 'Army Pink is a survivor-led initiative addressing the #1 unmet need for survivors: safe, immediate transportation out of dangerous situations. We turn compassion into action by providing urgent rides and structured wellness support, helping survivors of domestic abuse leave danger and begin again with dignity, guidance, and connection.',
 } = Astro.props;
+
+const navLinks = [
+  { href: '/', label: 'Home' },
+  { href: '/mission', label: 'Mission' },
+  { href: '/team', label: 'Team' },
+  { href: '/escape-club', label: 'Escape Club' },
+  { href: '/wellness-portal', label: 'Wellness Portal' },
+  { href: '/partners', label: 'Partners' },
+];
+const path = Astro.url.pathname.replace(/\/$/, '') || '/';
+function isActive(href: string) {
+  if (href === '/') return path === '/';
+  return path === href || path.startsWith(href + '/');
+}
 ---
 
 <!DOCTYPE html>
@@ -60,12 +74,11 @@ const {
         <span></span><span></span><span></span>
       </button>
       <ul class="nav-links">
-        <li><a href="/">Home</a></li>
-        <li><a href="/mission">Mission</a></li>
-        <li><a href="/team">Team</a></li>
-        <li><a href="/escape-club">Escape Club</a></li>
-        <li><a href="/wellness-portal">Wellness Portal</a></li>
-        <li><a href="/partners">Partners</a></li>
+        {navLinks.map(link => (
+          <li>
+            <a href={link.href} aria-current={isActive(link.href) ? 'page' : undefined}>{link.label}</a>
+          </li>
+        ))}
       </ul>
       <a href="#" class="btn btn-primary nav-donate" data-donate-panel>Donate</a>
     </div>
@@ -127,7 +140,7 @@ const {
           <ul>
             <li><a href="#">Volunteer</a></li>
             <li><a href="#">Perks</a></li>
-            <li><a href="#">FAQ</a></li>
+            <li><a href="/faq">FAQ</a></li>
             <li><a href="/contact">Contact Us</a></li>
           </ul>
         </div>

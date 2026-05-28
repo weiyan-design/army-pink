@@ -64,7 +64,10 @@ The hero is being rebuilt with GSAP ScrollTrigger + Lenis to match Lightship's h
 - [ ] `src/pages/donate.astro` — full donation flow (expand current panel into a page)
 - [ ] `src/pages/volunteer.astro` — _merged into `team.astro` 2026-05-22 — staff/volunteer line was too blurry to split cleanly. Revisit if a recruitment-focused volunteer page is needed later._
 - [ ] `src/pages/faq.astro` — common questions (safety, privacy, community, rides)
-- [ ] `src/pages/contact.astro` — contact form / email
+- [x] `src/pages/contact.astro` — Netlify Forms with reason dropdown, yellow form card, icon-badge info column (2026-05-25)
+- [x] `src/pages/privacy.astro` — TCPA/VAWA/VOCA/FVPSA-compatible privacy notice, two-column legal layout (2026-05-25)
+- [x] `src/pages/sms-terms.astro` — TCPA-required SMS disclosures (2026-05-25)
+- [x] `src/pages/disclaimer.astro` — liability/scope disclaimer (2026-05-25)
 - [ ] `src/pages/perks.astro` — supporter perks by tier
 - [ ] Fill real content into mission/escape-club/partners (team bios, Discord link, Vedanta details)
 

@@ -1,5 +1,53 @@
 ---
 import Layout from '../layouts/Layout.astro';
+
+const partners = [
+  {
+    name: 'Vedanta',
+    img: '/img/partner-logo/vedanta.png',
+    href: '#',
+    paras: [
+      'Spiritual & Holistic Retreats partner dedicated to healing, mindfulness, and transformation.',
+      'Together we promote inner peace, empowerment, and renewal for survivors rebuilding their lives.',
+    ],
+  },
+  {
+    name: 'Do Yoga With Me',
+    img: '/img/partner-logo/do-yoga-with-me.png',
+    href: 'https://www.doyogawithme.com',
+    paras: [
+      'An online yoga and meditation platform offering free and premium classes accessible from anywhere.',
+      'Their library curates the wellness portal’s empowering series for survivors at every phase of recovery.',
+    ],
+  },
+  {
+    name: 'Charity On Top',
+    img: '/img/partner-logo/charity-on-top.png',
+    href: '#',
+    paras: [
+      'A charity gifting platform that lets supporters turn any occasion into impact.',
+      'Donations route directly to Army Pink’s Pathway to Freedom program.',
+    ],
+  },
+  {
+    name: 'Peace Over Violence',
+    img: '/img/partner-logo/peace-over-violence.png',
+    href: '#',
+    paras: [
+      'A Los Angeles nonprofit fighting sexual, domestic, and interpersonal violence since 1971.',
+      'A trusted referral partner for survivors seeking advocacy, counseling, and crisis response.',
+    ],
+  },
+  {
+    name: 'TheraBox',
+    img: '/img/partner-logo/therabox.png',
+    href: '#',
+    paras: [
+      'A therapist-curated subscription box delivering self-care tools and mental wellness practices.',
+      'Featured items show up in monthly Escape Club care packages for members.',
+    ],
+  },
+];
 ---
 
 <Layout title="Army Pink — Pathway to Freedom">
@@ -103,143 +151,6 @@ import Layout from '../layouts/Layout.astro';
     </div>
   </section>
 
-  <!-- ===== EMPOWERING SERIES ===== -->
-  <section class="section section-empowering" id="wellness">
-    <div class="container">
-      <div class="empowering-grid">
-        <div class="empowering-image reveal-item">
-          <img src="/img/empowering-hero.jpg" alt="Yoga silhouette at sunset" />
-        </div>
-        <div class="empowering-text">
-          <span class="pill-label reveal-item">Empowering Series</span>
-          <h2 class="reveal-item">Your body kept you safe.<br>Now let it rest.</h2>
-          <p class="reveal-item">
-            Movement that meets you where you are, whether you're stepping onto
-            the mat for the first time or finding your way back.
-          </p>
-          <div class="thumb-row-wrap">
-            <button class="thumb-arrow thumb-arrow-prev" aria-label="Scroll left">&lsaquo;</button>
-            <div class="thumb-row">
-              <a href="https://www.doyogawithme.com/yoga-series/yoga-program-calm-chaos" target="_blank" rel="noopener" class="thumb-card reveal-item">
-                <img src="/img/thumb-calm-chaos.jpg" alt="Calm in the Chaos" />
-                <div class="thumb-overlay">
-                  <span class="thumb-title">Calm in the Chaos</span>
-                  <span class="thumb-meta">Intermediate</span>
-                </div>
-              </a>
-              <a href="https://www.doyogawithme.com/yoga-series/busy-place-quiet-mind" target="_blank" rel="noopener" class="thumb-card reveal-item">
-                <img src="/img/thumb-quiet-mind.jpg" alt="Busy Place Quiet Mind" />
-                <div class="thumb-overlay">
-                  <span class="thumb-title">Busy Place Quiet Mind</span>
-                  <span class="thumb-meta">All levels</span>
-                </div>
-              </a>
-              <a href="https://www.doyogawithme.com/yoga-series/inner-strength-series" target="_blank" rel="noopener" class="thumb-card reveal-item">
-                <img src="/img/thumb-inner-strength.jpg" alt="Inner Strength Series" />
-                <div class="thumb-overlay">
-                  <span class="thumb-title">Inner Strength</span>
-                  <span class="thumb-meta">Intermediate</span>
-                </div>
-              </a>
-            </div>
-            <button class="thumb-arrow thumb-arrow-next" aria-label="Scroll right">&rsaquo;</button>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ===== FEATURED CLASSES ===== -->
-  <section class="section section-featured">
-    <div class="container">
-      <div class="featured-wrap">
-        <button class="thumb-arrow thumb-arrow-prev" aria-label="Scroll left">&lsaquo;</button>
-        <div class="featured-grid">
-          <a href="https://www.doyogawithme.com/content/yoga-nidra-jennifer-piercy" target="_blank" rel="noopener" class="featured-card reveal-item">
-            <span class="pill-label pill-small">Sleep Aids</span>
-            <img src="/img/featured-yoga-nidra.jpg" alt="Yoga Nidra" />
-            <div class="featured-content">
-              <h3>Yoga Nidra</h3>
-              <p class="featured-meta">Guided deep relaxation</p>
-            </div>
-          </a>
-          <a href="https://www.doyogawithme.com/content/ease-into-sleep" target="_blank" rel="noopener" class="featured-card reveal-item">
-            <span class="pill-label pill-small">Sleep Aids</span>
-            <img src="/img/featured-ease-sleep.jpg" alt="Ease into Sleep" />
-            <div class="featured-content">
-              <h3>Ease into Sleep</h3>
-              <p class="featured-meta">Floor-based gentle movement</p>
-            </div>
-          </a>
-          <a href="https://www.doyogawithme.com/content/intro-box-breathing" target="_blank" rel="noopener" class="featured-card reveal-item">
-            <span class="pill-label pill-small">Breathe Better</span>
-            <img src="/img/featured-box-breathing.jpg" alt="Box Breathing" />
-            <div class="featured-content">
-              <h3>Box Breathing</h3>
-              <p class="featured-meta">4-count calming technique</p>
-            </div>
-          </a>
-          <a href="https://www.doyogawithme.com/content/guided-meditations-kids" target="_blank" rel="noopener" class="featured-card reveal-item">
-            <span class="pill-label pill-small">For Kids</span>
-            <img src="https://images.unsplash.com/photo-1503454537195-1dcabb73ffb9?w=600&q=80" alt="Kids Meditation" />
-            <div class="featured-content">
-              <h3>Kids Meditation</h3>
-              <p class="featured-meta">Beginner &middot; 10 min</p>
-            </div>
-          </a>
-          <a href="https://www.doyogawithme.com/content/kids-jungle-walk" target="_blank" rel="noopener" class="featured-card reveal-item">
-            <span class="pill-label pill-small">For Kids</span>
-            <img src="https://images.unsplash.com/photo-1588286840104-8957b019727f?w=600&q=80" alt="Kids Yoga" />
-            <div class="featured-content">
-              <h3>Kids Yoga</h3>
-              <p class="featured-meta">Beginner &middot; 20 min</p>
-            </div>
-          </a>
-        </div>
-        <button class="thumb-arrow thumb-arrow-next" aria-label="Scroll right">&rsaquo;</button>
-      </div>
-    </div>
-  </section>
-
-  <!-- ===== WELLNESS PROGRAMS ===== -->
-  <section class="section section-programs">
-    <div class="container">
-      <div class="empowering-grid empowering-grid-reversed">
-        <div class="empowering-text">
-          <span class="pill-label reveal-item">Wellness Programs</span>
-          <h2 class="reveal-item">Healing isn't one size fits all. Find what fits you.</h2>
-          <p class="reveal-item">
-            Structured programs with real support - from managing anxiety to navigating
-            life changes. Bursaries available so cost is never a barrier.
-          </p>
-          <div class="thumb-row-wrap">
-            <button class="thumb-arrow thumb-arrow-prev" aria-label="Scroll left">&lsaquo;</button>
-            <div class="thumb-row">
-              <a href="https://courses.doyogawithme.com/courses/mindful-about-menopause-support-online-program" target="_blank" rel="noopener" class="thumb-card reveal-item">
-                <img src="/img/thumb-menopause.jpg" alt="Mindful about Menopause" />
-                <div class="thumb-overlay">
-                  <span class="thumb-title">Mindful about Menopause</span>
-                  <span class="thumb-meta">Program</span>
-                </div>
-              </a>
-              <a href="https://courses.doyogawithme.com/courses/let-go-of-anxiety-and-fear" target="_blank" rel="noopener" class="thumb-card reveal-item">
-                <img src="/img/thumb-anxiety.jpg" alt="Let Go of Anxiety" />
-                <div class="thumb-overlay">
-                  <span class="thumb-title">Let Go of Anxiety</span>
-                  <span class="thumb-meta">Program</span>
-                </div>
-              </a>
-            </div>
-            <button class="thumb-arrow thumb-arrow-next" aria-label="Scroll right">&rsaquo;</button>
-          </div>
-        </div>
-        <div class="empowering-image reveal-item">
-          <img src="/img/programs-hero.jpg" alt="Person meditating outdoors" />
-        </div>
-      </div>
-    </div>
-  </section>
-
   <!-- ===== SURVIVOR STORIES ===== -->
   <section class="section section-stories" id="stories">
     <div class="container">
@@ -303,6 +214,37 @@ import Layout from '../layouts/Layout.astro';
             </button>
           </div>
         </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== PARTNERS ===== -->
+  <section class="partner-section">
+    <div class="partner-header">
+      <h2>We're proud to partner with</h2>
+      <a href="/partners" class="btn btn-ghost">Become A Partner</a>
+    </div>
+    <div class="partner-track-wrap">
+      <div class="partner-track" data-partner-track>
+        {[0, 1].map((setIdx) => partners.map((p) => (
+          <article class="partner-tile" data-partner aria-hidden={setIdx === 1 ? 'true' : undefined}>
+            <div class="partner-tile-inner">
+              <div class="partner-face partner-face--front">
+                <div class="partner-photo">
+                  <img src={p.img} alt="" loading="lazy" />
+                </div>
+                <h3 class="partner-name">{p.name}</h3>
+              </div>
+              <div class="partner-face partner-face--back">
+                <h3 class="partner-back-name">{p.name}</h3>
+                <div class="partner-back-body">
+                  {p.paras.map((para) => <p>{para}</p>)}
+                </div>
+                <a href={p.href} class="partner-link" target={p.href.startsWith('http') ? '_blank' : undefined} rel={p.href.startsWith('http') ? 'noopener' : undefined}>Visit Them</a>
+              </div>
+            </div>
+          </article>
+        )))}
       </div>
     </div>
   </section>

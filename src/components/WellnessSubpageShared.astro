@@ -1,6 +1,6 @@
 ---
 // Shared shell for wellness-portal sub-pages.
-// Each room (Calm Room, Library, Wellness Experiences) passes its own props.
+// Each room (Calm Room, Library, Wellness Programs) passes its own props.
 // Navigation chrome on sub-pages:
 //   - Desktop: door switcher trio (sticky below nav) + end-of-page room invitation
 //   - Mobile:  top breadcrumb only
@@ -30,8 +30,8 @@ const ROOMS = [
   },
   {
     index: 2,
-    short: 'Experiences',
-    title: 'Wellness Experiences',
+    short: 'Wellness Programs',
+    title: 'Wellness Programs',
     desc: 'One-year free access to partner platforms and guided practices.',
     image: 'https://images.unsplash.com/photo-1506126613408-eca07ce68773?w=900&q=80',
     url: '/wellness-portal/wellness-experiences'
@@ -103,34 +103,34 @@ const otherRooms = ROOMS.filter(r => r.index !== roomIndex);
 <section class="section section-empowering">
   <div class="container">
     <div class="empowering-grid">
-      <div class="empowering-image reveal-item">
+      <div class="empowering-image">
         <img src="/img/empowering-hero.jpg" alt="Yoga silhouette at sunset" />
       </div>
       <div class="empowering-text">
-        <span class="pill-label reveal-item">Empowering Series</span>
-        <h2 class="reveal-item">Your body kept you safe.<br>Now let it rest.</h2>
-        <p class="reveal-item">
+        <span class="pill-label">Empowering Series</span>
+        <h2>Your body kept you safe.<br>Now let it rest.</h2>
+        <p>
           Movement that meets you where you are, whether you're stepping onto
           the mat for the first time or finding your way back.
         </p>
         <div class="thumb-row-wrap">
           <button class="thumb-arrow thumb-arrow-prev" aria-label="Scroll left">&lsaquo;</button>
           <div class="thumb-row">
-            <a href="https://www.doyogawithme.com/yoga-series/yoga-program-calm-chaos" target="_blank" rel="noopener" class="thumb-card reveal-item">
+            <a href="https://www.doyogawithme.com/yoga-series/yoga-program-calm-chaos" target="_blank" rel="noopener" class="thumb-card">
               <img src="/img/thumb-calm-chaos.jpg" alt="Calm in the Chaos" />
               <div class="thumb-overlay">
                 <span class="thumb-title">Calm in the Chaos</span>
                 <span class="thumb-meta">Intermediate</span>
               </div>
             </a>
-            <a href="https://www.doyogawithme.com/yoga-series/busy-place-quiet-mind" target="_blank" rel="noopener" class="thumb-card reveal-item">
+            <a href="https://www.doyogawithme.com/yoga-series/busy-place-quiet-mind" target="_blank" rel="noopener" class="thumb-card">
               <img src="/img/thumb-quiet-mind.jpg" alt="Busy Place Quiet Mind" />
               <div class="thumb-overlay">
                 <span class="thumb-title">Busy Place Quiet Mind</span>
                 <span class="thumb-meta">All levels</span>
               </div>
             </a>
-            <a href="https://www.doyogawithme.com/yoga-series/inner-strength-series" target="_blank" rel="noopener" class="thumb-card reveal-item">
+            <a href="https://www.doyogawithme.com/yoga-series/inner-strength-series" target="_blank" rel="noopener" class="thumb-card">
               <img src="/img/thumb-inner-strength.jpg" alt="Inner Strength Series" />
               <div class="thumb-overlay">
                 <span class="thumb-title">Inner Strength</span>
@@ -151,7 +151,7 @@ const otherRooms = ROOMS.filter(r => r.index !== roomIndex);
     <div class="featured-wrap">
       <button class="thumb-arrow thumb-arrow-prev" aria-label="Scroll left">&lsaquo;</button>
       <div class="featured-grid">
-        <a href="https://www.doyogawithme.com/content/yoga-nidra-jennifer-piercy" target="_blank" rel="noopener" class="featured-card reveal-item">
+        <a href="https://www.doyogawithme.com/content/yoga-nidra-jennifer-piercy" target="_blank" rel="noopener" class="featured-card">
           <span class="pill-label pill-small">Sleep Aids</span>
           <img src="/img/featured-yoga-nidra.jpg" alt="Yoga Nidra" />
           <div class="featured-content">
@@ -159,7 +159,7 @@ const otherRooms = ROOMS.filter(r => r.index !== roomIndex);
             <p class="featured-meta">Guided deep relaxation</p>
           </div>
         </a>
-        <a href="https://www.doyogawithme.com/content/ease-into-sleep" target="_blank" rel="noopener" class="featured-card reveal-item">
+        <a href="https://www.doyogawithme.com/content/ease-into-sleep" target="_blank" rel="noopener" class="featured-card">
           <span class="pill-label pill-small">Sleep Aids</span>
           <img src="/img/featured-ease-sleep.jpg" alt="Ease into Sleep" />
           <div class="featured-content">
@@ -167,7 +167,7 @@ const otherRooms = ROOMS.filter(r => r.index !== roomIndex);
             <p class="featured-meta">Floor-based gentle movement</p>
           </div>
         </a>
-        <a href="https://www.doyogawithme.com/content/intro-box-breathing" target="_blank" rel="noopener" class="featured-card reveal-item">
+        <a href="https://www.doyogawithme.com/content/intro-box-breathing" target="_blank" rel="noopener" class="featured-card">
           <span class="pill-label pill-small">Breathe Better</span>
           <img src="/img/featured-box-breathing.jpg" alt="Box Breathing" />
           <div class="featured-content">
@@ -175,7 +175,7 @@ const otherRooms = ROOMS.filter(r => r.index !== roomIndex);
             <p class="featured-meta">4-count calming technique</p>
           </div>
         </a>
-        <a href="https://www.doyogawithme.com/content/guided-meditations-kids" target="_blank" rel="noopener" class="featured-card reveal-item">
+        <a href="https://www.doyogawithme.com/content/guided-meditations-kids" target="_blank" rel="noopener" class="featured-card">
           <span class="pill-label pill-small">For Kids</span>
           <img src="https://images.unsplash.com/photo-1503454537195-1dcabb73ffb9?w=600&q=80" alt="Kids Meditation" />
           <div class="featured-content">
@@ -183,7 +183,7 @@ const otherRooms = ROOMS.filter(r => r.index !== roomIndex);
             <p class="featured-meta">Beginner &middot; 10 min</p>
           </div>
         </a>
-        <a href="https://www.doyogawithme.com/content/kids-jungle-walk" target="_blank" rel="noopener" class="featured-card reveal-item">
+        <a href="https://www.doyogawithme.com/content/kids-jungle-walk" target="_blank" rel="noopener" class="featured-card">
           <span class="pill-label pill-small">For Kids</span>
           <img src="https://images.unsplash.com/photo-1588286840104-8957b019727f?w=600&q=80" alt="Kids Yoga" />
           <div class="featured-content">
@@ -202,23 +202,23 @@ const otherRooms = ROOMS.filter(r => r.index !== roomIndex);
   <div class="container">
     <div class="empowering-grid empowering-grid-reversed">
       <div class="empowering-text">
-        <span class="pill-label reveal-item">Wellness Programs</span>
-        <h2 class="reveal-item">Healing isn't one size fits all. Find what fits you.</h2>
-        <p class="reveal-item">
+        <span class="pill-label">Wellness Programs</span>
+        <h2>Healing isn't one size fits all. Find what fits you.</h2>
+        <p>
           Structured programs with real support - from managing anxiety to navigating
           life changes. Bursaries available so cost is never a barrier.
         </p>
         <div class="thumb-row-wrap">
           <button class="thumb-arrow thumb-arrow-prev" aria-label="Scroll left">&lsaquo;</button>
           <div class="thumb-row">
-            <a href="https://courses.doyogawithme.com/courses/mindful-about-menopause-support-online-program" target="_blank" rel="noopener" class="thumb-card reveal-item">
+            <a href="https://courses.doyogawithme.com/courses/mindful-about-menopause-support-online-program" target="_blank" rel="noopener" class="thumb-card">
               <img src="/img/thumb-menopause.jpg" alt="Mindful about Menopause" />
               <div class="thumb-overlay">
                 <span class="thumb-title">Mindful about Menopause</span>
                 <span class="thumb-meta">Program</span>
               </div>
             </a>
-            <a href="https://courses.doyogawithme.com/courses/let-go-of-anxiety-and-fear" target="_blank" rel="noopener" class="thumb-card reveal-item">
+            <a href="https://courses.doyogawithme.com/courses/let-go-of-anxiety-and-fear" target="_blank" rel="noopener" class="thumb-card">
               <img src="/img/thumb-anxiety.jpg" alt="Let Go of Anxiety" />
               <div class="thumb-overlay">
                 <span class="thumb-title">Let Go of Anxiety</span>
@@ -229,7 +229,7 @@ const otherRooms = ROOMS.filter(r => r.index !== roomIndex);
           <button class="thumb-arrow thumb-arrow-next" aria-label="Scroll right">&rsaquo;</button>
         </div>
       </div>
-      <div class="empowering-image reveal-item">
+      <div class="empowering-image">
         <img src="/img/programs-hero.jpg" alt="Person meditating outdoors" />
       </div>
     </div>
@@ -501,66 +501,19 @@ const otherRooms = ROOMS.filter(r => r.index !== roomIndex);
       return d + ' Z';
     }
 
-    const overlay      = document.getElementById('wpsubOverlay');
-    const overlayPath  = document.getElementById('wpsubOverlayPath');
-    const overlayImage = document.getElementById('wpsubOverlayImage');
-
-    // Seed with reduced-wave shape (matches hub's fullscreen state)
-    overlayPath.setAttribute('d', buildArchPath(VIEW_W, VIEW_H, 2, 2.1, 1.2));
-
-    // ─── ENTRY: arriving from hub or another room ───
-    // Force the overlay arch to opacity 1 IMMEDIATELY (no fade-in flicker —
-    // the source page just had it at full opacity, so it should stay full
-    // when this page paints). Then fade it out cleanly.
-    const entryRaw = sessionStorage.getItem('wpArchEntry');
-    if (entryRaw) {
-      sessionStorage.removeItem('wpArchEntry');
-      try {
-        const data = JSON.parse(entryRaw);
-        if (data && typeof data.roomIndex === 'number') {
-          const arch = document.getElementById('wpsubOverlayArch');
-          overlayImage.setAttribute('href', data.roomImage || roomImage);
-          arch.style.transitionDuration = '0s';
-          overlay.classList.add('is-visible', 'is-arch-shown');
-          // Force reflow so opacity 1 paints with no transition
-          void arch.offsetHeight;
-          arch.style.transitionDuration = '';
-          requestAnimationFrame(() => {
-            requestAnimationFrame(() => {
-              overlay.classList.remove('is-arch-shown');
-              setTimeout(() => overlay.classList.remove('is-visible'), 400);
-            });
-          });
-        }
-      } catch (e) {}
-    }
+    // Drop any stale entry flag from the hub — entry overlay is no longer used.
+    // The hub's expand-and-fade is the full transition; the sub-page just paints.
+    sessionStorage.removeItem('wpArchEntry');
 
     // ─── EXIT helper ───
-    // Hub navigation = simple immediate page swap, no arch animation.
-    // Room-to-room navigation = fade arch (destination's photo) in over current page,
-    // then navigate. Destination's entry script picks up from full-opacity arch.
+    // All in-portal navigation (hub link, room-to-room) is a plain page swap.
+    // The arch overlay is only used for hub → sub-page entry (set by the hub),
+    // not for departures from sub-pages.
     let isLeaving = false;
     function leaveTo(opts) {
       if (isLeaving) return;
       isLeaving = true;
-
-      if (opts.kind === 'hub') {
-        // Simple navigation — no arch overlay, no flash on the wellness portal.
-        window.location.href = opts.url;
-        return;
-      }
-
-      // Room-to-room crossfade
-      overlayImage.setAttribute('href', opts.image);
-      overlay.classList.add('is-visible');
-      requestAnimationFrame(() => {
-        overlay.classList.add('is-arch-shown');
-      });
-      sessionStorage.setItem('wpArchEntry', JSON.stringify({
-        roomIndex: opts.index,
-        roomImage: opts.image
-      }));
-      setTimeout(() => { window.location.href = opts.url; }, 380);
+      window.location.href = opts.url;
     }
 
     // Hub navigation (clicking "Wellness Portal" in switcher or breadcrumb)

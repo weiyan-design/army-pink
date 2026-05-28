@@ -85,6 +85,7 @@ Nav, footer, crisis banner, safe exit appear automatically.
   If still broken: restore `&p` suffix on the account ID (user originally pasted `yLfulzFp7eIMG8jn&p`), or fall back to `window.open(...)` direct link.
 - **Uncommitted work from 2026-05-23 → 2026-05-25 session.** Espacio hero, statement curtain + char-blur, pill restyle, button radius, Givebutter swap, archive file. Only `f57f315` ("Fix janky scrolling across all pages") has been pushed.
 - **Max Townsend (team #31).** Bio + photo are wrong on `armypink.org/ourteam` (names "Max Harstine", reuses Jenna Vanek's photo); copied as-is into `team.js`. Needs manual correction.
+- **Legal pages — pending external steps.** (1) Netlify dashboard: set `support@armypink.org` as the form-notification recipient (Forms → Settings) — the contact form HTML doesn't route by itself. (2) Verify `support@armypink.org` mailbox/forward actually exists (referenced on `/privacy`, `/sms-terms`, `/disclaimer`, `/contact`). (3) Confirm phone `(213) 579-5051` is correct. (4) Owner review of `/sms-terms` content; legal counsel review of `/disclaimer` §6 limitation-of-liability.
 
 ---
 
