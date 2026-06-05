@@ -1,11 +1,21 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import { calmRoomShelves } from '../data/calm-room.js';
+
+// Wordmark pre-split into char spans at build time so the blur-in reveal has no
+// flash (letters hidden via CSS from first paint). Displayed as one word
+// "TheCalmRoom"; aria-label keeps it readable for assistive tech.
+const WORDMARK = 'TheCalmRoom';
+const WORDMARK_LABEL = 'The Calm Room';
+let _cwIndex = 0;
+const wordmarkWords = WORDMARK.split(' ').map(word => ({
+  chars: Array.from(word).map(ch => ({ ch, i: _cwIndex++ })),
+}));
 ---
 
 <Layout title="The Calm Room — Army Pink">
 
-  <!-- ===== HERO: SANCTUARY (video + glass + wave + flower) ===== -->
+  <!-- ===== HERO: full-screen sanctuary video, fades into the black collection ===== -->
   <header class="hero" id="home">
     <div class="hero-video-bg" aria-hidden="true">
       <iframe
@@ -16,58 +26,65 @@ import { calmRoomShelves } from '../data/calm-room.js';
         allow="autoplay; encrypted-media; picture-in-picture"
         allowfullscreen></iframe>
     </div>
-    <div class="container">
-      <div class="hero-glass">
-        <h1>Come home to yourself.</h1>
-        <p class="hero-sub">
-          This is a softly curated sanctuary created for survivors of trauma.
-          Every piece of content — from healing music and movement to sacred
-          words and therapy insights — has been selected for its ability to
-          soothe, restore, and uplift. Come as you are. Stay as long as you
-          need. This space is yours.
-        </p>
+    <div class="hero-brand">
+      <h2 class="calm-wordmark" aria-label={WORDMARK_LABEL}>
+        {wordmarkWords.map((word, wi) => (
+          <>
+            <span class="cw-word">{word.chars.map(c => (
+              <span class="cw-char" style={`transition-delay:${c.i * 55}ms`} aria-hidden="true">{c.ch}</span>
+            ))}</span>
+            {wi < wordmarkWords.length - 1 && <span class="cw-space" aria-hidden="true"></span>}
+          </>
+        ))}
+      </h2>
+      <div class="calm-intro">
+        <p>This is a softly curated sanctuary created for survivors of trauma. Every piece of content — from healing music and movement to sacred words and therapy insights — has been selected for its ability to soothe, restore, and uplift. Come as you are.</p>
+        <p>Stay as long as you need. This space is yours.</p>
       </div>
     </div>
-    <svg class="hero-wave" viewBox="0 0 1440 80" preserveAspectRatio="none" aria-hidden="true">
-      <path d="M0,60 C360,0 540,80 720,40 C900,0 1080,80 1440,20 L1440,80 L0,80 Z" fill="var(--cream)"/>
-    </svg>
   </header>
-  <div class="hero-flower-wrap">
-    <img src="/img/flower-4.png" class="hero-flower" alt="" aria-hidden="true" />
-  </div>
 
-  <!-- ===== CALM ROOM SHELVES (Netflix-style video rows) ===== -->
-  <section class="calm-shelves" aria-label="Calm Room video collection">
-    <div class="calm-shelves-head">
-      <span class="pill-label">Curated Collection</span>
-      <h2>Press play on something gentle.</h2>
+  <!-- No-JS fallback: show the wordmark letters (JS handles the animated reveal). -->
+  <noscript>
+    <style>.calm-wordmark .cw-char { opacity: 1 !important; filter: none !important; transform: none !important; }</style>
+  </noscript>
+
+  <!-- ===== CALM ROOM COLLECTION (black, tabbed, filterable grid) ===== -->
+  <section class="calm-collection" aria-label="Calm Room video collection">
+    <div class="calm-collection-inner">
+      <div class="calm-tabs" role="tablist" aria-label="Categories">
+        <button class="calm-tab is-active" type="button" role="tab" data-cat="all" aria-selected="true">All</button>
+        {calmRoomShelves.map((shelf, i) => (
+          <button class="calm-tab" type="button" role="tab" data-cat={String(i)} aria-selected="false">{shelf.title}</button>
+        ))}
+      </div>
+
+      <div class="calm-grid" id="calmGrid">
+        {calmRoomShelves.flatMap((shelf, i) =>
+          shelf.videos.filter(v => v.youtubeId).map(v => (
+            <button class="calm-card" type="button" data-cat={String(i)} data-youtube-id={v.youtubeId} data-title={v.title}>
+              <img
+                class="calm-card-img"
+                src={`https://img.youtube.com/vi/${v.youtubeId}/maxresdefault.jpg`}
+                onload={`if(this.naturalWidth<600){this.onload=null;this.src='https://img.youtube.com/vi/${v.youtubeId}/mqdefault.jpg'}`}
+                onerror={`this.onerror=null;this.src='https://img.youtube.com/vi/${v.youtubeId}/mqdefault.jpg'`}
+                alt=""
+                loading="lazy"
+              />
+              <span class="calm-card-grad" aria-hidden="true"></span>
+              <span class="calm-card-play" aria-hidden="true">
+                <svg viewBox="0 0 24 24" width="20" height="20"><path d="M8 5v14l11-7z" fill="currentColor" /></svg>
+              </span>
+              <span class="calm-card-meta">
+                <span class="calm-card-eyebrow">{shelf.title}</span>
+                <span class="calm-card-title">{v.title}</span>
+              </span>
+            </button>
+          ))
+        )}
+      </div>
     </div>
-    {calmRoomShelves.map(shelf => {
-      const vids = shelf.videos.filter(v => v.youtubeId);
-      return vids.length === 0 ? null : (
-        <div class="calm-row-wrap">
-          <h3 class="calm-shelf-title">{shelf.title}</h3>
-          <div class="calm-row-scroll">
-            <button class="calm-arrow calm-arrow-prev" type="button" aria-label="Scroll left">&lsaquo;</button>
-            <ul class="calm-row">
-              {vids.map(v => (
-                <li>
-                  <button class="calm-card" type="button" data-youtube-id={v.youtubeId} data-title={v.title}>
-                    <img class="calm-card-img" src={`https://img.youtube.com/vi/${v.youtubeId}/hqdefault.jpg`} alt="" loading="lazy" />
-                    <span class="calm-card-grad" aria-hidden="true"></span>
-                    <span class="calm-card-play" aria-hidden="true">
-                      <svg viewBox="0 0 24 24" width="22" height="22"><path d="M8 5v14l11-7z" fill="currentColor" /></svg>
-                    </span>
-                    <span class="calm-card-title">{v.title}</span>
-                  </button>
-                </li>
-              ))}
-            </ul>
-            <button class="calm-arrow calm-arrow-next" type="button" aria-label="Scroll right">&rsaquo;</button>
-          </div>
-        </div>
-      );
-    })}
+    <div class="calm-collection-base" aria-hidden="true"></div>
   </section>
 
   <!-- ===== CALM ROOM LIGHTBOX ===== -->
@@ -465,69 +482,149 @@ import { calmRoomShelves } from '../data/calm-room.js';
       pointer-events: none;
     }
 
-    /* ───────── Calm Room shelves (Netflix-style rows, cream aesthetic) ───────── */
-    .calm-shelves {
-      padding: 4.5rem 0 3rem;
-      background: var(--cream);
+    /* ───────── Hero dark fade — melts the video into the black collection ───────── */
+    .hero { position: relative; min-height: 100vh; }
+    .hero::after {
+      content: '';
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      height: 65%;
+      background: linear-gradient(to bottom, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.35) 30%, rgba(0, 0, 0, 0.8) 62%, #000 88%);
+      z-index: 1;
+      pointer-events: none;
     }
-    .calm-shelves-head {
-      text-align: center;
-      max-width: 560px;
-      margin: 0 auto 2.5rem;
+
+    /* ───────── Calm Room collection (black, tabbed, filterable portrait grid) ───────── */
+    .calm-collection {
+      position: relative;
+      background: #000;
+      padding: clamp(2rem, 4vw, 3rem) 0 0;
+    }
+    .calm-collection-inner {
+      max-width: 1200px;
+      margin: 0 auto;
       padding: 0 1.5rem;
     }
-    .calm-shelves-head h2 {
+    /* Branding moment + intro — anchored to the bottom of the 100vh hero,
+       overlapping the video (sits on the dark fade). */
+    .hero-brand {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      z-index: 2;            /* above the dark fade (z1) and video (z0) */
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 0 1.5rem clamp(1.75rem, 4.5vh, 3.5rem);
+      text-align: center;
+    }
+    .calm-wordmark {
       font-family: var(--font-display);
-      font-size: clamp(1.6rem, 3vw, 2.3rem);
-      font-weight: 500;
       color: var(--dark-grey);
+      font-size: clamp(2.6rem, 9vw, 6.5rem);
+      font-weight: 600;
       letter-spacing: -0.02em;
-      margin-top: 0.6rem;
+      line-height: 1;
+      margin: 0 0 1.6rem;
     }
-
-    .calm-row-wrap { margin-bottom: 2.5rem; }
-    .calm-shelf-title {
-      font-family: var(--font-display);
-      font-size: clamp(1.1rem, 2vw, 1.45rem);
-      font-weight: 500;
+    .calm-wordmark .cw-word { display: inline-block; white-space: nowrap; }
+    .calm-wordmark .cw-char {
+      display: inline-block;
+      opacity: 0;
+      filter: blur(18px);
+      transform: translateY(0.18em) scale(1.06);
+      transition: opacity 820ms ease, filter 820ms ease, transform 820ms cubic-bezier(0.22, 1, 0.36, 1);
+      will-change: opacity, filter, transform;
+    }
+    .calm-wordmark.is-revealed .cw-char {
+      opacity: 1;
+      filter: blur(0);
+      transform: none;
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .calm-wordmark .cw-char {
+        opacity: 1;
+        filter: none;
+        transform: none;
+        transition: none;
+      }
+    }
+    .calm-wordmark .cw-space { display: inline-block; width: 0.26em; }
+    .calm-intro {
+      max-width: 680px;
+      margin: 0 auto;
+    }
+    .calm-intro p {
       color: var(--dark-grey);
-      letter-spacing: -0.01em;
-      margin: 0 0 0.9rem;
-      padding: 0 max(1.5rem, calc((100vw - 1200px) / 2));
+      font-size: clamp(0.95rem, 1.6vw, 1.05rem);
+      line-height: 1.7;
+    }
+    .calm-intro p + p { margin-top: 1.2rem; }
+
+    /* Tabs */
+    .calm-tabs {
+      display: flex;
+      gap: 0.5rem;
+      overflow-x: auto;
+      scrollbar-width: none;
+      padding-bottom: 0.5rem;
+      margin-bottom: 2rem;
+    }
+    .calm-tabs::-webkit-scrollbar { display: none; }
+    @media (min-width: 900px) {
+      .calm-tabs { justify-content: center; flex-wrap: wrap; overflow: visible; }
+    }
+    .calm-tab {
+      flex: 0 0 auto;
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      background: transparent;
+      color: rgba(255, 255, 255, 0.62);
+      font-size: 0.85rem;
+      font-weight: 500;
+      letter-spacing: 0.01em;
+      padding: 0.5rem 1.05rem;
+      border-radius: 999px;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: background 220ms ease, color 220ms ease, border-color 220ms ease;
+    }
+    .calm-tab:hover { color: #fff; border-color: rgba(255, 255, 255, 0.32); }
+    .calm-tab.is-active {
+      background: var(--pink);
+      border-color: var(--pink);
+      color: #fff;
     }
 
-    .calm-row-scroll { position: relative; }
-    .calm-row {
-      list-style: none;
-      margin: 0;
-      display: flex;
-      gap: 1rem;
-      overflow-x: auto;
-      scroll-behavior: smooth;
-      padding: 0.4rem max(1.5rem, calc((100vw - 1200px) / 2));
-      scrollbar-width: none;
+    /* Grid */
+    .calm-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1.1rem;
     }
-    .calm-row::-webkit-scrollbar { display: none; }
-    .calm-row > li { flex: 0 0 auto; margin: 0; }
+    @media (max-width: 900px) { .calm-grid { grid-template-columns: repeat(3, 1fr); } }
+    @media (max-width: 620px) { .calm-grid { grid-template-columns: repeat(2, 1fr); gap: 0.8rem; } }
 
     .calm-card {
       position: relative;
       display: block;
-      width: clamp(220px, 26vw, 300px);
-      aspect-ratio: 16 / 9;
+      width: 100%;
+      aspect-ratio: 2 / 3;
       border: 0;
       padding: 0;
-      border-radius: 14px;
+      border-radius: 16px;
       overflow: hidden;
       cursor: pointer;
-      background: rgba(104, 101, 101, 0.12);
-      box-shadow: 0 4px 14px rgba(104, 101, 101, 0.10);
+      background: #15131a;
       transition: transform 320ms ease, box-shadow 320ms ease;
+      will-change: transform, opacity;
     }
+    .calm-card.is-hidden { display: none; }
     .calm-card:hover,
     .calm-card:focus-visible {
-      transform: translateY(-4px) scale(1.015);
-      box-shadow: 0 12px 28px rgba(104, 101, 101, 0.22);
+      transform: translateY(-4px);
+      box-shadow: 0 16px 34px rgba(0, 0, 0, 0.5);
     }
     .calm-card-img {
       position: absolute;
@@ -535,42 +632,54 @@ import { calmRoomShelves } from '../data/calm-room.js';
       width: 100%;
       height: 100%;
       object-fit: cover;
-      transition: transform 500ms ease;
+      transition: transform 600ms ease;
     }
-    .calm-card:hover .calm-card-img { transform: scale(1.07); }
+    .calm-card:hover .calm-card-img { transform: scale(1.06); }
     .calm-card-grad {
       position: absolute;
       inset: 0;
-      background: linear-gradient(to top, rgba(20, 18, 18, 0.82) 0%, rgba(20, 18, 18, 0.18) 38%, transparent 62%);
+      background: linear-gradient(to top, rgba(0, 0, 0, 0.86) 0%, rgba(0, 0, 0, 0.30) 38%, rgba(0, 0, 0, 0.05) 60%, transparent 78%);
+    }
+    .calm-card-meta {
+      position: absolute;
+      left: 0.95rem;
+      right: 0.95rem;
+      bottom: 0.95rem;
+      text-align: left;
+    }
+    .calm-card-eyebrow {
+      display: block;
+      font-size: 0.66rem;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: rgba(255, 255, 255, 0.62);
+      margin-bottom: 0.3rem;
     }
     .calm-card-title {
-      position: absolute;
-      left: 0.9rem;
-      right: 0.9rem;
-      bottom: 0.8rem;
-      color: #fff;
-      font-size: 0.86rem;
-      line-height: 1.35;
-      font-weight: 500;
-      text-align: left;
       display: -webkit-box;
       -webkit-line-clamp: 2;
       -webkit-box-orient: vertical;
       overflow: hidden;
+      color: #fff;
+      font-size: 0.98rem;
+      line-height: 1.2;
+      font-weight: 600;
+      letter-spacing: -0.01em;
     }
     .calm-card-play {
       position: absolute;
-      top: 50%;
+      top: 42%;
       left: 50%;
       transform: translate(-50%, -50%) scale(0.8);
-      width: 48px;
-      height: 48px;
+      width: 46px;
+      height: 46px;
       display: flex;
       align-items: center;
       justify-content: center;
       border-radius: 50%;
       background: rgba(255, 255, 255, 0.92);
-      color: var(--dark-grey);
+      color: #15131a;
       opacity: 0;
       transition: opacity 280ms ease, transform 280ms ease;
       padding-left: 3px;
@@ -581,31 +690,15 @@ import { calmRoomShelves } from '../data/calm-room.js';
       transform: translate(-50%, -50%) scale(1);
     }
 
-    .calm-arrow {
-      position: absolute;
-      top: 50%;
-      transform: translateY(-50%);
-      z-index: 3;
-      width: 40px;
-      height: 40px;
-      border-radius: 50%;
-      border: 1px solid rgba(104, 101, 101, 0.18);
-      background: rgba(253, 251, 247, 0.92);
-      color: var(--dark-grey);
-      font-size: 1.4rem;
-      line-height: 1;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      box-shadow: 0 2px 10px rgba(104, 101, 101, 0.16);
-      transition: background 200ms ease;
+    /* Bottom fade: black collection → cream legacy sections below */
+    .calm-collection-base {
+      height: clamp(80px, 12vw, 150px);
+      margin-top: clamp(3rem, 6vw, 5rem);
+      background: linear-gradient(to bottom, #000 0%, var(--cream) 100%);
     }
-    .calm-arrow:hover { background: #fff; }
-    .calm-arrow-prev { left: 0.6rem; }
-    .calm-arrow-next { right: 0.6rem; }
-    @media (max-width: 768px) {
-      .calm-arrow { display: none; }   /* touch users swipe */
+
+    @media (prefers-reduced-motion: reduce) {
+      .calm-card, .calm-card-img, .calm-card-play { transition: none; }
     }
 
     /* ───────── Lightbox modal ───────── */
@@ -673,34 +766,81 @@ import { calmRoomShelves } from '../data/calm-room.js';
     .calm-modal-close:hover { background: rgba(255, 255, 255, 0.28); }
   </style>
 
-  <!-- ===== HERO SCRIPT — flower scroll rotation =====
-       The daisy below the wave rotates 0 → 180° (clockwise) as you scroll
-       through roughly the first viewport. .hero-flower has will-change:transform. -->
+  <!-- ===== CALM ROOM COLLECTION + LIGHTBOX SCRIPT ===== -->
   <script is:inline>
     (() => {
-      const flower = document.querySelector('.hero-flower');
-      if (!flower) return;
-      const onScroll = () => {
-        const deg = Math.min(window.scrollY / window.innerHeight, 1) * 180;
-        flower.style.transform = 'rotate(' + deg.toFixed(2) + 'deg)';
-      };
-      window.addEventListener('scroll', onScroll, { passive: true });
-      onScroll();
-    })();
-  </script>
+      // Branding moment: reveal the pre-split "The Calm Room" letters (blur + rise)
+      // when scrolled into view. Letters are rendered + hidden at build time, so
+      // there's no flash; reduced-motion (CSS) and no-JS (<noscript>) show them plainly.
+      const wordmark = document.querySelector('.calm-wordmark');
+      if (wordmark) {
+        const io = new IntersectionObserver((entries) => {
+          entries.forEach(e => {
+            if (e.isIntersecting) { wordmark.classList.add('is-revealed'); io.disconnect(); }
+          });
+        }, { threshold: 0.35 });
+        io.observe(wordmark);
+      }
 
-  <!-- ===== CALM ROOM SHELVES + LIGHTBOX SCRIPT ===== -->
-  <script is:inline>
-    (() => {
-      // Horizontal arrow scrolling per shelf
-      document.querySelectorAll('.calm-row-scroll').forEach(scope => {
-        const row = scope.querySelector('.calm-row');
-        if (!row) return;
-        const step = () => Math.max(row.clientWidth * 0.8, 240);
-        const prev = scope.querySelector('.calm-arrow-prev');
-        const next = scope.querySelector('.calm-arrow-next');
-        if (prev) prev.addEventListener('click', () => row.scrollBy({ left: -step(), behavior: 'smooth' }));
-        if (next) next.addEventListener('click', () => row.scrollBy({ left: step(), behavior: 'smooth' }));
+      // Tab filtering with a FLIP shuffle: matching cards slide to their new
+      // grid positions, newly revealed cards fade + rise in.
+      const grid = document.getElementById('calmGrid');
+      const tabs = Array.from(document.querySelectorAll('.calm-tab'));
+      const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      let currentCat = 'all';
+
+      function filterTo(cat) {
+        if (!grid || cat === currentCat) return;
+        const cards = Array.from(grid.querySelectorAll('.calm-card'));
+        const wasVisible = new Map();
+        const first = new Map();
+        cards.forEach(c => {
+          const vis = !c.classList.contains('is-hidden');
+          wasVisible.set(c, vis);
+          if (vis) first.set(c, c.getBoundingClientRect());
+        });
+        cards.forEach(c => {
+          const match = cat === 'all' || c.dataset.cat === cat;
+          c.classList.toggle('is-hidden', !match);
+        });
+        currentCat = cat;
+        if (reduce) return;
+        cards.forEach(c => {
+          if (c.classList.contains('is-hidden')) return;
+          if (wasVisible.get(c)) {
+            const last = c.getBoundingClientRect();
+            const f = first.get(c);
+            const dx = f.left - last.left;
+            const dy = f.top - last.top;
+            if (!dx && !dy) return;
+            c.style.transition = 'none';
+            c.style.transform = 'translate(' + dx + 'px,' + dy + 'px)';
+            requestAnimationFrame(() => {
+              c.style.transition = 'transform 520ms cubic-bezier(0.22,1,0.36,1)';
+              c.style.transform = '';
+            });
+            setTimeout(() => { c.style.transition = ''; c.style.transform = ''; }, 600);
+          } else {
+            c.style.transition = 'none';
+            c.style.opacity = '0';
+            c.style.transform = 'translateY(14px) scale(0.96)';
+            requestAnimationFrame(() => {
+              c.style.transition = 'transform 460ms cubic-bezier(0.22,1,0.36,1), opacity 460ms ease';
+              c.style.opacity = '1';
+              c.style.transform = '';
+            });
+            setTimeout(() => { c.style.transition = ''; c.style.transform = ''; c.style.opacity = ''; }, 540);
+          }
+        });
+      }
+
+      tabs.forEach(tab => {
+        tab.addEventListener('click', () => {
+          tabs.forEach(t => { t.classList.remove('is-active'); t.setAttribute('aria-selected', 'false'); });
+          tab.classList.add('is-active');
+          tab.setAttribute('aria-selected', 'true');
+          filterTo(tab.dataset.cat);
+        });
       });
 
       // Lightbox modal
@@ -720,6 +860,9 @@ import { calmRoomShelves } from '../data/calm-room.js';
         iframe.title = title || 'Video player';
         iframe.allow = 'autoplay; encrypted-media; picture-in-picture';
         iframe.allowFullscreen = true;
+        // Inline fill styles: the scoped `.calm-modal-frame iframe` CSS rule
+        // can't match a JS-created element (no data-astro-cid attribute).
+        iframe.style.cssText = 'position:absolute;inset:0;width:100%;height:100%;border:0;';
         frame.innerHTML = '';
         frame.appendChild(iframe);
         titleEl.textContent = title || '';
