@@ -55,11 +55,19 @@ const partners = [
   <!-- ===== HERO (fullscreen sticky video — click anywhere to toggle) ===== -->
   <section id="home" class="home-hero" aria-label="Hero video — click or press space to play and pause">
     <video
-      class="home-hero-video"
+      class="home-hero-video-bg"
       src="/vid/Home_Hero_Vid.mp4"
       autoplay muted loop playsinline preload="auto"
       aria-hidden="true"
     ></video>
+    <div class="home-hero-frame">
+      <video
+        class="home-hero-video"
+        src="/vid/Home_Hero_Vid.mp4"
+        autoplay muted loop playsinline preload="auto"
+        aria-hidden="true"
+      ></video>
+    </div>
     <div class="home-hero-play-overlay" aria-hidden="true">
       <svg class="overlay-icon-play" viewBox="0 0 24 24" fill="currentColor"><polygon points="7 4 20 12 7 20 7 4"/></svg>
       <svg class="overlay-icon-mute" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" fill="currentColor"/><line x1="23" y1="9" x2="17" y2="15"/><line x1="17" y1="9" x2="23" y2="15"/></svg>

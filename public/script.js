@@ -75,11 +75,21 @@
 
   // --- Hero click-to-toggle + spacebar (while hero in view) ---
   var heroVideo = document.querySelector('.home-hero-video');
+  var heroVideoBg = document.querySelector('.home-hero-video-bg');
   var heroSection = document.querySelector('.home-hero');
   if (heroVideo && heroSection) {
     function syncHeroState() {
       heroSection.classList.toggle('is-paused', heroVideo.paused || heroVideo.ended);
       heroSection.classList.toggle('is-muted', heroVideo.muted);
+      // Mirror play/pause onto the blurred backdrop so a paused hero freezes both.
+      if (heroVideoBg) {
+        if (heroVideo.paused) {
+          heroVideoBg.pause();
+        } else if (heroVideoBg.paused) {
+          try { heroVideoBg.currentTime = heroVideo.currentTime; } catch (e) {}
+          heroVideoBg.play().catch(function () {});
+        }
+      }
     }
 
     // Muted autoplay (allowed by browsers); sync state either way.
