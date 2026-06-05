@@ -3024,6 +3024,19 @@ body.overlay-open {
   margin: 0 auto;
 }
 
+.tp-group-label {
+  font-size: clamp(1.5rem, 3vw, 2.25rem);
+  line-height: 1.1;
+  margin: 0;
+  color: var(--ink, #1a1a1a);
+}
+
+.tp-group-label--volunteers {
+  margin-top: var(--space-2xl);
+  padding-top: var(--space-xl);
+  border-top: 1px solid rgba(0, 0, 0, 0.08);
+}
+
 .tp-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
