@@ -1,0 +1,1042 @@
+---
+// ⚠️ ARCHIVED 2026-06-04 — NOT BUILT (files under src/_archive/ are ignored by Astro).
+// This is the 3-arch coverflow-doors hero version of the Wellness Portal hub,
+// replaced by the video/glass/wave/flower "Calm Room" sanctuary hero.
+// TO RESTORE: copy this file's contents back over src/pages/wellness-portal.astro
+// (drop this comment block). The coverflow lives in the .wp-hub markup, its scoped
+// <style>, and its scoped <script>; the sections below the hero are shared content.
+// Also recoverable from git history (original hub at commit f7074d2 onward).
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout title="Wellness Portal — Army Pink">
+
+  <!-- ===== HERO: COVERFLOW CAROUSEL ===== -->
+  <div class="wp-hub-scroll-wrap" id="wpHubWrap">
+    <section class="wp-hub" id="home">
+      <canvas class="wp-hub-bg-canvas" id="wpHubBgCanvas"></canvas>
+
+      <div class="wp-stage" id="wpStage">
+        <div class="wp-arch" data-arch="0">
+          <svg viewBox="0 0 320 400" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
+            <defs>
+              <clipPath id="wpArchClip-0" clipPathUnits="userSpaceOnUse">
+                <path id="wpArchPath-0" d="" />
+              </clipPath>
+            </defs>
+            <image href="https://images.unsplash.com/photo-1545389336-cf090694435e?w=900&q=80"
+                   x="0" y="0" width="320" height="400"
+                   preserveAspectRatio="xMidYMid slice"
+                   clip-path="url(#wpArchClip-0)" />
+          </svg>
+        </div>
+        <div class="wp-arch" data-arch="1">
+          <svg viewBox="0 0 320 400" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
+            <defs>
+              <clipPath id="wpArchClip-1" clipPathUnits="userSpaceOnUse">
+                <path id="wpArchPath-1" d="" />
+              </clipPath>
+            </defs>
+            <image href="https://images.unsplash.com/photo-1499209974431-9dddcece7f88?w=900&q=80"
+                   x="0" y="0" width="320" height="400"
+                   preserveAspectRatio="xMidYMid slice"
+                   clip-path="url(#wpArchClip-1)" />
+          </svg>
+        </div>
+        <div class="wp-arch" data-arch="2">
+          <svg viewBox="0 0 320 400" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
+            <defs>
+              <clipPath id="wpArchClip-2" clipPathUnits="userSpaceOnUse">
+                <path id="wpArchPath-2" d="" />
+              </clipPath>
+            </defs>
+            <image href="https://images.unsplash.com/photo-1506126613408-eca07ce68773?w=900&q=80"
+                   x="0" y="0" width="320" height="400"
+                   preserveAspectRatio="xMidYMid slice"
+                   clip-path="url(#wpArchClip-2)" />
+          </svg>
+        </div>
+      </div>
+
+      <div class="wp-info-stack">
+        <div class="wp-info is-active" data-info="0">
+          <h2>The Calm Room</h2>
+          <p>Pause and ground. Soft soundscapes, breathing, and quiet visuals for the moments that feel like too much.</p>
+          <a href="/wellness-portal/calm-room" class="wp-info-cta" data-room="calm-room">Step inside →</a>
+        </div>
+        <div class="wp-info" data-info="1">
+          <h2>Pathway to Freedom Library</h2>
+          <p>Workbooks, guides, and the flagship 28-Day Journey — organized by what you need today.</p>
+          <a href="/wellness-portal/library" class="wp-info-cta" data-room="library">Step inside →</a>
+        </div>
+        <div class="wp-info" data-info="2">
+          <h2>Wellness Programs</h2>
+          <p>One-year free access to partner platforms — guided practices, healing classes, and trauma-informed experts.</p>
+          <a href="/wellness-portal/wellness-experiences" class="wp-info-cta" data-room="experiences">Step inside →</a>
+        </div>
+      </div>
+
+      <div class="wp-dot-rail">
+        <button class="wp-dot is-active" data-dot="0" aria-label="Calm Room"></button>
+        <button class="wp-dot" data-dot="1" aria-label="Resource Library"></button>
+        <button class="wp-dot" data-dot="2" aria-label="Wellness Programs"></button>
+        <div class="wp-dot-counter" id="wpDotCounter">1 / 3</div>
+      </div>
+    </section>
+  </div>
+
+  <!-- ===== ARCH OPEN/CLOSE OVERLAY ===== -->
+  <!-- Overlay container holds only the animating arch (the photo/clip clone).
+       The close button sits as a sibling so it isn't tied to the arch's opacity. -->
+  <div class="wp-overlay" id="wpOverlay" aria-hidden="true">
+    <div class="wp-overlay-arch" id="wpOverlayArch">
+      <svg viewBox="0 0 320 400" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+        <defs>
+          <clipPath id="wpOverlayClip" clipPathUnits="userSpaceOnUse">
+            <path id="wpOverlayPath" d="" />
+          </clipPath>
+        </defs>
+        <image id="wpOverlayImage" href=""
+               x="0" y="0" width="320" height="400"
+               preserveAspectRatio="xMidYMid slice"
+               clip-path="url(#wpOverlayClip)" />
+      </svg>
+    </div>
+  </div>
+  <!-- Close button removed — back navigation now lives on each sub-page -->
+
+
+  <!-- ===== EMPOWERING SERIES ===== -->
+  <section class="section section-empowering" id="wellness">
+    <div class="container">
+      <div class="empowering-grid">
+        <div class="empowering-image reveal-item">
+          <img src="/img/empowering-hero.jpg" alt="Yoga silhouette at sunset" />
+        </div>
+        <div class="empowering-text">
+          <span class="pill-label reveal-item">Empowering Series</span>
+          <h2 class="reveal-item">Your body kept you safe.<br>Now let it rest.</h2>
+          <p class="reveal-item">
+            Movement that meets you where you are, whether you're stepping onto
+            the mat for the first time or finding your way back.
+          </p>
+          <div class="thumb-row-wrap">
+            <button class="thumb-arrow thumb-arrow-prev" aria-label="Scroll left">&lsaquo;</button>
+            <div class="thumb-row">
+              <a href="https://www.doyogawithme.com/yoga-series/yoga-program-calm-chaos" target="_blank" rel="noopener" class="thumb-card reveal-item">
+                <img src="/img/thumb-calm-chaos.jpg" alt="Calm in the Chaos" />
+                <div class="thumb-overlay">
+                  <span class="thumb-title">Calm in the Chaos</span>
+                  <span class="thumb-meta">Intermediate</span>
+                </div>
+              </a>
+              <a href="https://www.doyogawithme.com/yoga-series/busy-place-quiet-mind" target="_blank" rel="noopener" class="thumb-card reveal-item">
+                <img src="/img/thumb-quiet-mind.jpg" alt="Busy Place Quiet Mind" />
+                <div class="thumb-overlay">
+                  <span class="thumb-title">Busy Place Quiet Mind</span>
+                  <span class="thumb-meta">All levels</span>
+                </div>
+              </a>
+              <a href="https://www.doyogawithme.com/yoga-series/inner-strength-series" target="_blank" rel="noopener" class="thumb-card reveal-item">
+                <img src="/img/thumb-inner-strength.jpg" alt="Inner Strength Series" />
+                <div class="thumb-overlay">
+                  <span class="thumb-title">Inner Strength</span>
+                  <span class="thumb-meta">Intermediate</span>
+                </div>
+              </a>
+            </div>
+            <button class="thumb-arrow thumb-arrow-next" aria-label="Scroll right">&rsaquo;</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== FEATURED CLASSES ===== -->
+  <section class="section section-featured">
+    <div class="container">
+      <div class="featured-wrap">
+        <button class="thumb-arrow thumb-arrow-prev" aria-label="Scroll left">&lsaquo;</button>
+        <div class="featured-grid">
+          <a href="https://www.doyogawithme.com/content/yoga-nidra-jennifer-piercy" target="_blank" rel="noopener" class="featured-card reveal-item">
+            <span class="pill-label pill-small">Sleep Aids</span>
+            <img src="/img/featured-yoga-nidra.jpg" alt="Yoga Nidra" />
+            <div class="featured-content">
+              <h3>Yoga Nidra</h3>
+              <p class="featured-meta">Guided deep relaxation</p>
+            </div>
+          </a>
+          <a href="https://www.doyogawithme.com/content/ease-into-sleep" target="_blank" rel="noopener" class="featured-card reveal-item">
+            <span class="pill-label pill-small">Sleep Aids</span>
+            <img src="/img/featured-ease-sleep.jpg" alt="Ease into Sleep" />
+            <div class="featured-content">
+              <h3>Ease into Sleep</h3>
+              <p class="featured-meta">Floor-based gentle movement</p>
+            </div>
+          </a>
+          <a href="https://www.doyogawithme.com/content/intro-box-breathing" target="_blank" rel="noopener" class="featured-card reveal-item">
+            <span class="pill-label pill-small">Breathe Better</span>
+            <img src="/img/featured-box-breathing.jpg" alt="Box Breathing" />
+            <div class="featured-content">
+              <h3>Box Breathing</h3>
+              <p class="featured-meta">4-count calming technique</p>
+            </div>
+          </a>
+          <a href="https://www.doyogawithme.com/content/guided-meditations-kids" target="_blank" rel="noopener" class="featured-card reveal-item">
+            <span class="pill-label pill-small">For Kids</span>
+            <img src="https://images.unsplash.com/photo-1503454537195-1dcabb73ffb9?w=600&q=80" alt="Kids Meditation" />
+            <div class="featured-content">
+              <h3>Kids Meditation</h3>
+              <p class="featured-meta">Beginner &middot; 10 min</p>
+            </div>
+          </a>
+          <a href="https://www.doyogawithme.com/content/kids-jungle-walk" target="_blank" rel="noopener" class="featured-card reveal-item">
+            <span class="pill-label pill-small">For Kids</span>
+            <img src="https://images.unsplash.com/photo-1588286840104-8957b019727f?w=600&q=80" alt="Kids Yoga" />
+            <div class="featured-content">
+              <h3>Kids Yoga</h3>
+              <p class="featured-meta">Beginner &middot; 20 min</p>
+            </div>
+          </a>
+        </div>
+        <button class="thumb-arrow thumb-arrow-next" aria-label="Scroll right">&rsaquo;</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== WELLNESS PROGRAMS ===== -->
+  <section class="section section-programs">
+    <div class="container">
+      <div class="empowering-grid empowering-grid-reversed">
+        <div class="empowering-text">
+          <span class="pill-label reveal-item">Wellness Programs</span>
+          <h2 class="reveal-item">Healing isn't one size fits all. Find what fits you.</h2>
+          <p class="reveal-item">
+            Structured programs with real support - from managing anxiety to navigating
+            life changes. Bursaries available so cost is never a barrier.
+          </p>
+          <div class="thumb-row-wrap">
+            <button class="thumb-arrow thumb-arrow-prev" aria-label="Scroll left">&lsaquo;</button>
+            <div class="thumb-row">
+              <a href="https://courses.doyogawithme.com/courses/mindful-about-menopause-support-online-program" target="_blank" rel="noopener" class="thumb-card reveal-item">
+                <img src="/img/thumb-menopause.jpg" alt="Mindful about Menopause" />
+                <div class="thumb-overlay">
+                  <span class="thumb-title">Mindful about Menopause</span>
+                  <span class="thumb-meta">Program</span>
+                </div>
+              </a>
+              <a href="https://courses.doyogawithme.com/courses/let-go-of-anxiety-and-fear" target="_blank" rel="noopener" class="thumb-card reveal-item">
+                <img src="/img/thumb-anxiety.jpg" alt="Let Go of Anxiety" />
+                <div class="thumb-overlay">
+                  <span class="thumb-title">Let Go of Anxiety</span>
+                  <span class="thumb-meta">Program</span>
+                </div>
+              </a>
+            </div>
+            <button class="thumb-arrow thumb-arrow-next" aria-label="Scroll right">&rsaquo;</button>
+          </div>
+        </div>
+        <div class="empowering-image reveal-item">
+          <img src="/img/programs-hero.jpg" alt="Person meditating outdoors" />
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== SURVIVOR STORIES ===== -->
+  <section class="section section-stories" id="stories">
+    <div class="container">
+      <div class="stories-grid">
+        <div class="stories-text">
+          <span class="pill-label reveal-item">Survivor Stories</span>
+          <h2 class="reveal-item">Reflections From<br>Our <em>Community</em></h2>
+          <p class="reveal-item">
+            Every journey is different. These are the voices of survivors who found
+            their way forward - in their own time, on their own terms.
+          </p>
+          <a href="#" class="btn btn-primary reveal-item">Share your story</a>
+        </div>
+        <div class="stories-deck-area">
+          <div class="stories-deck" id="stories-deck">
+            <div class="story-card story-card-active" data-index="0">
+              <img src="/img/story-1.png" alt="Survivor portrait" />
+            </div>
+            <div class="story-card" data-index="1">
+              <img src="/img/story-2.png" alt="Survivor portrait" />
+            </div>
+            <div class="story-card" data-index="2">
+              <img src="/img/story-3.png" alt="Survivor portrait" />
+            </div>
+          </div>
+          <div class="story-quote-row">
+            <button class="stories-btn stories-prev" aria-label="Previous story">
+              <i data-lucide="chevron-left" aria-hidden="true"></i>
+            </button>
+            <div class="story-quote-box" id="story-quote-box">
+              <div class="story-quote story-quote-active" data-index="0">
+                <p>"I didn't think I deserved peace. The breathing exercises helped me realize
+                  my body had been holding its breath for years. Learning to exhale again
+                  changed everything."</p>
+                <div class="story-author">
+                  <strong>Sarah M.</strong>
+                  <span>Survivor &middot; 2 years post-separation</span>
+                </div>
+              </div>
+              <div class="story-quote" data-index="1">
+                <p>"Some days I still feel the pull to go back. But the community reminded me
+                  that missing someone who hurt you doesn't make you weak - it makes you human.
+                  That changed how I talked to myself."</p>
+                <div class="story-author">
+                  <strong>A Survivor</strong>
+                  <span>Sharing anonymously</span>
+                </div>
+              </div>
+              <div class="story-quote" data-index="2">
+                <p>"The yoga sessions gave me my body back. I used to flinch at everything.
+                  Now I can sit in stillness without scanning for danger. I didn't know
+                  that was possible."</p>
+                <div class="story-author">
+                  <strong>Maria L.</strong>
+                  <span>Wellness program participant</span>
+                </div>
+              </div>
+            </div>
+            <button class="stories-btn stories-next" aria-label="Next story">
+              <i data-lucide="chevron-right" aria-hidden="true"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== ABOUT ARMY PINK ===== -->
+  <section class="section section-mission" id="mission">
+    <div class="container">
+      <div class="mission-grid">
+        <div class="mission-text">
+          <span class="overline">Our Mission</span>
+          <h2>We don't sell healing.<br>We connect you to it.</h2>
+          <p>
+            Army Pink is a 501(c)(3) nonprofit supporting domestic violence survivors
+            through safety-centered transportation, concierge support, and wellness resources.
+          </p>
+          <p>
+            Our <strong>Pathway to Freedom</strong> program provides donation-based Freedom Rides —
+            immediate safe transportation when you need it most — plus connections to
+            ongoing wellness support for the road ahead.
+          </p>
+          <p class="quiet">Based in California. Serving survivors nationwide.</p>
+        </div>
+        <div class="mission-values">
+          <div class="value">
+            <span class="value-number">01</span>
+            <div>
+              <h4>Safety First</h4>
+              <p>Every decision we make starts with your safety.</p>
+            </div>
+          </div>
+          <div class="value">
+            <span class="value-number">02</span>
+            <div>
+              <h4>Survivor-Led</h4>
+              <p>People who understand the journey shape our work.</p>
+            </div>
+          </div>
+          <div class="value">
+            <span class="value-number">03</span>
+            <div>
+              <h4>No Barriers</h4>
+              <p>Survivors never pay. Supporters make that possible.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== OVERLAYS (kept for future use) ===== -->
+
+  <div class="overlay" id="overlay-phase-1" aria-hidden="true" role="dialog" aria-label="Resources for when you just left">
+    <div class="overlay-backdrop"></div>
+    <div class="overlay-panel">
+      <button class="overlay-close" aria-label="Close">&times;</button>
+      <div class="overlay-content">
+        <span class="overline">Phase 1: Immediate Aftermath</span>
+        <h2>You're safe now. That matters.</h2>
+        <p>The confusion you're feeling - the fog, the fear, the guilt tangled with relief - is your mind processing what you survived. It's not a flaw. It's a natural response.</p>
+        <div class="carousel-row"><h3 class="carousel-label">Something gentle for your ears</h3><div class="carousel"><button class="carousel-arrow carousel-prev" aria-label="Scroll left">&lsaquo;</button><div class="carousel-track"><a href="#" class="carousel-card"><span class="carousel-type">Meditation</span><h4>Guided Meditation for Victims of Domestic Abuse</h4><p class="carousel-source">Fragrant Heart</p></a><a href="#" class="carousel-card"><span class="carousel-type">Meditation</span><h4>Grounding Meditation for Trauma</h4><p class="carousel-source">Insight Timer - Dr. Amelia Kelley</p></a><a href="#" class="carousel-card"><span class="carousel-type">Meditation</span><h4>I Am Safe: Healing from Terror/Trauma</h4><p class="carousel-source">Insight Timer</p></a><a href="#" class="carousel-card"><span class="carousel-type">Podcast</span><h4>4 Steps to Break a Trauma Bond</h4><p class="carousel-source">The Relationship Recovery Podcast - EP102</p></a><a href="#" class="carousel-card"><span class="carousel-type">Podcast</span><h4>Love and Abuse</h4><p class="carousel-source">Paul Colaianni</p></a></div><button class="carousel-arrow carousel-next" aria-label="Scroll right">&rsaquo;</button></div></div>
+        <div class="carousel-row"><h3 class="carousel-label">Words that understand</h3><div class="carousel"><button class="carousel-arrow carousel-prev" aria-label="Scroll left">&lsaquo;</button><div class="carousel-track"><a href="#" class="carousel-card"><span class="carousel-type">Article</span><h4>Stages of Recovery After Trauma</h4><p class="carousel-source">DomesticShelters.org</p></a><a href="#" class="carousel-card"><span class="carousel-type">Article</span><h4>What Is Trauma Bonding?</h4><p class="carousel-source">DomesticShelters.org</p></a><a href="#" class="carousel-card"><span class="carousel-type">Guide</span><h4>I've Left and I Need Support</h4><p class="carousel-source">Women's Aid - The Survivor's Handbook</p></a><a href="#" class="carousel-card"><span class="carousel-type">Article</span><h4>5 Powerful Self-Care Tips for Abuse and Trauma Survivors</h4><p class="carousel-source">The Hotline</p></a><a href="#" class="carousel-card"><span class="carousel-type">Guide</span><h4>Create Your Personal Safety Plan</h4><p class="carousel-source">The Hotline</p></a></div><button class="carousel-arrow carousel-next" aria-label="Scroll right">&rsaquo;</button></div></div>
+        <div class="carousel-row"><h3 class="carousel-label">Stories like yours</h3><div class="carousel"><button class="carousel-arrow carousel-prev" aria-label="Scroll left">&lsaquo;</button><div class="carousel-track"><a href="#" class="carousel-card"><span class="carousel-type">TED Talk</span><h4>Why Domestic Violence Victims Don't Leave</h4><p class="carousel-source">Leslie Morgan Steiner</p></a><a href="#" class="carousel-card"><span class="carousel-type">TEDx Talk</span><h4>I Left on a Tuesday</h4><p class="carousel-source">Chiara Lisowski</p></a><a href="#" class="carousel-card"><span class="carousel-type">YouTube Channel</span><h4>Dr. Ramani Durvasula</h4><p class="carousel-source">YouTube</p></a><a href="#" class="carousel-card"><span class="carousel-type">TEDx Talk</span><h4>Domestic Violence: What Everyone Needs to Know</h4><p class="carousel-source">Hannah Petrillo</p></a><a href="#" class="carousel-card"><span class="carousel-type">Exercise</span><h4>Trauma-Sensitive 5-4-3-2-1 Grounding Exercise</h4><p class="carousel-source">Insight Timer</p></a></div><button class="carousel-arrow carousel-next" aria-label="Scroll right">&rsaquo;</button></div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="overlay" id="overlay-phase-2" aria-hidden="true" role="dialog" aria-label="Resources for when you feel stuck">
+    <div class="overlay-backdrop"></div>
+    <div class="overlay-panel">
+      <button class="overlay-close" aria-label="Close">&times;</button>
+      <div class="overlay-content">
+        <span class="overline">Phase 2: The Middle</span>
+        <h2>Stuck doesn't mean broken.</h2>
+        <p>You're safe, but the weight of everything is surfacing. Grief for the relationship, anger you couldn't express before, and the question "who am I without this?" are all part of this phase.</p>
+        <div class="overlay-cards"><div class="overlay-card"><h4>Grief without closure</h4><p>You're mourning someone still alive, a relationship that held both love and violence. Society rarely validates this grief.</p></div><div class="overlay-card"><h4>Anger is arriving</h4><p>Anger was unsafe to express during the relationship. Feeling it now is healthy - even when it's frightening.</p></div><div class="overlay-card"><h4>Identity is rebuilding</h4><p>Your preferences, opinions, and sense of self were systematically eroded. Rediscovering them takes time and patience.</p></div></div>
+        <div class="overlay-resources"><h3>What might help right now</h3><a href="#wellness" class="overlay-link" data-close-overlay>Trauma-informed yoga for body reconnection &rarr;</a><a href="#wellness" class="overlay-link" data-close-overlay>Mindfulness practices for self-exploration &rarr;</a><a href="#community" class="overlay-link" data-close-overlay>Daily check-ins with the community &rarr;</a></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="overlay" id="overlay-phase-3" aria-hidden="true" role="dialog" aria-label="Resources for rebuilding">
+    <div class="overlay-backdrop"></div>
+    <div class="overlay-panel">
+      <button class="overlay-close" aria-label="Close">&times;</button>
+      <div class="overlay-content">
+        <span class="overline">Phase 3: Rebuilding</span>
+        <h2>You're becoming someone new.</h2>
+        <p>Rebuilding trust, setting boundaries, navigating new relationships - this phase is simultaneously liberating and terrifying. Growth and pain coexist here, and that's okay.</p>
+        <div class="overlay-cards"><div class="overlay-card"><h4>Boundaries are new</h4><p>You may swing between walls and no boundaries at all. Learning the middle ground is a practice, not a destination.</p></div><div class="overlay-card"><h4>Trust takes time</h4><p>Learning to distinguish healthy from unhealthy patterns - in others and in yourself - is part of earned secure attachment.</p></div><div class="overlay-card"><h4>Post-traumatic growth</h4><p>Deeper empathy, clarity about values, new life directions. Not universal, but possible - and it coexists with ongoing pain.</p></div></div>
+        <div class="overlay-resources"><h3>What might help right now</h3><a href="#wellness" class="overlay-link" data-close-overlay>Wellness programs for ongoing healing &rarr;</a><a href="#community" class="overlay-link" data-close-overlay>Peer support and mentorship &rarr;</a><a href="#community" class="overlay-link" data-close-overlay>Weekly community events &rarr;</a></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="overlay" id="overlay-breathing" aria-hidden="true" role="dialog" aria-label="Guided breathing resources">
+    <div class="overlay-backdrop"></div>
+    <div class="overlay-panel">
+      <button class="overlay-close" aria-label="Close">&times;</button>
+      <div class="overlay-content">
+        <span class="overline">Learn to Breathe Better</span>
+        <h2>Calm starts with a single breath.</h2>
+        <p>When your body is stuck in fight-or-flight, breathing is the fastest way back to safety. These exercises are simple, short, and available anytime you need them.</p>
+        <div class="breathing-exercise" role="region" aria-label="Guided breathing exercise"><h3>Try it now: Box Breathing</h3><p>A simple grounding exercise you can use anytime. Follow the animation at your own pace.</p><div class="breath-box" id="breath-box"><div class="breath-circle" id="breath-circle"></div><p class="breath-instruction" id="breath-instruction"></p></div><button class="btn btn-outline" id="breath-toggle">Start breathing exercise</button></div>
+        <div class="overlay-cards"><a href="#" class="overlay-card overlay-card-link"><h4>Box Breathing</h4><p>A 4-count breathing technique used to slow your heart rate and regain focus.</p><span class="wellness-tag">Beginner</span></a><a href="#" class="overlay-card overlay-card-link"><h4>5 Minute Stress Relief</h4><p>A short guided breathwork session to release tension.</p><span class="wellness-tag">All levels</span></a><a href="#" class="overlay-card overlay-card-link"><h4>4-7-8 Calming Breath</h4><p>Activate your parasympathetic nervous system within minutes.</p><span class="wellness-tag">Beginner</span></a><a href="#" class="overlay-card overlay-card-link"><h4>Grounding Breathwork for Flashbacks</h4><p>A guided practice to bring you back to the present.</p><span class="wellness-tag">All levels</span></a><a href="#" class="overlay-card overlay-card-link"><h4>Morning Reset: 3 Minutes to Start Your Day</h4><p>A short breathwork routine to set a calm intention.</p><span class="wellness-tag">Beginner</span></a></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="overlay" id="overlay-yoga" aria-hidden="true" role="dialog" aria-label="Yoga and wellness resources">
+    <div class="overlay-backdrop"></div>
+    <div class="overlay-panel">
+      <button class="overlay-close" aria-label="Close">&times;</button>
+      <div class="overlay-content">
+        <span class="overline">Empowering Movement</span>
+        <h2>Reconnect with your body at your own pace.</h2>
+        <p>These classes are designed with survivors in mind. No pressure, no performance. Just gentle movement to help you feel at home in your body again.</p>
+        <h3 class="carousel-label">Empowering Series</h3>
+        <div class="overlay-cards"><a href="#" class="overlay-card overlay-card-link"><h4>Survivor Series</h4><p>Movement and mindfulness designed specifically for trauma survivors.</p><span class="wellness-tag">Multi-level</span></a><a href="#" class="overlay-card overlay-card-link"><h4>Calm in the Chaos</h4><p>Find stillness even when everything around you feels uncertain.</p><span class="wellness-tag">Intermediate</span></a><a href="#" class="overlay-card overlay-card-link"><h4>Busy Place Quiet Mind</h4><p>Grounding practices for when your environment feels overstimulating.</p><span class="wellness-tag">All levels</span></a><a href="#" class="overlay-card overlay-card-link"><h4>Back to the Mat</h4><p>A gentle re-entry for those returning to movement after a long time away.</p><span class="wellness-tag">Beginner</span></a><a href="#" class="overlay-card overlay-card-link"><h4>Inner Strength Series</h4><p>Build physical and emotional resilience through intentional practice.</p><span class="wellness-tag">Intermediate</span></a></div>
+        <h3 class="carousel-label">Calm and Strong Kids</h3>
+        <div class="overlay-cards"><a href="#" class="overlay-card overlay-card-link"><h4>Kids Meditation</h4><p>Age-appropriate mindfulness to help children process big emotions safely.</p><span class="wellness-tag">Kids</span></a><a href="#" class="overlay-card overlay-card-link"><h4>Kids Yoga</h4><p>Playful, body-positive movement for young ones who need a safe outlet.</p><span class="wellness-tag">Kids</span></a></div>
+        <h3 class="carousel-label">Wellness Programs (Bursaries Available)</h3>
+        <div class="overlay-cards"><a href="#" class="overlay-card overlay-card-link"><h4>Mindful about Menopause</h4><p>Support for navigating hormonal changes with compassion and awareness.</p><span class="wellness-tag">Program</span></a><a href="#" class="overlay-card overlay-card-link"><h4>Let Go of Anxiety</h4><p>Tools and practices for managing anxiety rooted in lived experience.</p><span class="wellness-tag">Program</span></a><a href="#" class="overlay-card overlay-card-link"><h4>Vibrant: Inflammatory Lifestyle</h4><p>Holistic practices addressing the physical toll of chronic stress and trauma.</p><span class="wellness-tag">Program</span></a></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="overlay" id="overlay-sleep" aria-hidden="true" role="dialog" aria-label="Sleep and meditation resources">
+    <div class="overlay-backdrop"></div>
+    <div class="overlay-panel">
+      <button class="overlay-close" aria-label="Close">&times;</button>
+      <div class="overlay-content">
+        <span class="overline">Rest Your Mind</span>
+        <h2>For the nights that won't quiet down.</h2>
+        <p>Hypervigilance doesn't switch off just because you're safe now. These sessions are made for the 2am moments when your body is still scanning for danger.</p>
+        <div class="overlay-cards"><a href="#" class="overlay-card overlay-card-link"><h4>Yoga Nidra: Guided Meditation for Sleep</h4><p>A deep relaxation practice that guides you into restful sleep without forcing it.</p><span class="wellness-tag">All levels</span></a><a href="#" class="overlay-card overlay-card-link"><h4>Yoga Class for Sleep</h4><p>Gentle, floor-based movement to release the tension your body holds onto at night.</p><span class="wellness-tag">Beginner</span></a><a href="#" class="overlay-card overlay-card-link"><h4>Body Scan for Letting Go</h4><p>A guided meditation releasing tension you didn't know you were carrying.</p><span class="wellness-tag">All levels</span></a><a href="#" class="overlay-card overlay-card-link"><h4>Rain Sounds with Gentle Guidance</h4><p>Soft spoken cues layered over rain sounds to ease you into rest.</p><span class="wellness-tag">Beginner</span></a><a href="#" class="overlay-card overlay-card-link"><h4>Safe Place Visualization</h4><p>Build an internal sense of safety your body can return to each night.</p><span class="wellness-tag">All levels</span></a></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== CLASS SLIDE-UP PANEL ===== -->
+  <div class="slide-panel-backdrop" id="slide-panel-backdrop"></div>
+  <div class="slide-panel" id="slide-panel" aria-hidden="true">
+    <div class="slide-panel-handle"></div>
+    <div class="slide-panel-img">
+      <img id="slide-panel-img" src="" alt="" />
+    </div>
+    <div class="slide-panel-body">
+      <span class="pill-label" id="slide-panel-category"></span>
+      <h3 id="slide-panel-title"></h3>
+      <p class="slide-panel-level" id="slide-panel-level"></p>
+      <p class="slide-panel-desc" id="slide-panel-desc"></p>
+      <a href="#" id="slide-panel-link" class="btn btn-primary" target="_blank" rel="noopener">Start class</a>
+    </div>
+  </div>
+
+  <!-- ===== HERO STYLES (scoped to this page) ===== -->
+  <style>
+    .wp-hub-scroll-wrap {
+      height: 400vh;
+      position: relative;
+    }
+
+    .wp-hub {
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 0;
+      gap: 1.5rem;
+      overflow: hidden;
+      background: var(--cream);
+    }
+
+    .wp-hub-bg-canvas {
+      position: absolute;
+      inset: 0;
+      z-index: 0;
+      pointer-events: none;
+      display: block;
+      width: 100%;
+      height: 100%;
+    }
+
+    .wp-stage {
+      position: relative;
+      width: 100%;
+      flex: 1 1 auto;
+      min-height: 0;
+      perspective: 1500px;
+      perspective-origin: 50% 50%;
+      z-index: 2;
+    }
+
+    .wp-arch {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      height: var(--wp-arch-h, 60vh);
+      width: var(--wp-arch-w, 48vh);
+      cursor: pointer;
+      transform-origin: center center;
+      will-change: transform, opacity;
+    }
+    .wp-arch svg { width: 100%; height: 100%; display: block; }
+
+    .wp-info-stack {
+      position: relative;
+      width: 100%;
+      max-width: 520px;
+      min-height: 190px;
+      text-align: center;
+      flex: 0 0 auto;
+      z-index: 2;
+      padding: 0 1rem;
+    }
+
+    .wp-info {
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 400ms ease;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.6rem;
+    }
+    .wp-info.is-active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .wp-info h2 {
+      font-family: var(--font-display);
+      font-size: clamp(1.4rem, 2vw, 1.9rem);
+      font-weight: 500;
+      color: var(--dark-grey);
+      letter-spacing: -0.015em;
+    }
+    .wp-info p {
+      font-size: 0.95rem;
+      line-height: 1.55;
+      color: var(--dark-grey);
+      opacity: 0.85;
+      max-width: 440px;
+    }
+    .wp-info-cta {
+      margin-top: 0.4rem;
+      padding: 0.8rem 1.6rem;
+      background: var(--pink);
+      color: white;
+      border-radius: 999px;
+      font-size: 0.95rem;
+      font-weight: 500;
+      text-decoration: none;
+      transition: background 200ms ease, transform 200ms ease;
+      display: inline-block;
+    }
+    .wp-info-cta:hover {
+      background: var(--pink-dark);
+      color: white;
+      transform: translateY(-1px);
+    }
+
+    .wp-dot-rail {
+      position: fixed;
+      right: 2rem;
+      top: 50%;
+      transform: translateY(-50%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.85rem;
+      z-index: 5;
+    }
+    .wp-dot {
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      border: 1px solid var(--dark-grey);
+      background: transparent;
+      cursor: pointer;
+      padding: 0;
+      transition: background 300ms ease, transform 300ms ease;
+    }
+    .wp-dot.is-active {
+      background: var(--dark-grey);
+      transform: scale(1.4);
+    }
+    .wp-dot-counter {
+      margin-top: 0.5rem;
+      font-size: 0.7rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--dark-grey);
+      opacity: 0.6;
+      font-variant-numeric: tabular-nums;
+    }
+
+    @media (max-width: 768px) {
+      .wp-dot-rail { display: none; }
+    }
+
+    /* ───────── Arch open/close overlay ─────────
+       The overlay container is a transparent positioning layer for the
+       animating arch clone. We use `visibility` (instant) instead of
+       `opacity` for the container so there's no fade-in flash when the
+       source arch hands off to the clone. */
+    .wp-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 800;
+      pointer-events: none;
+      visibility: hidden;
+    }
+    .wp-overlay.is-open {
+      visibility: visible;
+      pointer-events: auto;
+    }
+
+    .wp-overlay-arch {
+      position: fixed;
+      opacity: 1;
+      /* top/left/width/height inline-set by JS; transitions animate them.
+         opacity transitions in lockstep with the expansion so the arch
+         fades from 1 → 0 (open) or 0 → 1 (return) as it morphs. */
+      transition:
+        top    700ms cubic-bezier(0.65, 0, 0.35, 1),
+        left   700ms cubic-bezier(0.65, 0, 0.35, 1),
+        width  700ms cubic-bezier(0.65, 0, 0.35, 1),
+        height 700ms cubic-bezier(0.65, 0, 0.35, 1),
+        opacity 700ms cubic-bezier(0.65, 0, 0.35, 1);
+      will-change: top, left, width, height, opacity;
+    }
+    .wp-overlay-arch svg { width: 100%; height: 100%; display: block; }
+    .wp-overlay.is-arch-hidden .wp-overlay-arch { opacity: 0; }
+
+    /* Carousel sibling UI fades while overlay is open, lets the arch take the spotlight */
+    .wp-hub.is-arch-opening .wp-stage,
+    .wp-hub.is-arch-opening .wp-info-stack,
+    .wp-hub.is-arch-opening .wp-dot-rail {
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 400ms ease;
+    }
+    /* Hide the active arch in the carousel during overlay (clone is showing) */
+    .wp-arch.is-overlay-source { visibility: hidden; }
+  </style>
+
+  <!-- ===== HERO SCRIPT ===== -->
+  <script is:inline>
+    (() => {
+      const VIEW_W = 320;
+      const VIEW_H = 400;
+
+      const cfg = {
+        amplitude: 5,
+        frequency: 2.1,
+        speed: 0.017,
+        breathAmp: 2.5,
+        breathCycle: 5,
+        fillRatio: 92,
+        spread: 46,
+        tilt: 5,
+        sideScale: 0.59,
+        lightOp: 0.55,
+        lightSize: 0.6,
+      };
+
+      let phase = 0;
+      let activeIdx = 0;
+      const startTime = performance.now();
+
+      function buildArchPath(width, height, waveAmp, waveFreq, ph) {
+        const topPad = 2;
+        const bottomPad = 8;
+        const r = width / 2;
+        const archY = r + topPad;
+        const waveCenter = height - bottomPad;
+        const samples = 60;
+        let d = `M 0 ${archY} A ${r} ${r} 0 0 1 ${width} ${archY} L ${width} ${waveCenter}`;
+        for (let i = 0; i <= samples; i++) {
+          const x = width - (i / samples) * width;
+          const t = (i / samples) * Math.PI * 2 * waveFreq + ph;
+          const y = waveCenter + Math.sin(t) * waveAmp;
+          d += ` L ${x.toFixed(2)} ${y.toFixed(2)}`;
+        }
+        return d + ' Z';
+      }
+
+      // Overlay variant: morphs from arch+wave (morph=0) to a full rectangle (morph=1).
+      // Top dome and bottom wave both flatten in lockstep with `morph`.
+      function buildOverlayPath(width, height, waveAmp, waveFreq, ph, morph) {
+        const m = Math.max(0, Math.min(1, morph));
+        const topPad = 2 * (1 - m);
+        const bottomPad = 8 * (1 - m);
+        const r = width / 2;
+        const liveAmp = waveAmp * (1 - m);
+        const topSamples = 40;
+        let d = '';
+        for (let i = 0; i <= topSamples; i++) {
+          const x = (i / topSamples) * width;
+          const dx = x - r;
+          const archDipY = (r + topPad) - Math.sqrt(Math.max(0, r * r - dx * dx));
+          const y = archDipY * (1 - m);
+          d += (i === 0 ? 'M ' : ' L ') + x.toFixed(2) + ' ' + y.toFixed(2);
+        }
+        const baseY = height - bottomPad;
+        d += ` L ${width.toFixed(2)} ${baseY.toFixed(2)}`;
+        const bottomSamples = 60;
+        for (let i = 0; i <= bottomSamples; i++) {
+          const x = width - (i / bottomSamples) * width;
+          const t = (i / bottomSamples) * Math.PI * 2 * waveFreq + ph;
+          const y = baseY + Math.sin(t) * liveAmp;
+          d += ` L ${x.toFixed(2)} ${y.toFixed(2)}`;
+        }
+        return d + ' Z';
+      }
+
+      const paths = [0, 1, 2].map(i => document.getElementById('wpArchPath-' + i));
+      const STATIC_PHASE = [0.0, 1.7, 3.4];
+
+      function renderStatic(i) {
+        paths[i].setAttribute('d',
+          buildArchPath(VIEW_W, VIEW_H, cfg.amplitude, cfg.frequency, STATIC_PHASE[i])
+        );
+      }
+      paths.forEach((_, i) => renderStatic(i));
+
+      const bgCanvas = document.getElementById('wpHubBgCanvas');
+      const bgCtx = bgCanvas.getContext('2d');
+
+      function resizeBgCanvas() {
+        const dpr = Math.min(window.devicePixelRatio || 1, 2);
+        const w = bgCanvas.offsetWidth;
+        const h = bgCanvas.offsetHeight;
+        bgCanvas.width = w * dpr;
+        bgCanvas.height = h * dpr;
+        bgCtx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      }
+
+      function drawBackdrop(progress) {
+        const w = bgCanvas.offsetWidth;
+        const h = bgCanvas.offsetHeight;
+        if (!w || !h) return;
+
+        bgCtx.fillStyle = '#fdfbf7';
+        bgCtx.fillRect(0, 0, w, h);
+
+        const radius = Math.max(w, h) * cfg.lightSize;
+        const a = cfg.lightOp;
+
+        const l1x = w * (0.22 + progress * 0.56);
+        const l1y = h * (0.30 + progress * 0.40);
+        const g1 = bgCtx.createRadialGradient(l1x, l1y, 0, l1x, l1y, radius);
+        g1.addColorStop(0,    `rgba(255, 252, 244, ${a})`);
+        g1.addColorStop(0.45, `rgba(255, 252, 244, ${a * 0.35})`);
+        g1.addColorStop(1,    'rgba(255, 252, 244, 0)');
+        bgCtx.fillStyle = g1;
+        bgCtx.fillRect(0, 0, w, h);
+
+        const l2x = w * (0.78 - progress * 0.56);
+        const l2y = h * (0.70 - progress * 0.40);
+        const g2 = bgCtx.createRadialGradient(l2x, l2y, 0, l2x, l2y, radius * 0.85);
+        g2.addColorStop(0,    `rgba(248, 244, 232, ${a * 0.9})`);
+        g2.addColorStop(0.45, `rgba(248, 244, 232, ${a * 0.3})`);
+        g2.addColorStop(1,    'rgba(248, 244, 232, 0)');
+        bgCtx.fillStyle = g2;
+        bgCtx.fillRect(0, 0, w, h);
+      }
+
+      const archEls = Array.from(document.querySelectorAll('.wp-arch'));
+      const infoEls = Array.from(document.querySelectorAll('.wp-info'));
+      const dotEls  = Array.from(document.querySelectorAll('.wp-dot'));
+      const wrap    = document.getElementById('wpHubWrap');
+      const counter = document.getElementById('wpDotCounter');
+      const stage   = document.getElementById('wpStage');
+
+      const ARCH_MAX_WIDTH_RATIO = 0.6;
+      const ARCH_ASPECT_W_OVER_H = 0.8;
+
+      function fitArchSize() {
+        const stageH = stage.offsetHeight;
+        const stageW = stage.offsetWidth;
+        if (!stageH || !stageW) return;
+        const heightBudget = stageH * (cfg.fillRatio / 100);
+        const widthCap = (stageW * ARCH_MAX_WIDTH_RATIO) / ARCH_ASPECT_W_OVER_H;
+        const archH = Math.max(240, Math.min(heightBudget, widthCap));
+        const archW = archH * ARCH_ASPECT_W_OVER_H;
+        archEls.forEach(el => {
+          el.style.setProperty('--wp-arch-h', archH + 'px');
+          el.style.setProperty('--wp-arch-w', archW + 'px');
+        });
+      }
+
+      function wrapSlot(s) {
+        while (s > 1.5)  s -= 3;
+        while (s < -1.5) s += 3;
+        return s;
+      }
+
+      function setActive(idx) {
+        if (idx === activeIdx) return;
+        renderStatic(activeIdx);
+        activeIdx = idx;
+        infoEls.forEach((d, i) => d.classList.toggle('is-active', i === idx));
+        dotEls.forEach((d, i) => d.classList.toggle('is-active', i === idx));
+        counter.textContent = (idx + 1) + ' / 3';
+      }
+
+      function applyCarousel(scrollProgress) {
+        const cycle = scrollProgress * 2;
+        archEls.forEach((el, i) => {
+          const slot = wrapSlot(i - cycle);
+          const abs = Math.abs(slot);
+          const tx = slot * cfg.spread;
+          const ry = slot * -cfg.tilt;
+          const sc = abs >= 1 ? cfg.sideScale : 1 - (1 - cfg.sideScale) * abs;
+          let op;
+          if (abs <= 1) op = 1 - abs * 0.45;
+          else          op = Math.max(0, 0.55 - (abs - 1) * 1.1);
+          const z = 100 - Math.round(abs * 50);
+          el.style.transform =
+            `translate(-50%, -50%) translateX(${tx}vw) rotateY(${ry}deg) scale(${sc})`;
+          el.style.opacity = op.toFixed(3);
+          el.style.zIndex = z;
+        });
+        const idx = ((Math.round(cycle) % 3) + 3) % 3;
+        setActive(idx);
+      }
+
+      function tick(now) {
+        phase += cfg.speed;
+        const elapsed = (now - startTime) / 1000;
+        const breathT = (elapsed / cfg.breathCycle) * Math.PI * 2;
+        const liveAmp = cfg.amplitude + Math.sin(breathT) * cfg.breathAmp;
+        paths[activeIdx].setAttribute('d',
+          buildArchPath(VIEW_W, VIEW_H, liveAmp, cfg.frequency, phase)
+        );
+        requestAnimationFrame(tick);
+      }
+      requestAnimationFrame(tick);
+
+      function onScroll() {
+        const rect = wrap.getBoundingClientRect();
+        const total = wrap.offsetHeight - window.innerHeight;
+        const scrolled = Math.min(Math.max(-rect.top, 0), total);
+        const progress = total > 0 ? scrolled / total : 0;
+        applyCarousel(progress);
+        drawBackdrop(progress);
+      }
+      function onResize() {
+        resizeBgCanvas();
+        fitArchSize();
+        onScroll();
+      }
+      window.addEventListener('scroll', onScroll, { passive: true });
+      window.addEventListener('resize', onResize, { passive: true });
+      resizeBgCanvas();
+      fitArchSize();
+      onScroll();
+
+      function scrollToDoor(i) {
+        const total = wrap.offsetHeight - window.innerHeight;
+        const target = wrap.offsetTop + total * (i / 2) + 20;
+        window.scrollTo({ top: target, behavior: 'smooth' });
+      }
+      // Arch clicks: active arch opens the room; inactive arches scroll to focus.
+      archEls.forEach((el, i) => {
+        el.addEventListener('click', () => {
+          if (i === activeIdx) openArchAndNavigate();
+          else scrollToDoor(i);
+        });
+      });
+      dotEls.forEach((el, i) => el.addEventListener('click', () => scrollToDoor(i)));
+
+      // ─── Arch open animation + cross-page navigation ───
+      // OPEN flow:
+      //   1. Active arch's photo + clip-path animates from its slot to fullscreen
+      //      (700ms, wave amp 5 → 2). Side carousel UI fades out.
+      //   2. At fullscreen (arch covers entire viewport), sessionStorage records
+      //      which room we're entering. Page navigates to /wellness-portal/<room>.
+      //   3. Sub-page loads. Its WellnessSubpageShared script reads the sessionStorage
+      //      flag, renders the same overlay arch at fullscreen, then fades it out —
+      //      a true cross-page crossfade with the page content underneath.
+      // ENTRY (returning from sub-page):
+      //   1. Sub-page sets sessionStorage `wpArchExit` with roomIndex + photo URL.
+      //   2. Hub loads, reads the flag, scrolls carousel so that room is centered,
+      //      renders the overlay arch at fullscreen, then contracts it to slot.
+      const overlay        = document.getElementById('wpOverlay');
+      const overlayArch    = document.getElementById('wpOverlayArch');
+      const overlayImage   = document.getElementById('wpOverlayImage');
+      const overlayPath    = document.getElementById('wpOverlayPath');
+      const hub            = document.querySelector('.wp-hub');
+      const OPEN_DURATION  = 700;
+      const ROOM_PATHS = ['/wellness-portal/calm-room', '/wellness-portal/library', '/wellness-portal/wellness-experiences'];
+      let isAnimating = false;
+      let waveAnimRaf = null;
+
+      function easeInOutCubic(t) {
+        return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+      }
+
+      function animateOverlayShape(startMorph, endMorph, duration) {
+        if (waveAnimRaf) cancelAnimationFrame(waveAnimRaf);
+        const start = performance.now();
+        const staticPhase = 1.2;
+        function tick(now) {
+          const t = Math.min((now - start) / duration, 1);
+          const e = easeInOutCubic(t);
+          const morph = startMorph + (endMorph - startMorph) * e;
+          overlayPath.setAttribute('d',
+            buildOverlayPath(VIEW_W, VIEW_H, cfg.amplitude, cfg.frequency, staticPhase, morph)
+          );
+          if (t < 1) waveAnimRaf = requestAnimationFrame(tick);
+          else waveAnimRaf = null;
+        }
+        waveAnimRaf = requestAnimationFrame(tick);
+      }
+
+      function openArchAndNavigate() {
+        if (isAnimating) return;
+        isAnimating = true;
+
+        const idx = activeIdx;
+        const sourceArch = archEls[idx];
+        const sourceImage = sourceArch.querySelector('image');
+        const photoUrl = sourceImage.getAttribute('href');
+        const rect = sourceArch.getBoundingClientRect();
+
+        overlayImage.setAttribute('href', photoUrl);
+        overlayPath.setAttribute('d', paths[idx].getAttribute('d'));
+        overlayArch.style.opacity = '1';
+        overlayArch.style.top    = rect.top    + 'px';
+        overlayArch.style.left   = rect.left   + 'px';
+        overlayArch.style.width  = rect.width  + 'px';
+        overlayArch.style.height = rect.height + 'px';
+
+        sourceArch.classList.add('is-overlay-source');
+        overlay.classList.add('is-open');
+        hub.classList.add('is-arch-opening');
+
+        void overlayArch.offsetHeight;
+        requestAnimationFrame(() => {
+          overlayArch.style.top    = '0px';
+          overlayArch.style.left   = '0px';
+          overlayArch.style.width  = '100vw';
+          overlayArch.style.height = '100vh';
+          overlayArch.style.opacity = '0';
+          animateOverlayShape(0, 1, OPEN_DURATION);
+        });
+
+        // At fullscreen: hand off to sub-page via sessionStorage, then navigate.
+        // Sub-page renders the same arch fullscreen on load and fades it out.
+        setTimeout(() => {
+          sessionStorage.setItem('wpArchEntry', JSON.stringify({
+            roomIndex: idx,
+            roomImage: photoUrl
+          }));
+          window.location.href = ROOM_PATHS[idx];
+        }, OPEN_DURATION);
+      }
+
+      document.querySelectorAll('.wp-info-cta').forEach(a => {
+        a.addEventListener('click', (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          openArchAndNavigate();
+        });
+      });
+
+      // ─── Entry from sub-page: contract arch from fullscreen to slot ───
+      // Runs once on page load if sessionStorage flag is set.
+      function runEntryFromSubpage() {
+        const exitRaw = sessionStorage.getItem('wpArchExit');
+        if (!exitRaw) return;
+        sessionStorage.removeItem('wpArchExit');
+        let data;
+        try { data = JSON.parse(exitRaw); } catch (e) { return; }
+        if (!data || typeof data.roomIndex !== 'number') return;
+        const idx = data.roomIndex;
+
+        // 1. Snap carousel scroll so the target door is centered.
+        //    cycle = scrollProgress * 2 = idx → scrollProgress = idx/2
+        const total = wrap.offsetHeight - window.innerHeight;
+        const targetScroll = wrap.offsetTop + total * (idx / 2);
+        window.scrollTo({ top: targetScroll, behavior: 'instant' });
+        // Update carousel state to reflect the new scroll
+        onScroll();
+
+        const sourceArch = archEls[idx];
+
+        // 2. Render overlay arch at fullscreen covering everything (rectangle, invisible)
+        overlayImage.setAttribute('href', data.roomImage);
+        overlayPath.setAttribute('d', buildOverlayPath(VIEW_W, VIEW_H, cfg.amplitude, cfg.frequency, 1.2, 1));
+        overlayArch.style.opacity = '0';
+        overlayArch.style.top    = '0px';
+        overlayArch.style.left   = '0px';
+        overlayArch.style.width  = '100vw';
+        overlayArch.style.height = '100vh';
+
+        sourceArch.classList.add('is-overlay-source');
+        overlay.classList.add('is-open');
+        hub.classList.add('is-arch-opening');
+        isAnimating = true;
+
+        // 3. After one frame for layout to settle, compute source rect and contract
+        requestAnimationFrame(() => {
+          requestAnimationFrame(() => {
+            const rect = sourceArch.getBoundingClientRect();
+            overlayArch.style.top    = rect.top    + 'px';
+            overlayArch.style.left   = rect.left   + 'px';
+            overlayArch.style.width  = rect.width  + 'px';
+            overlayArch.style.height = rect.height + 'px';
+            overlayArch.style.opacity = '1';
+            animateOverlayShape(1, 0, OPEN_DURATION);
+            hub.classList.remove('is-arch-opening');
+
+            setTimeout(() => {
+              overlay.classList.remove('is-open');
+              sourceArch.classList.remove('is-overlay-source');
+              isAnimating = false;
+            }, OPEN_DURATION + 30);
+          });
+        });
+      }
+      runEntryFromSubpage();
+    })();
+  </script>
+
+</Layout>

@@ -1,0 +1,97 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { team } from '../data/team.js';
+
+// Everyone who isn't leadership is a volunteer. Keep this slug list in sync
+// with src/pages/team.astro, which renders the same people as leadership.
+const leadershipSlugs = [
+  'robin-bement',
+  'cecelia-machuca',
+  'debra-prince',
+  'diana-drews',
+  'cynthia-modders',
+  'kathy-hallen',
+];
+const volunteers = team.filter((p) => !leadershipSlugs.includes(p.slug));
+---
+
+<Layout title="Volunteers — Army Pink" description="The volunteers behind Army Pink — the people giving their time to ensure every survivor has a safe way out.">
+
+  <section class="tp-section" id="tp-grid">
+    <div class="tp-section-inner">
+      <h1 class="tp-display reveal-item"><span class="tp-w tp-w--pink">meet</span><span class="tp-w tp-w--orange">the</span><span class="tp-w tp-w--pink">volunteers</span></h1>
+      <div class="tp-grid">
+        {volunteers.map((person) => (
+          <button
+            type="button"
+            class="tp-card"
+            data-slug={person.slug}
+            aria-expanded="false"
+            aria-label={`${person.name}, ${person.title}. Click to read bio.`}
+          >
+            <div class="tp-card-inner">
+              <div class="tp-face tp-face--front">
+                <div class="tp-photo">
+                  <img src={person.photo} alt={person.name} loading="lazy" />
+                </div>
+                <div class="tp-meta">
+                  <h3 class="tp-name">{person.name}</h3>
+                  <p class="tp-title">{person.title}</p>
+                  <span class="tp-toggle" aria-hidden="true"></span>
+                </div>
+              </div>
+              <div class="tp-face tp-face--back">
+                <div class="tp-back-header">
+                  <div>
+                    <h3 class="tp-back-name">{person.name}</h3>
+                    <p class="tp-back-title">{person.title}</p>
+                  </div>
+                  <span class="tp-close" aria-hidden="true">×</span>
+                </div>
+                <p class="tp-bio">{person.bio}</p>
+              </div>
+            </div>
+          </button>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <script is:inline>
+    (function () {
+      const grid = document.getElementById('tp-grid');
+      if (!grid) return;
+      let active = null;
+
+      function unflip(card) {
+        if (!card) return;
+        card.classList.remove('is-flipped');
+        card.setAttribute('aria-expanded', 'false');
+      }
+
+      grid.addEventListener('click', (e) => {
+        const card = e.target.closest('.tp-card');
+        if (!card) return;
+        const isFlipped = card.classList.contains('is-flipped');
+        if (active && active !== card) unflip(active);
+        if (isFlipped) {
+          unflip(card);
+          active = null;
+        } else {
+          card.classList.add('is-flipped');
+          card.setAttribute('aria-expanded', 'true');
+          active = card;
+        }
+      });
+
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && active) {
+          unflip(active);
+          active.focus();
+          active = null;
+        }
+      });
+    })();
+  </script>
+
+</Layout>

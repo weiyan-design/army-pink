@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Army Pink — Pathway to Freedom</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body>
+
+  <!-- ===== CRISIS BANNER ===== -->
+  <div class="crisis-banner" role="complementary" aria-label="Crisis resources">
+    <p>
+      If you are in immediate danger, call <strong>911</strong>. &nbsp;
+      National DV Hotline: <a href="tel:18007997233"><strong>1-800-799-7233</strong></a> &nbsp;|&nbsp;
+      Text <strong>START</strong> to <strong>88788</strong> &nbsp;|&nbsp;
+      <a href="https://www.thehotline.org" target="_blank" rel="noopener">thehotline.org</a> &nbsp;|&nbsp;
+      Remember to <strong>clear your browser history</strong> when finished.
+    </p>
+  </div>
+
+  <!-- ===== SAFE EXIT ===== -->
+  <div class="safe-exit-wrap" role="complementary" aria-label="Safe exit">
+    <span class="safe-exit-tooltip" aria-hidden="true">Press ESC to exit</span>
+    <button class="safe-exit-btn" id="safeExitBtn" aria-label="Immediately leave this site">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+      <span>Quick Exit</span>
+    </button>
+  </div>
+
+  <!-- ===== NAVIGATION ===== -->
+  <nav class="main-nav" aria-label="Main navigation">
+    <div class="nav-inner">
+      <a href="/" class="logo" aria-label="Army Pink home">
+        <img src="img/AP_Logo.png" alt="Army Pink" class="logo-img" />
+      </a>
+      <button class="mobile-menu-toggle" aria-label="Toggle menu" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+      <ul class="nav-links">
+        <li><a href="/">Home</a></li>
+        <li><a href="/mission">Mission</a></li>
+        <li><a href="/escape-club">Escape Club</a></li>
+        <li><a href="/wellness-portal">Wellness Portal</a></li>
+        <li><a href="/partners">Partners</a></li>
+      </ul>
+      <a href="#" class="btn btn-primary nav-donate" data-donate-panel>Donate</a>
+    </div>
+  </nav>
+
+  <!-- ===== HERO ===== -->
+  <header class="hero" id="home">
+    <video class="hero-video" autoplay muted loop playsinline>
+      <source src="vid/hero-vid-2-opt.mp4" type="video/mp4" />
+    </video>
+    <div class="container">
+      <div class="hero-glass">
+        <h1>You already did the hardest part.</h1>
+        <p class="hero-sub">
+          Leaving took more courage than most people will ever understand.
+          What comes next doesn't have to be faced alone.
+        </p>
+        <div class="hero-actions">
+          <a href="#wellness" class="btn btn-primary">Pathway to Wellness</a>
+          <a href="#community" class="btn btn-ghost-light">Visit Community</a>
+        </div>
+      </div>
+    </div>
+    <svg class="hero-wave" viewBox="0 0 1440 80" preserveAspectRatio="none" aria-hidden="true">
+      <path d="M0,60 C360,0 540,80 720,40 C900,0 1080,80 1440,20 L1440,80 L0,80 Z" fill="var(--cream)"/>
+    </svg>
+  </header>
+  <div class="hero-flower-wrap">
+    <img src="img/flower-4.png" class="hero-flower" alt="" aria-hidden="true" />
+  </div>
+
+  <!-- ===== EMPOWERING SERIES ===== -->
+  <section class="section section-empowering" id="wellness">
+    <div class="container">
+      <div class="empowering-grid">
+        <div class="empowering-image reveal-item">
+          <img src="img/empowering-hero.jpg" alt="Yoga silhouette at sunset" />
+        </div>
+        <div class="empowering-text">
+          <span class="pill-label reveal-item">Empowering Series</span>
+          <h2 class="reveal-item">Your body kept you safe.<br>Now let it rest.</h2>
+          <p class="reveal-item">
+            Movement that meets you where you are, whether you're stepping onto
+            the mat for the first time or finding your way back.
+          </p>
+          <div class="thumb-row-wrap">
+            <button class="thumb-arrow thumb-arrow-prev" aria-label="Scroll left">&lsaquo;</button>
+            <div class="thumb-row">
+              <a href="https://www.doyogawithme.com/yoga-series/yoga-program-calm-chaos" target="_blank" rel="noopener" class="thumb-card reveal-item">
+                <img src="img/thumb-calm-chaos.jpg" alt="Calm in the Chaos" />
+                <div class="thumb-overlay">
+                  <span class="thumb-title">Calm in the Chaos</span>
+                  <span class="thumb-meta">Intermediate</span>
+                </div>
+              </a>
+              <a href="https://www.doyogawithme.com/yoga-series/busy-place-quiet-mind" target="_blank" rel="noopener" class="thumb-card reveal-item">
+                <img src="img/thumb-quiet-mind.jpg" alt="Busy Place Quiet Mind" />
+                <div class="thumb-overlay">
+                  <span class="thumb-title">Busy Place Quiet Mind</span>
+                  <span class="thumb-meta">All levels</span>
+                </div>
+              </a>
+              <a href="https://www.doyogawithme.com/yoga-series/inner-strength-series" target="_blank" rel="noopener" class="thumb-card reveal-item">
+                <img src="img/thumb-inner-strength.jpg" alt="Inner Strength Series" />
+                <div class="thumb-overlay">
+                  <span class="thumb-title">Inner Strength</span>
+                  <span class="thumb-meta">Intermediate</span>
+                </div>
+              </a>
+            </div>
+            <button class="thumb-arrow thumb-arrow-next" aria-label="Scroll right">&rsaquo;</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== FEATURED CLASSES ===== -->
+  <section class="section section-featured">
+    <div class="container">
+      <div class="featured-wrap">
+        <button class="thumb-arrow thumb-arrow-prev" aria-label="Scroll left">&lsaquo;</button>
+        <div class="featured-grid">
+          <a href="https://www.doyogawithme.com/content/yoga-nidra-jennifer-piercy" target="_blank" rel="noopener" class="featured-card reveal-item">
+            <span class="pill-label pill-small">Sleep Aids</span>
+            <img src="img/featured-yoga-nidra.jpg" alt="Yoga Nidra" />
+            <div class="featured-content">
+              <h3>Yoga Nidra</h3>
+              <p class="featured-meta">Guided deep relaxation</p>
+            </div>
+          </a>
+          <a href="https://www.doyogawithme.com/content/ease-into-sleep" target="_blank" rel="noopener" class="featured-card reveal-item">
+            <span class="pill-label pill-small">Sleep Aids</span>
+            <img src="img/featured-ease-sleep.jpg" alt="Ease into Sleep" />
+            <div class="featured-content">
+              <h3>Ease into Sleep</h3>
+              <p class="featured-meta">Floor-based gentle movement</p>
+            </div>
+          </a>
+          <a href="https://www.doyogawithme.com/content/intro-box-breathing" target="_blank" rel="noopener" class="featured-card reveal-item">
+            <span class="pill-label pill-small">Breathe Better</span>
+            <img src="img/featured-box-breathing.jpg" alt="Box Breathing" />
+            <div class="featured-content">
+              <h3>Box Breathing</h3>
+              <p class="featured-meta">4-count calming technique</p>
+            </div>
+          </a>
+          <a href="https://www.doyogawithme.com/content/guided-meditations-kids" target="_blank" rel="noopener" class="featured-card reveal-item">
+            <span class="pill-label pill-small">For Kids</span>
+            <img src="https://images.unsplash.com/photo-1503454537195-1dcabb73ffb9?w=600&q=80" alt="Kids Meditation" />
+            <div class="featured-content">
+              <h3>Kids Meditation</h3>
+              <p class="featured-meta">Beginner &middot; 10 min</p>
+            </div>
+          </a>
+          <a href="https://www.doyogawithme.com/content/kids-jungle-walk" target="_blank" rel="noopener" class="featured-card reveal-item">
+            <span class="pill-label pill-small">For Kids</span>
+            <img src="https://images.unsplash.com/photo-1588286840104-8957b019727f?w=600&q=80" alt="Kids Yoga" />
+            <div class="featured-content">
+              <h3>Kids Yoga</h3>
+              <p class="featured-meta">Beginner &middot; 20 min</p>
+            </div>
+          </a>
+        </div>
+        <button class="thumb-arrow thumb-arrow-next" aria-label="Scroll right">&rsaquo;</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== WELLNESS PROGRAMS ===== -->
+  <section class="section section-programs">
+    <div class="container">
+      <div class="empowering-grid empowering-grid-reversed">
+        <div class="empowering-text">
+          <span class="pill-label reveal-item">Wellness Programs</span>
+          <h2 class="reveal-item">Healing isn't one size fits all. Find what fits you.</h2>
+          <p class="reveal-item">
+            Structured programs with real support - from managing anxiety to navigating
+            life changes. Bursaries available so cost is never a barrier.
+          </p>
+          <div class="thumb-row-wrap">
+            <button class="thumb-arrow thumb-arrow-prev" aria-label="Scroll left">&lsaquo;</button>
+            <div class="thumb-row">
+              <a href="https://courses.doyogawithme.com/courses/mindful-about-menopause-support-online-program" target="_blank" rel="noopener" class="thumb-card reveal-item">
+                <img src="img/thumb-menopause.jpg" alt="Mindful about Menopause" />
+                <div class="thumb-overlay">
+                  <span class="thumb-title">Mindful about Menopause</span>
+                  <span class="thumb-meta">Program</span>
+                </div>
+              </a>
+              <a href="https://courses.doyogawithme.com/courses/let-go-of-anxiety-and-fear" target="_blank" rel="noopener" class="thumb-card reveal-item">
+                <img src="img/thumb-anxiety.jpg" alt="Let Go of Anxiety" />
+                <div class="thumb-overlay">
+                  <span class="thumb-title">Let Go of Anxiety</span>
+                  <span class="thumb-meta">Program</span>
+                </div>
+              </a>
+            </div>
+            <button class="thumb-arrow thumb-arrow-next" aria-label="Scroll right">&rsaquo;</button>
+          </div>
+        </div>
+        <div class="empowering-image reveal-item">
+          <img src="img/programs-hero.jpg" alt="Person meditating outdoors" />
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== SURVIVOR STORIES ===== -->
+  <section class="section section-stories" id="stories">
+    <div class="container">
+      <div class="stories-grid">
+        <div class="stories-text">
+          <span class="pill-label reveal-item">Survivor Stories</span>
+          <h2 class="reveal-item">Reflections From<br>Our <em>Community</em></h2>
+          <p class="reveal-item">
+            Every journey is different. These are the voices of survivors who found
+            their way forward - in their own time, on their own terms.
+          </p>
+          <a href="#" class="btn btn-primary reveal-item">Share your story</a>
+        </div>
+        <div class="stories-deck-area">
+          <div class="stories-deck" id="stories-deck">
+            <div class="story-card story-card-active" data-index="0">
+              <img src="img/story-1.png" alt="Survivor portrait" />
+            </div>
+            <div class="story-card" data-index="1">
+              <img src="img/story-2.png" alt="Survivor portrait" />
+            </div>
+            <div class="story-card" data-index="2">
+              <img src="img/story-3.png" alt="Survivor portrait" />
+            </div>
+          </div>
+          <div class="story-quote-row">
+            <button class="stories-btn stories-prev" aria-label="Previous story">
+              <i data-lucide="chevron-left" aria-hidden="true"></i>
+            </button>
+            <div class="story-quote-box" id="story-quote-box">
+              <div class="story-quote story-quote-active" data-index="0">
+                <p>"I didn't think I deserved peace. The breathing exercises helped me realize
+                  my body had been holding its breath for years. Learning to exhale again
+                  changed everything."</p>
+                <div class="story-author">
+                  <strong>Sarah M.</strong>
+                  <span>Survivor &middot; 2 years post-separation</span>
+                </div>
+              </div>
+              <div class="story-quote" data-index="1">
+                <p>"Some days I still feel the pull to go back. But the community reminded me
+                  that missing someone who hurt you doesn't make you weak - it makes you human.
+                  That changed how I talked to myself."</p>
+                <div class="story-author">
+                  <strong>A Survivor</strong>
+                  <span>Sharing anonymously</span>
+                </div>
+              </div>
+              <div class="story-quote" data-index="2">
+                <p>"The yoga sessions gave me my body back. I used to flinch at everything.
+                  Now I can sit in stillness without scanning for danger. I didn't know
+                  that was possible."</p>
+                <div class="story-author">
+                  <strong>Maria L.</strong>
+                  <span>Wellness program participant</span>
+                </div>
+              </div>
+            </div>
+            <button class="stories-btn stories-next" aria-label="Next story">
+              <i data-lucide="chevron-right" aria-hidden="true"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== ABOUT ARMY PINK ===== -->
+  <section class="section section-mission" id="mission">
+    <div class="container">
+      <div class="mission-grid">
+        <div class="mission-text">
+          <span class="overline">Our Mission</span>
+          <h2>We don't sell healing.<br>We connect you to it.</h2>
+          <p>
+            Army Pink is a 501(c)(3) nonprofit supporting domestic violence survivors
+            through safety-centered transportation, concierge support, and wellness resources.
+          </p>
+          <p>
+            Our <strong>Pathway to Freedom</strong> program provides donation-based Freedom Rides -
+            immediate safe transportation when you need it most -plus connections to
+            ongoing wellness support for the road ahead.
+          </p>
+          <p class="quiet">Based in California. Serving survivors nationwide.</p>
+        </div>
+        <div class="mission-values">
+          <div class="value">
+            <span class="value-number">01</span>
+            <div>
+              <h4>Safety First</h4>
+              <p>Every decision we make starts with your safety.</p>
+            </div>
+          </div>
+          <div class="value">
+            <span class="value-number">02</span>
+            <div>
+              <h4>Survivor-Led</h4>
+              <p>People who understand the journey shape our work.</p>
+            </div>
+          </div>
+          <div class="value">
+            <span class="value-number">03</span>
+            <div>
+              <h4>No Barriers</h4>
+              <p>Survivors never pay. Supporters make that possible.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== FOOTER ===== -->
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-grid">
+
+        <div class="footer-brand">
+          <div class="footer-logo-wrap">
+            <img src="img/AP_Logo.png" alt="Army Pink" class="logo-img" />
+          </div>
+          <p>Supporting domestic violence survivors through safety, transportation, and wellness.</p>
+          <div class="footer-social">
+            <a href="https://www.instagram.com/armypink" target="_blank" rel="noopener" aria-label="Instagram">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg>
+            </a>
+            <a href="https://www.pinterest.com/armypink/" target="_blank" rel="noopener" aria-label="Pinterest">
+              <svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M12 0C5.373 0 0 5.373 0 12c0 5.084 3.163 9.426 7.627 11.174-.105-.949-.2-2.405.042-3.441.218-.937 1.407-5.965 1.407-5.965s-.359-.719-.359-1.782c0-1.668.967-2.914 2.171-2.914 1.023 0 1.518.769 1.518 1.69 0 1.029-.655 2.568-.994 3.995-.283 1.194.599 2.169 1.777 2.169 2.133 0 3.772-2.249 3.772-5.495 0-2.873-2.064-4.882-5.012-4.882-3.414 0-5.418 2.561-5.418 5.207 0 1.031.397 2.138.893 2.738a.36.36 0 0 1 .083.345l-.333 1.36c-.053.22-.174.267-.402.161-1.499-.698-2.436-2.889-2.436-4.649 0-3.785 2.75-7.262 7.929-7.262 4.163 0 7.398 2.967 7.398 6.931 0 4.136-2.607 7.464-6.227 7.464-1.216 0-2.359-.632-2.75-1.378l-.748 2.853c-.271 1.043-1.002 2.35-1.492 3.146C9.57 23.812 10.763 24 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0z"/></svg>
+            </a>
+            <a href="https://www.youtube.com/@armypink" target="_blank" rel="noopener" aria-label="YouTube">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22.54 6.42a2.78 2.78 0 0 0-1.95-1.96C18.88 4 12 4 12 4s-6.88 0-8.59.46a2.78 2.78 0 0 0-1.95 1.96A29 29 0 0 0 1 12a29 29 0 0 0 .46 5.58A2.78 2.78 0 0 0 3.41 19.54C5.12 20 12 20 12 20s6.88 0 8.59-.46a2.78 2.78 0 0 0 1.95-1.96A29 29 0 0 0 23 12a29 29 0 0 0-.46-5.58z"/><polygon points="9.75 15.02 15.5 12 9.75 8.98 9.75 15.02" fill="currentColor" stroke="none"/></svg>
+            </a>
+            <a href="https://www.linkedin.com/company/army-pink/" target="_blank" rel="noopener" aria-label="LinkedIn">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>
+            </a>
+          </div>
+        </div>
+
+        <div class="footer-links">
+          <h4>Resources</h4>
+          <ul>
+            <li><a href="tel:18007997233">DV Hotline: 1-800-799-7233</a></li>
+            <li><a href="https://www.thehotline.org" target="_blank" rel="noopener">thehotline.org</a></li>
+            <li><a href="#">Safety Planning</a></li>
+            <li><a href="#">Crisis Text Line: Text START to 88788</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-links">
+          <h4>About</h4>
+          <ul>
+            <li><a href="/">Home</a></li>
+            <li><a href="/mission">Mission</a></li>
+            <li><a href="/escape-club">Escape Club</a></li>
+            <li><a href="/wellness-portal">Wellness Portal</a></li>
+            <li><a href="/partners">Partners</a></li>
+            <li><a href="/team">Team</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-links">
+          <h4>Connect</h4>
+          <ul>
+            <li><a href="#">Volunteer</a></li>
+            <li><a href="#">Perks</a></li>
+            <li><a href="#">FAQ</a></li>
+            <li><a href="#">Contact Us</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-links">
+          <h4>Legal</h4>
+          <ul>
+            <li><a href="#">Privacy</a></li>
+            <li><a href="#">SMS Terms &amp; Conditions</a></li>
+            <li><a href="#">Disclaimer</a></li>
+          </ul>
+        </div>
+
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; 2026 Army Pink. All rights reserved. 501(c)(3) nonprofit.</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ===== OVERLAYS (kept for future use) ===== -->
+
+  <!-- Phase 1: I just left -->
+  <div class="overlay" id="overlay-phase-1" aria-hidden="true" role="dialog" aria-label="Resources for when you just left">
+    <div class="overlay-backdrop"></div>
+    <div class="overlay-panel">
+      <button class="overlay-close" aria-label="Close">&times;</button>
+      <div class="overlay-content">
+        <span class="overline">Phase 1: Immediate Aftermath</span>
+        <h2>You're safe now. That matters.</h2>
+        <p>The confusion you're feeling - the fog, the fear, the guilt tangled with relief - is your mind processing what you survived. It's not a flaw. It's a natural response.</p>
+        <div class="carousel-row"><h3 class="carousel-label">Something gentle for your ears</h3><div class="carousel"><button class="carousel-arrow carousel-prev" aria-label="Scroll left">&lsaquo;</button><div class="carousel-track"><a href="#" class="carousel-card"><span class="carousel-type">Meditation</span><h4>Guided Meditation for Victims of Domestic Abuse</h4><p class="carousel-source">Fragrant Heart</p></a><a href="#" class="carousel-card"><span class="carousel-type">Meditation</span><h4>Grounding Meditation for Trauma</h4><p class="carousel-source">Insight Timer -Dr. Amelia Kelley</p></a><a href="#" class="carousel-card"><span class="carousel-type">Meditation</span><h4>I Am Safe: Healing from Terror/Trauma</h4><p class="carousel-source">Insight Timer</p></a><a href="#" class="carousel-card"><span class="carousel-type">Podcast</span><h4>4 Steps to Break a Trauma Bond</h4><p class="carousel-source">The Relationship Recovery Podcast -EP102</p></a><a href="#" class="carousel-card"><span class="carousel-type">Podcast</span><h4>Love and Abuse</h4><p class="carousel-source">Paul Colaianni</p></a></div><button class="carousel-arrow carousel-next" aria-label="Scroll right">&rsaquo;</button></div></div>
+        <div class="carousel-row"><h3 class="carousel-label">Words that understand</h3><div class="carousel"><button class="carousel-arrow carousel-prev" aria-label="Scroll left">&lsaquo;</button><div class="carousel-track"><a href="#" class="carousel-card"><span class="carousel-type">Article</span><h4>Stages of Recovery After Trauma</h4><p class="carousel-source">DomesticShelters.org</p></a><a href="#" class="carousel-card"><span class="carousel-type">Article</span><h4>What Is Trauma Bonding?</h4><p class="carousel-source">DomesticShelters.org</p></a><a href="#" class="carousel-card"><span class="carousel-type">Guide</span><h4>I've Left and I Need Support</h4><p class="carousel-source">Women's Aid -The Survivor's Handbook</p></a><a href="#" class="carousel-card"><span class="carousel-type">Article</span><h4>5 Powerful Self-Care Tips for Abuse and Trauma Survivors</h4><p class="carousel-source">The Hotline</p></a><a href="#" class="carousel-card"><span class="carousel-type">Guide</span><h4>Create Your Personal Safety Plan</h4><p class="carousel-source">The Hotline</p></a></div><button class="carousel-arrow carousel-next" aria-label="Scroll right">&rsaquo;</button></div></div>
+        <div class="carousel-row"><h3 class="carousel-label">Stories like yours</h3><div class="carousel"><button class="carousel-arrow carousel-prev" aria-label="Scroll left">&lsaquo;</button><div class="carousel-track"><a href="#" class="carousel-card"><span class="carousel-type">TED Talk</span><h4>Why Domestic Violence Victims Don't Leave</h4><p class="carousel-source">Leslie Morgan Steiner</p></a><a href="#" class="carousel-card"><span class="carousel-type">TEDx Talk</span><h4>I Left on a Tuesday</h4><p class="carousel-source">Chiara Lisowski</p></a><a href="#" class="carousel-card"><span class="carousel-type">YouTube Channel</span><h4>Dr. Ramani Durvasula</h4><p class="carousel-source">YouTube</p></a><a href="#" class="carousel-card"><span class="carousel-type">TEDx Talk</span><h4>Domestic Violence: What Everyone Needs to Know</h4><p class="carousel-source">Hannah Petrillo</p></a><a href="#" class="carousel-card"><span class="carousel-type">Exercise</span><h4>Trauma-Sensitive 5-4-3-2-1 Grounding Exercise</h4><p class="carousel-source">Insight Timer</p></a></div><button class="carousel-arrow carousel-next" aria-label="Scroll right">&rsaquo;</button></div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Phase 2 -->
+  <div class="overlay" id="overlay-phase-2" aria-hidden="true" role="dialog" aria-label="Resources for when you feel stuck">
+    <div class="overlay-backdrop"></div>
+    <div class="overlay-panel">
+      <button class="overlay-close" aria-label="Close">&times;</button>
+      <div class="overlay-content">
+        <span class="overline">Phase 2: The Middle</span>
+        <h2>Stuck doesn't mean broken.</h2>
+        <p>You're safe, but the weight of everything is surfacing. Grief for the relationship, anger you couldn't express before, and the question "who am I without this?" are all part of this phase.</p>
+        <div class="overlay-cards"><div class="overlay-card"><h4>Grief without closure</h4><p>You're mourning someone still alive, a relationship that held both love and violence. Society rarely validates this grief.</p></div><div class="overlay-card"><h4>Anger is arriving</h4><p>Anger was unsafe to express during the relationship. Feeling it now is healthy -even when it's frightening.</p></div><div class="overlay-card"><h4>Identity is rebuilding</h4><p>Your preferences, opinions, and sense of self were systematically eroded. Rediscovering them takes time and patience.</p></div></div>
+        <div class="overlay-resources"><h3>What might help right now</h3><a href="#wellness" class="overlay-link" data-close-overlay>Trauma-informed yoga for body reconnection &rarr;</a><a href="#wellness" class="overlay-link" data-close-overlay>Mindfulness practices for self-exploration &rarr;</a><a href="#community" class="overlay-link" data-close-overlay>Daily check-ins with the community &rarr;</a></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Phase 3 -->
+  <div class="overlay" id="overlay-phase-3" aria-hidden="true" role="dialog" aria-label="Resources for rebuilding">
+    <div class="overlay-backdrop"></div>
+    <div class="overlay-panel">
+      <button class="overlay-close" aria-label="Close">&times;</button>
+      <div class="overlay-content">
+        <span class="overline">Phase 3: Rebuilding</span>
+        <h2>You're becoming someone new.</h2>
+        <p>Rebuilding trust, setting boundaries, navigating new relationships - this phase is simultaneously liberating and terrifying. Growth and pain coexist here, and that's okay.</p>
+        <div class="overlay-cards"><div class="overlay-card"><h4>Boundaries are new</h4><p>You may swing between walls and no boundaries at all. Learning the middle ground is a practice, not a destination.</p></div><div class="overlay-card"><h4>Trust takes time</h4><p>Learning to distinguish healthy from unhealthy patterns -in others and in yourself -is part of earned secure attachment.</p></div><div class="overlay-card"><h4>Post-traumatic growth</h4><p>Deeper empathy, clarity about values, new life directions. Not universal, but possible -and it coexists with ongoing pain.</p></div></div>
+        <div class="overlay-resources"><h3>What might help right now</h3><a href="#wellness" class="overlay-link" data-close-overlay>Wellness programs for ongoing healing &rarr;</a><a href="#community" class="overlay-link" data-close-overlay>Peer support and mentorship &rarr;</a><a href="#community" class="overlay-link" data-close-overlay>Weekly community events &rarr;</a></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Wellness overlays -->
+  <div class="overlay" id="overlay-breathing" aria-hidden="true" role="dialog" aria-label="Guided breathing resources">
+    <div class="overlay-backdrop"></div>
+    <div class="overlay-panel">
+      <button class="overlay-close" aria-label="Close">&times;</button>
+      <div class="overlay-content">
+        <span class="overline">Learn to Breathe Better</span>
+        <h2>Calm starts with a single breath.</h2>
+        <p>When your body is stuck in fight-or-flight, breathing is the fastest way back to safety. These exercises are simple, short, and available anytime you need them.</p>
+        <div class="breathing-exercise" role="region" aria-label="Guided breathing exercise"><h3>Try it now: Box Breathing</h3><p>A simple grounding exercise you can use anytime. Follow the animation at your own pace.</p><div class="breath-box" id="breath-box"><div class="breath-circle" id="breath-circle"></div><p class="breath-instruction" id="breath-instruction"></p></div><button class="btn btn-outline" id="breath-toggle">Start breathing exercise</button></div>
+        <div class="overlay-cards"><a href="#" class="overlay-card overlay-card-link"><h4>Box Breathing</h4><p>A 4-count breathing technique used to slow your heart rate and regain focus.</p><span class="wellness-tag">Beginner</span></a><a href="#" class="overlay-card overlay-card-link"><h4>5 Minute Stress Relief</h4><p>A short guided breathwork session to release tension.</p><span class="wellness-tag">All levels</span></a><a href="#" class="overlay-card overlay-card-link"><h4>4-7-8 Calming Breath</h4><p>Activate your parasympathetic nervous system within minutes.</p><span class="wellness-tag">Beginner</span></a><a href="#" class="overlay-card overlay-card-link"><h4>Grounding Breathwork for Flashbacks</h4><p>A guided practice to bring you back to the present.</p><span class="wellness-tag">All levels</span></a><a href="#" class="overlay-card overlay-card-link"><h4>Morning Reset: 3 Minutes to Start Your Day</h4><p>A short breathwork routine to set a calm intention.</p><span class="wellness-tag">Beginner</span></a></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="overlay" id="overlay-yoga" aria-hidden="true" role="dialog" aria-label="Yoga and wellness resources">
+    <div class="overlay-backdrop"></div>
+    <div class="overlay-panel">
+      <button class="overlay-close" aria-label="Close">&times;</button>
+      <div class="overlay-content">
+        <span class="overline">Empowering Movement</span>
+        <h2>Reconnect with your body at your own pace.</h2>
+        <p>These classes are designed with survivors in mind. No pressure, no performance. Just gentle movement to help you feel at home in your body again.</p>
+        <h3 class="carousel-label">Empowering Series</h3>
+        <div class="overlay-cards"><a href="#" class="overlay-card overlay-card-link"><h4>Survivor Series</h4><p>Movement and mindfulness designed specifically for trauma survivors.</p><span class="wellness-tag">Multi-level</span></a><a href="#" class="overlay-card overlay-card-link"><h4>Calm in the Chaos</h4><p>Find stillness even when everything around you feels uncertain.</p><span class="wellness-tag">Intermediate</span></a><a href="#" class="overlay-card overlay-card-link"><h4>Busy Place Quiet Mind</h4><p>Grounding practices for when your environment feels overstimulating.</p><span class="wellness-tag">All levels</span></a><a href="#" class="overlay-card overlay-card-link"><h4>Back to the Mat</h4><p>A gentle re-entry for those returning to movement after a long time away.</p><span class="wellness-tag">Beginner</span></a><a href="#" class="overlay-card overlay-card-link"><h4>Inner Strength Series</h4><p>Build physical and emotional resilience through intentional practice.</p><span class="wellness-tag">Intermediate</span></a></div>
+        <h3 class="carousel-label">Calm and Strong Kids</h3>
+        <div class="overlay-cards"><a href="#" class="overlay-card overlay-card-link"><h4>Kids Meditation</h4><p>Age-appropriate mindfulness to help children process big emotions safely.</p><span class="wellness-tag">Kids</span></a><a href="#" class="overlay-card overlay-card-link"><h4>Kids Yoga</h4><p>Playful, body-positive movement for young ones who need a safe outlet.</p><span class="wellness-tag">Kids</span></a></div>
+        <h3 class="carousel-label">Wellness Programs (Bursaries Available)</h3>
+        <div class="overlay-cards"><a href="#" class="overlay-card overlay-card-link"><h4>Mindful about Menopause</h4><p>Support for navigating hormonal changes with compassion and awareness.</p><span class="wellness-tag">Program</span></a><a href="#" class="overlay-card overlay-card-link"><h4>Let Go of Anxiety</h4><p>Tools and practices for managing anxiety rooted in lived experience.</p><span class="wellness-tag">Program</span></a><a href="#" class="overlay-card overlay-card-link"><h4>Vibrant: Inflammatory Lifestyle</h4><p>Holistic practices addressing the physical toll of chronic stress and trauma.</p><span class="wellness-tag">Program</span></a></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="overlay" id="overlay-sleep" aria-hidden="true" role="dialog" aria-label="Sleep and meditation resources">
+    <div class="overlay-backdrop"></div>
+    <div class="overlay-panel">
+      <button class="overlay-close" aria-label="Close">&times;</button>
+      <div class="overlay-content">
+        <span class="overline">Rest Your Mind</span>
+        <h2>For the nights that won't quiet down.</h2>
+        <p>Hypervigilance doesn't switch off just because you're safe now. These sessions are made for the 2am moments when your body is still scanning for danger.</p>
+        <div class="overlay-cards"><a href="#" class="overlay-card overlay-card-link"><h4>Yoga Nidra: Guided Meditation for Sleep</h4><p>A deep relaxation practice that guides you into restful sleep without forcing it.</p><span class="wellness-tag">All levels</span></a><a href="#" class="overlay-card overlay-card-link"><h4>Yoga Class for Sleep</h4><p>Gentle, floor-based movement to release the tension your body holds onto at night.</p><span class="wellness-tag">Beginner</span></a><a href="#" class="overlay-card overlay-card-link"><h4>Body Scan for Letting Go</h4><p>A guided meditation releasing tension you didn't know you were carrying.</p><span class="wellness-tag">All levels</span></a><a href="#" class="overlay-card overlay-card-link"><h4>Rain Sounds with Gentle Guidance</h4><p>Soft spoken cues layered over rain sounds to ease you into rest.</p><span class="wellness-tag">Beginner</span></a><a href="#" class="overlay-card overlay-card-link"><h4>Safe Place Visualization</h4><p>Build an internal sense of safety your body can return to each night.</p><span class="wellness-tag">All levels</span></a></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== DONATE SLIDE-UP PANEL ===== -->
+  <div class="slide-panel-backdrop" id="donate-panel-backdrop"></div>
+  <div class="slide-panel donate-panel" id="donate-panel" aria-hidden="true">
+    <div class="slide-panel-handle"></div>
+    <div class="donate-panel-header">
+      <img src="img/star.svg" class="donate-deco donate-star-1" alt="" aria-hidden="true" />
+      <img src="img/star.svg" class="donate-deco donate-star-2" alt="" aria-hidden="true" />
+      <img src="img/love.svg" class="donate-hero-img" alt="Love" />
+      <img src="img/rock.svg" class="donate-deco donate-rock" alt="" aria-hidden="true" />
+    </div>
+    <div class="donate-panel-body">
+      <img src="img/butterfly.svg" class="donate-deco donate-butterfly" alt="" aria-hidden="true" />
+      <label class="donate-tier">
+        <input type="radio" name="donate-tier" value="friend" />
+        <div class="donate-tier-card">
+          <div class="donate-tier-price">$10<small>/mo</small></div>
+          <div class="donate-tier-info">
+            <strong>Friend</strong>
+            <p>Monthly impact updates and supporter badge</p>
+          </div>
+        </div>
+      </label>
+      <label class="donate-tier">
+        <input type="radio" name="donate-tier" value="escape-club" checked />
+        <div class="donate-tier-card donate-tier-featured">
+          <div class="donate-tier-price">$50<small>/mo</small></div>
+          <div class="donate-tier-info">
+            <strong>Escape Club Member</strong>
+            <p>Expert workshops, small groups, and impact reports</p>
+          </div>
+        </div>
+      </label>
+      <label class="donate-tier">
+        <input type="radio" name="donate-tier" value="champion" />
+        <div class="donate-tier-card">
+          <div class="donate-tier-price">$100+<small>/mo</small></div>
+          <div class="donate-tier-info">
+            <strong>Champion</strong>
+            <p>Advisory input, recognition, and leadership calls</p>
+          </div>
+        </div>
+      </label>
+      <div class="donate-actions">
+        <button type="button" class="btn btn-ghost donate-cancel">cancel</button>
+        <a href="#" class="btn btn-primary donate-continue">continue</a>
+      </div>
+      <p class="donate-note">Army Pink is a 501(c)(3) nonprofit. Donations are tax-deductible through our fiscal sponsor, Charity On Top.</p>
+    </div>
+  </div>
+
+  <!-- ===== CLASS SLIDE-UP PANEL ===== -->
+  <div class="slide-panel-backdrop" id="slide-panel-backdrop"></div>
+  <div class="slide-panel" id="slide-panel" aria-hidden="true">
+    <div class="slide-panel-handle"></div>
+    <div class="slide-panel-img">
+      <img id="slide-panel-img" src="" alt="" />
+    </div>
+    <div class="slide-panel-body">
+      <span class="pill-label" id="slide-panel-category"></span>
+      <h3 id="slide-panel-title"></h3>
+      <p class="slide-panel-level" id="slide-panel-level"></p>
+      <p class="slide-panel-desc" id="slide-panel-desc"></p>
+      <a href="#" id="slide-panel-link" class="btn btn-primary" target="_blank" rel="noopener">Start class</a>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+  <script>lucide.createIcons();</script>
+</body>
+</html>

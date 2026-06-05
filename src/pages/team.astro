@@ -1,0 +1,65 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { team } from '../data/team.js';
+
+// Leadership only — volunteers live on /volunteers (src/pages/volunteers.astro,
+// which uses the same leadershipSlugs list to exclude these people).
+const leadershipSlugs = [
+  'robin-bement',
+  'cecelia-machuca',
+  'debra-prince',
+  'diana-drews',
+  'cynthia-modders',
+  'kathy-hallen',
+];
+const leadership = leadershipSlugs
+  .map((slug) => team.find((p) => p.slug === slug))
+  .filter(Boolean);
+---
+
+<Layout title="Leadership — Army Pink" description="The leadership behind Army Pink — the people driving our mission to ensure every survivor has a safe way out.">
+
+  <section class="tp-hero-quote">
+    <figure class="tp-quote reveal-item">
+      <svg class="tp-quote-squiggle" viewBox="0 0 90 80" fill="none" aria-hidden="true">
+        <path d="M8 52 C 4 26, 40 14, 52 34 C 60 48, 44 60, 38 46 C 33 34, 52 28, 66 36 C 78 43, 80 22, 70 14" stroke="var(--pink)" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      <span class="tp-quote-mark" aria-hidden="true">“</span>
+      <blockquote class="tp-quote-text">
+        <span class="tp-quote-chip">
+          <img src="/img/people/robin-bement.jpg" alt="Robin Bement" loading="lazy" />
+          <span class="tp-quote-chip-meta">
+            <span class="tp-quote-chip-name">Robin Bement</span>
+            <span class="tp-quote-chip-role">Founder of Army Pink</span>
+          </span>
+        </span>
+        What stayed with me most was realizing that survivors are not lacking courage <span class="tp-quote-dot" aria-hidden="true"></span> — they are lacking the support needed to leave and rebuild their lives.
+      </blockquote>
+    </figure>
+    <a class="tp-scroll-cue" href="#tp-grid" aria-label="Scroll to meet the leadership">
+      <span class="tp-scroll-cue-text">meet the leadership</span>
+      <span class="tp-scroll-cue-arrow" aria-hidden="true"></span>
+    </a>
+  </section>
+
+  <section class="tp-section" id="tp-grid">
+    <div class="tp-section-inner">
+      <div class="tp-editorial">
+        {leadership.map((person) => (
+          <article class="tp-ed-row reveal-item">
+            <figure class="tp-ed-photo">
+              <img src={person.photo} alt={person.name} loading="lazy" />
+              <figcaption>{person.name}</figcaption>
+            </figure>
+            <div class="tp-ed-body">
+              <h3 class="tp-ed-name">{person.name}</h3>
+              <p class="tp-ed-role">{person.title}</p>
+              <div class="tp-ed-bio"><p>{person.bio}</p></div>
+            </div>
+          </article>
+        ))}
+      </div>
+    </div>
+  </section>
+
+</Layout>
