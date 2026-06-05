@@ -14,7 +14,7 @@ const navLinks = [
   { href: '/mission', label: 'Mission' },
   { href: '/team', label: 'Team' },
   { href: '/escape-club', label: 'Escape Club' },
-  { href: '/wellness-portal', label: 'Wellness Portal' },
+  { href: '/wellness-portal', label: 'Calm Room' },
   { href: '/partners', label: 'Partners' },
 ];
 const path = Astro.url.pathname.replace(/\/$/, '') || '/';
@@ -129,7 +129,7 @@ function isActive(href: string) {
             <li><a href="/">Home</a></li>
             <li><a href="/mission">Mission</a></li>
             <li><a href="/escape-club">Escape Club</a></li>
-            <li><a href="/wellness-portal">Wellness Portal</a></li>
+            <li><a href="/wellness-portal">Calm Room</a></li>
             <li><a href="/partners">Partners</a></li>
             <li><a href="/team">Team</a></li>
           </ul>
