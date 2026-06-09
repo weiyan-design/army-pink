@@ -552,6 +552,17 @@ img {
   padding: var(--space-xl) var(--space-lg);
 }
 
+/* No-card variant: same text column, no frosted box. Soft shadow keeps the
+   white copy legible over bright video frames. */
+.hero-bare {
+  max-width: 600px;
+}
+
+.hero-bare h1,
+.hero-bare .hero-sub {
+  text-shadow: 0 1px 16px rgba(0, 0, 0, 0.35);
+}
+
 .hero-flower-wrap {
   position: relative;
   z-index: 3;
@@ -3348,6 +3359,120 @@ body.overlay-open {
     margin: 0 auto;
   }
   .tp-ed-row:nth-child(even) .tp-ed-photo { order: 0; }
+}
+
+/* Category filter chips under the volunteers title. Single non-wrapping row
+   that scrolls horizontally; edge gradients + arrows appear only on overflow.
+   Mirrors the .thumb-row-wrap pattern (fade-left / fade-right toggled by JS). */
+.tp-chips-wrap {
+  position: relative;
+  margin-top: var(--space-md);
+}
+
+.tp-chips {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 0.6rem;
+  overflow-x: auto;
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+
+.tp-chips::-webkit-scrollbar {
+  display: none;
+}
+
+/* Edge fade gradients — hidden until JS adds fade-left / fade-right. */
+.tp-chips-wrap::before,
+.tp-chips-wrap::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 48px;
+  z-index: 2;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.tp-chips-wrap::before {
+  left: 0;
+  background: linear-gradient(to right, var(--cream), transparent);
+}
+
+.tp-chips-wrap::after {
+  right: 0;
+  background: linear-gradient(to left, var(--cream), transparent);
+}
+
+.tp-chips-wrap.fade-left::before,
+.tp-chips-wrap.fade-right::after {
+  opacity: 1;
+}
+
+.tp-chips-arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 3;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 1px solid var(--beige-dark);
+  background: var(--white);
+  color: var(--text);
+  font-size: 1.2rem;
+  line-height: 1;
+  cursor: pointer;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  transition: all var(--duration) var(--ease);
+}
+
+.tp-chips-arrow:hover {
+  background: var(--pink-pale);
+  border-color: var(--pink);
+}
+
+.tp-chips-arrow-prev { left: -8px; }
+.tp-chips-arrow-next { right: -8px; }
+
+.tp-chips-wrap.fade-left .tp-chips-arrow-prev,
+.tp-chips-wrap.fade-right .tp-chips-arrow-next {
+  display: flex;
+}
+
+.tp-chip {
+  flex: 0 0 auto;
+  white-space: nowrap;
+  font-family: var(--font-body);
+  font-size: 0.82rem;
+  font-weight: 500;
+  line-height: 1;
+  color: var(--text-light);
+  background: transparent;
+  border: 1px solid var(--beige-dark);
+  border-radius: 40px;
+  padding: 0.5rem 1.1rem;
+  cursor: pointer;
+  transition: color var(--duration) var(--ease),
+              background var(--duration) var(--ease),
+              border-color var(--duration) var(--ease);
+}
+
+.tp-chip:hover {
+  color: var(--pink-dark);
+  border-color: var(--pink-light);
+}
+
+.tp-chip.is-active {
+  color: var(--white);
+  background: var(--pink);
+  border-color: var(--pink);
 }
 
 .tp-grid {

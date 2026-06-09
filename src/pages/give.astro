@@ -1,23 +1,12 @@
 ---
 import Layout from '../layouts/Layout.astro';
+import WaveFlowerHero from '../components/WaveFlowerHero.astro';
 ---
 
 <Layout title="Escape Club — Army Pink" description="The Escape Club is Army Pink's community for survivors and supporters — a safe, moderated space for healing, connection, and peer support.">
 
-  <!-- PAGE HERO -->
-  <section class="page-hero">
-    <span class="pill-label reveal-item">Escape Club</span>
-    <h1 class="reveal-item">A community that understands<br>what you've been through.</h1>
-    <p class="reveal-item">
-      The Escape Club is Army Pink's private community for survivors and supporters.
-      Peer support, expert-led wellness sessions, and a space where you never have
-      to explain yourself — because everyone here already gets it.
-    </p>
-    <div class="page-hero-actions reveal-item">
-      <a href="#join" class="btn btn-primary">Join the community</a>
-      <a href="#tiers" class="btn btn-ghost">See membership options</a>
-    </div>
-  </section>
+  <!-- PAGE HERO — wavy video + scroll-rotating flower (reusable component) -->
+  <WaveFlowerHero waveFill="var(--beige)" />
 
   <!-- WHAT YOU GET -->
   <section class="section" style="background: var(--beige);">

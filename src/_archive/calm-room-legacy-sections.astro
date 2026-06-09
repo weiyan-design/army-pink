@@ -1,159 +1,153 @@
 ---
-import Layout from '../layouts/Layout.astro';
-
-const partners = [
-  {
-    name: 'Vedanta',
-    img: '/img/partner-logo/vedanta.png',
-    href: '#',
-    paras: [
-      'Spiritual & Holistic Retreats partner dedicated to healing, mindfulness, and transformation.',
-      'Together we promote inner peace, empowerment, and renewal for survivors rebuilding their lives.',
-    ],
-  },
-  {
-    name: 'Do Yoga With Me',
-    img: '/img/partner-logo/do-yoga-with-me.png',
-    href: 'https://www.doyogawithme.com',
-    paras: [
-      'An online yoga and meditation platform offering free and premium classes accessible from anywhere.',
-      'Their library curates the Calm Room’s empowering series for survivors at every phase of recovery.',
-    ],
-  },
-  {
-    name: 'Charity On Top',
-    img: '/img/partner-logo/charity-on-top.png',
-    href: '#',
-    paras: [
-      'A charity gifting platform that lets supporters turn any occasion into impact.',
-      'Donations route directly to Army Pink’s Pathway to Freedom program.',
-    ],
-  },
-  {
-    name: 'Peace Over Violence',
-    img: '/img/partner-logo/peace-over-violence.png',
-    href: '#',
-    paras: [
-      'A Los Angeles nonprofit fighting sexual, domestic, and interpersonal violence since 1971.',
-      'A trusted referral partner for survivors seeking advocacy, counseling, and crisis response.',
-    ],
-  },
-  {
-    name: 'TheraBox',
-    img: '/img/partner-logo/therabox.png',
-    href: '#',
-    paras: [
-      'A therapist-curated subscription box delivering self-care tools and mental wellness practices.',
-      'Featured items show up in monthly Escape Club care packages for members.',
-    ],
-  },
-];
+// ⚠️ ARCHIVED 2026-06-05 — NOT BUILT (files under src/_archive/ are ignored by Astro).
+//
+// The legacy content that used to sit BELOW the Calm Room video-card collection
+// on /wellness-portal: Empowering Series, Featured Classes, Wellness Programs,
+// Survivor Stories, About Army Pink, plus the resource overlays (phase 1–3,
+// breathing, yoga, sleep) and the class slide-up panel.
+//
+// Dependencies stay in place: the CSS lives in public/styles.css and the JS
+// (overlay open/close, stories deck, breathing animation, slide panel, thumb-row
+// arrows) lives in public/script.js — both untouched. So re-inserting this markup
+// brings the sections back working as-is.
+//
+// TO RESTORE: paste the markup below back into src/pages/wellness-portal.astro
+// (right after the CALM ROOM LIGHTBOX block), or drop it into another page inside
+// its <Layout>. No other changes needed.
 ---
 
-<Layout title="Army Pink — Pathway to Freedom">
-
-  <!-- ===== HERO (fullscreen sticky video — click anywhere to toggle) ===== -->
-  <section id="home" class="home-hero" aria-label="Hero video — click or press space to play and pause">
-    <video
-      class="home-hero-video-bg"
-      src="/vid/Home_Hero_Vid.mp4"
-      autoplay muted loop playsinline preload="auto"
-      aria-hidden="true"
-    ></video>
-    <div class="home-hero-frame">
-      <video
-        class="home-hero-video"
-        src="/vid/Home_Hero_Vid.mp4"
-        autoplay muted loop playsinline preload="auto"
-        aria-hidden="true"
-      ></video>
-    </div>
-    <div class="home-hero-play-overlay" aria-hidden="true">
-      <svg class="overlay-icon-play" viewBox="0 0 24 24" fill="currentColor"><polygon points="7 4 20 12 7 20 7 4"/></svg>
-      <svg class="overlay-icon-mute" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" fill="currentColor"/><line x1="23" y1="9" x2="17" y2="15"/><line x1="17" y1="9" x2="23" y2="15"/></svg>
-      <span class="overlay-hint">Click for sound</span>
-    </div>
-  </section>
-
-  <!-- ===== STATEMENT ===== -->
-  <div class="statement-scroll-wrap">
-    <section class="section-statement" id="statement">
-      <div class="container">
-        <span class="pill-label">Our Mission</span>
-        <p class="statement-text" id="statementText">Providing safe, reliable transportation to help survivors escape domestic violence and begin their path to freedom.</p>
-      </div>
-    </section>
-  </div>
-
-  <!-- ===== WELLNESS PORTAL TEASER ===== -->
-  <section class="feature-carousel feature-carousel--pink" data-feature-carousel>
-    <svg class="fc-wave" viewBox="0 0 1440 80" preserveAspectRatio="none" aria-hidden="true">
-      <path d="M0,36 C360,0 720,76 1080,36 C1260,16 1380,46 1440,36 L1440,80 L0,80 Z"/>
-    </svg>
+  <!-- ===== EMPOWERING SERIES ===== -->
+  <section class="section section-empowering" id="wellness">
     <div class="container">
-      <div class="fc-header">
-        <h2>Leaving is just the beginning.</h2>
-        <a href="/wellness-portal" class="btn btn-ghost">Start your journey</a>
-      </div>
-      <div class="fc-track">
-        <article class="fc-card is-active" data-caption="Trauma-informed yoga that helps your nervous system unwind, one breath at a time.">
-          <img src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=600&h=1000&fit=crop&q=80" alt="" loading="lazy" />
-        </article>
-        <article class="fc-card" data-caption="Mindfulness practices for the days when sitting still feels impossible.">
-          <img src="https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=600&h=1000&fit=crop&q=80" alt="" loading="lazy" />
-        </article>
-        <article class="fc-card" data-caption="Breathing exercises for the 2am moments your body refuses to settle.">
-          <img src="https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?w=600&h=1000&fit=crop&q=80" alt="" loading="lazy" />
-        </article>
-        <article class="fc-card" data-caption="Sleep practices for bodies still scanning for danger.">
-          <img src="https://images.unsplash.com/photo-1476041800959-2f6bb412c8ce?w=600&h=1000&fit=crop&q=80" alt="" loading="lazy" />
-        </article>
-        <article class="fc-card" data-caption="Movement that meets you where you are — no performance, no pressure.">
-          <img src="https://images.unsplash.com/photo-1545389336-cf090694435e?w=600&h=1000&fit=crop&q=80" alt="" loading="lazy" />
-        </article>
-      </div>
-      <div class="fc-footer">
-        <p class="fc-caption">Trauma-informed yoga that helps your nervous system unwind, one breath at a time.</p>
-        <div class="fc-controls">
-          <button class="fc-arrow fc-arrow--prev" aria-label="Previous">&lsaquo;</button>
-          <button class="fc-arrow fc-arrow--next" aria-label="Next">&rsaquo;</button>
+      <div class="empowering-grid">
+        <div class="empowering-image reveal-item">
+          <img src="/img/empowering-hero.jpg" alt="Yoga silhouette at sunset" />
+        </div>
+        <div class="empowering-text">
+          <span class="pill-label reveal-item">Empowering Series</span>
+          <h2 class="reveal-item">Your body kept you safe.<br>Now let it rest.</h2>
+          <p class="reveal-item">
+            Movement that meets you where you are, whether you're stepping onto
+            the mat for the first time or finding your way back.
+          </p>
+          <div class="thumb-row-wrap">
+            <button class="thumb-arrow thumb-arrow-prev" aria-label="Scroll left">&lsaquo;</button>
+            <div class="thumb-row">
+              <a href="https://www.doyogawithme.com/yoga-series/yoga-program-calm-chaos" target="_blank" rel="noopener" class="thumb-card reveal-item">
+                <img src="/img/thumb-calm-chaos.jpg" alt="Calm in the Chaos" />
+                <div class="thumb-overlay">
+                  <span class="thumb-title">Calm in the Chaos</span>
+                  <span class="thumb-meta">Intermediate</span>
+                </div>
+              </a>
+              <a href="https://www.doyogawithme.com/yoga-series/busy-place-quiet-mind" target="_blank" rel="noopener" class="thumb-card reveal-item">
+                <img src="/img/thumb-quiet-mind.jpg" alt="Busy Place Quiet Mind" />
+                <div class="thumb-overlay">
+                  <span class="thumb-title">Busy Place Quiet Mind</span>
+                  <span class="thumb-meta">All levels</span>
+                </div>
+              </a>
+              <a href="https://www.doyogawithme.com/yoga-series/inner-strength-series" target="_blank" rel="noopener" class="thumb-card reveal-item">
+                <img src="/img/thumb-inner-strength.jpg" alt="Inner Strength Series" />
+                <div class="thumb-overlay">
+                  <span class="thumb-title">Inner Strength</span>
+                  <span class="thumb-meta">Intermediate</span>
+                </div>
+              </a>
+            </div>
+            <button class="thumb-arrow thumb-arrow-next" aria-label="Scroll right">&rsaquo;</button>
+          </div>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- ===== ESCAPE CLUB TEASER ===== -->
-  <section class="feature-carousel feature-carousel--cream" data-feature-carousel>
-    <svg class="fc-wave" viewBox="0 0 1440 80" preserveAspectRatio="none" aria-hidden="true">
-      <path d="M0,36 C360,0 720,76 1080,36 C1260,16 1380,46 1440,36 L1440,80 L0,80 Z"/>
-    </svg>
+  <!-- ===== FEATURED CLASSES ===== -->
+  <section class="section section-featured">
     <div class="container">
-      <div class="fc-header">
-        <h2>Healing is harder alone.</h2>
-        <a href="/give" class="btn btn-ghost">Join the community</a>
+      <div class="featured-wrap">
+        <button class="thumb-arrow thumb-arrow-prev" aria-label="Scroll left">&lsaquo;</button>
+        <div class="featured-grid">
+          <a href="https://www.doyogawithme.com/content/yoga-nidra-jennifer-piercy" target="_blank" rel="noopener" class="featured-card reveal-item">
+            <span class="pill-label pill-small">Sleep Aids</span>
+            <img src="/img/featured-yoga-nidra.jpg" alt="Yoga Nidra" />
+            <div class="featured-content">
+              <h3>Yoga Nidra</h3>
+              <p class="featured-meta">Guided deep relaxation</p>
+            </div>
+          </a>
+          <a href="https://www.doyogawithme.com/content/ease-into-sleep" target="_blank" rel="noopener" class="featured-card reveal-item">
+            <span class="pill-label pill-small">Sleep Aids</span>
+            <img src="/img/featured-ease-sleep.jpg" alt="Ease into Sleep" />
+            <div class="featured-content">
+              <h3>Ease into Sleep</h3>
+              <p class="featured-meta">Floor-based gentle movement</p>
+            </div>
+          </a>
+          <a href="https://www.doyogawithme.com/content/intro-box-breathing" target="_blank" rel="noopener" class="featured-card reveal-item">
+            <span class="pill-label pill-small">Breathe Better</span>
+            <img src="/img/featured-box-breathing.jpg" alt="Box Breathing" />
+            <div class="featured-content">
+              <h3>Box Breathing</h3>
+              <p class="featured-meta">4-count calming technique</p>
+            </div>
+          </a>
+          <a href="https://www.doyogawithme.com/content/guided-meditations-kids" target="_blank" rel="noopener" class="featured-card reveal-item">
+            <span class="pill-label pill-small">For Kids</span>
+            <img src="https://images.unsplash.com/photo-1503454537195-1dcabb73ffb9?w=600&q=80" alt="Kids Meditation" />
+            <div class="featured-content">
+              <h3>Kids Meditation</h3>
+              <p class="featured-meta">Beginner &middot; 10 min</p>
+            </div>
+          </a>
+          <a href="https://www.doyogawithme.com/content/kids-jungle-walk" target="_blank" rel="noopener" class="featured-card reveal-item">
+            <span class="pill-label pill-small">For Kids</span>
+            <img src="https://images.unsplash.com/photo-1588286840104-8957b019727f?w=600&q=80" alt="Kids Yoga" />
+            <div class="featured-content">
+              <h3>Kids Yoga</h3>
+              <p class="featured-meta">Beginner &middot; 20 min</p>
+            </div>
+          </a>
+        </div>
+        <button class="thumb-arrow thumb-arrow-next" aria-label="Scroll right">&rsaquo;</button>
       </div>
-      <div class="fc-track">
-        <article class="fc-card is-active" data-caption="A community of survivors who've walked your path — meeting you in the in-between.">
-          <img src="https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=600&h=1000&fit=crop&q=80" alt="" loading="lazy" />
-        </article>
-        <article class="fc-card" data-caption="Weekly check-ins, kept small enough to feel personal.">
-          <img src="https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?w=600&h=1000&fit=crop&q=80" alt="" loading="lazy" />
-        </article>
-        <article class="fc-card" data-caption="Mentors who remember what year one felt like.">
-          <img src="https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?w=600&h=1000&fit=crop&q=80" alt="" loading="lazy" />
-        </article>
-        <article class="fc-card" data-caption="Cohorts that move at your pace — no one is left behind.">
-          <img src="https://images.unsplash.com/photo-1543269865-cbf427effbad?w=600&h=1000&fit=crop&q=80" alt="" loading="lazy" />
-        </article>
-        <article class="fc-card" data-caption="Peer support designed for the long stretch after the escape.">
-          <img src="https://images.unsplash.com/photo-1502635385003-ee1e6a1a742d?w=600&h=1000&fit=crop&q=80" alt="" loading="lazy" />
-        </article>
-      </div>
-      <div class="fc-footer">
-        <p class="fc-caption">A community of survivors who've walked your path — meeting you in the in-between.</p>
-        <div class="fc-controls">
-          <button class="fc-arrow fc-arrow--prev" aria-label="Previous">&lsaquo;</button>
-          <button class="fc-arrow fc-arrow--next" aria-label="Next">&rsaquo;</button>
+    </div>
+  </section>
+
+  <!-- ===== WELLNESS PROGRAMS ===== -->
+  <section class="section section-programs">
+    <div class="container">
+      <div class="empowering-grid empowering-grid-reversed">
+        <div class="empowering-text">
+          <span class="pill-label reveal-item">Wellness Programs</span>
+          <h2 class="reveal-item">Healing isn't one size fits all. Find what fits you.</h2>
+          <p class="reveal-item">
+            Structured programs with real support - from managing anxiety to navigating
+            life changes. Bursaries available so cost is never a barrier.
+          </p>
+          <div class="thumb-row-wrap">
+            <button class="thumb-arrow thumb-arrow-prev" aria-label="Scroll left">&lsaquo;</button>
+            <div class="thumb-row">
+              <a href="https://courses.doyogawithme.com/courses/mindful-about-menopause-support-online-program" target="_blank" rel="noopener" class="thumb-card reveal-item">
+                <img src="/img/thumb-menopause.jpg" alt="Mindful about Menopause" />
+                <div class="thumb-overlay">
+                  <span class="thumb-title">Mindful about Menopause</span>
+                  <span class="thumb-meta">Program</span>
+                </div>
+              </a>
+              <a href="https://courses.doyogawithme.com/courses/let-go-of-anxiety-and-fear" target="_blank" rel="noopener" class="thumb-card reveal-item">
+                <img src="/img/thumb-anxiety.jpg" alt="Let Go of Anxiety" />
+                <div class="thumb-overlay">
+                  <span class="thumb-title">Let Go of Anxiety</span>
+                  <span class="thumb-meta">Program</span>
+                </div>
+              </a>
+            </div>
+            <button class="thumb-arrow thumb-arrow-next" aria-label="Scroll right">&rsaquo;</button>
+          </div>
+        </div>
+        <div class="empowering-image reveal-item">
+          <img src="/img/programs-hero.jpg" alt="Person meditating outdoors" />
         </div>
       </div>
     </div>
@@ -183,9 +177,6 @@ const partners = [
             <div class="story-card" data-index="2">
               <img src="/img/story-3.png" alt="Survivor portrait" />
             </div>
-            <div class="story-card" data-index="3">
-              <img src="/img/story-4.png" alt="Survivor portrait" />
-            </div>
           </div>
           <div class="story-quote-row">
             <button class="stories-btn stories-prev" aria-label="Previous story">
@@ -193,32 +184,30 @@ const partners = [
             </button>
             <div class="story-quote-box" id="story-quote-box">
               <div class="story-quote story-quote-active" data-index="0">
-                <p>"A dream is a wish your heart makes. Army Pink has such an amazing cause
-                  helping domestic violence victims such as myself. Every survivor deserves
-                  a safe ride."</p>
+                <p>"I didn't think I deserved peace. The breathing exercises helped me realize
+                  my body had been holding its breath for years. Learning to exhale again
+                  changed everything."</p>
                 <div class="story-author">
-                  <strong>Anonymous Survivor</strong>
+                  <strong>Sarah M.</strong>
+                  <span>Survivor &middot; 2 years post-separation</span>
                 </div>
               </div>
               <div class="story-quote" data-index="1">
-                <p>"Army Pink represents something every survivor deserves: hope and a safe
-                  path forward. Knowing this support exists means more than words can express."</p>
+                <p>"Some days I still feel the pull to go back. But the community reminded me
+                  that missing someone who hurt you doesn't make you weak - it makes you human.
+                  That changed how I talked to myself."</p>
                 <div class="story-author">
-                  <strong>Anonymous Survivor</strong>
+                  <strong>A Survivor</strong>
+                  <span>Sharing anonymously</span>
                 </div>
               </div>
               <div class="story-quote" data-index="2">
-                <p>"Army Pink is a lifeline for survivors, showing them they're never alone
-                  in their fight for freedom."</p>
+                <p>"The yoga sessions gave me my body back. I used to flinch at everything.
+                  Now I can sit in stillness without scanning for danger. I didn't know
+                  that was possible."</p>
                 <div class="story-author">
-                  <strong>Anonymous Survivor</strong>
-                </div>
-              </div>
-              <div class="story-quote" data-index="3">
-                <p>"Together, we're not just supporting survivors; we're empowering them to
-                  reclaim their lives and their futures."</p>
-                <div class="story-author">
-                  <strong>Anonymous Survivor</strong>
+                  <strong>Maria L.</strong>
+                  <span>Wellness program participant</span>
                 </div>
               </div>
             </div>
@@ -227,37 +216,6 @@ const partners = [
             </button>
           </div>
         </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ===== PARTNERS ===== -->
-  <section class="partner-section">
-    <div class="partner-header">
-      <h2>We're proud to partner with</h2>
-      <a href="/partners" class="btn btn-ghost">Become A Partner</a>
-    </div>
-    <div class="partner-track-wrap">
-      <div class="partner-track" data-partner-track>
-        {[0, 1].map((setIdx) => partners.map((p) => (
-          <article class="partner-tile" data-partner aria-hidden={setIdx === 1 ? 'true' : undefined}>
-            <div class="partner-tile-inner">
-              <div class="partner-face partner-face--front">
-                <div class="partner-photo">
-                  <img src={p.img} alt="" loading="lazy" />
-                </div>
-                <h3 class="partner-name">{p.name}</h3>
-              </div>
-              <div class="partner-face partner-face--back">
-                <h3 class="partner-back-name">{p.name}</h3>
-                <div class="partner-back-body">
-                  {p.paras.map((para) => <p>{para}</p>)}
-                </div>
-                <a href={p.href} class="partner-link" target={p.href.startsWith('http') ? '_blank' : undefined} rel={p.href.startsWith('http') ? 'noopener' : undefined}>Visit Them</a>
-              </div>
-            </div>
-          </article>
-        )))}
       </div>
     </div>
   </section>
@@ -412,5 +370,3 @@ const partners = [
       <a href="#" id="slide-panel-link" class="btn btn-primary" target="_blank" rel="noopener">Start class</a>
     </div>
   </div>
-
-</Layout>
