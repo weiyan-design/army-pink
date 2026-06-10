@@ -1,0 +1,132 @@
+---
+import Layout from '../layouts/Layout.astro';
+
+// Freedom Rides process steps for the flow diagram. Each is placed by % over
+// the hand-drawn curve to match the Figma layout (node markers sit ON the curve).
+const flowSteps = [
+  { label: 'Enter pickup, destination, and survivor name', node: { left: '11.7%', top: '14.2%' }, label_pos: { left: '9.4%', top: '0%' }, w: '21%' },
+  { label: 'Advocate logs into Lyft Concierge dashboard', node: { left: '3.4%', top: '61.7%' }, label_pos: { left: '0%', top: '73%' }, w: '24%' },
+  { label: 'Ride dispatched to survivor', node: { left: '31.6%', top: '21.8%' }, label_pos: { left: '41%', top: '23%', center: true }, w: '15%' },
+  { label: 'Advocate / Army Pink coordinator monitors ride', node: { left: '61.2%', top: '86.1%' }, label_pos: { left: '45%', top: '90%', center: true }, w: '22%' },
+  { label: 'Arrival confirmation logged', node: { left: '82.3%', top: '64.2%' }, label_pos: { left: '83%', top: '82%', center: true }, w: '17%' },
+];
+
+const escapeClubBody = "The Escape Club is Army Pink's monthly giving community for supporters who want to help sustain Freedom Rides over time. Through recurring gifts, members help keep safe, discreet transportation available for survivors when transportation is the barrier between danger and the next step toward safety.";
+---
+
+<Layout title="Donate — Army Pink" description="Safe exit is a right. Join The Escape Club — Army Pink's monthly giving community sustaining Freedom Rides for survivors.">
+
+  <!-- HERO — fullscreen video on load, shrinks to 80vh on video-end or first scroll -->
+  <section class="dn-hero" id="dn-hero">
+    <video
+      class="dn-hero__vid"
+      src="/vid/safe-exit-hero.mp4"
+      poster="/img/donate/hero-poster.jpg"
+      autoplay muted playsinline preload="auto"
+      aria-label="Safe exit is a right."
+    ></video>
+    <div class="dn-wave" aria-hidden="true"></div>
+  </section>
+
+  <script is:inline>
+    (function () {
+      var hero = document.getElementById('dn-hero');
+      if (!hero) return;
+      var vid = hero.querySelector('.dn-hero__vid');
+      var done = false;
+      function shrink() {
+        if (done) return;
+        done = true;
+        hero.classList.add('is-shrunk');
+        window.removeEventListener('scroll', shrink);
+        window.removeEventListener('wheel', shrink);
+        window.removeEventListener('touchmove', shrink);
+        if (vid) vid.removeEventListener('ended', shrink);
+      }
+      if (vid) {
+        vid.addEventListener('ended', shrink);
+        // Fallback: shrink just after the clip's duration, in case 'ended' is missed
+        function scheduleFallback() {
+          if (isFinite(vid.duration) && vid.duration > 0) {
+            setTimeout(shrink, vid.duration * 1000 + 300);
+          }
+        }
+        if (vid.readyState >= 1) scheduleFallback();
+        else vid.addEventListener('loadedmetadata', scheduleFallback);
+        var p = vid.play();
+        if (p && p.catch) p.catch(function () {});
+      }
+      window.addEventListener('scroll', shrink, { passive: true });
+      window.addEventListener('wheel', shrink, { passive: true });
+      window.addEventListener('touchmove', shrink, { passive: true });
+    })();
+  </script>
+
+  <!-- SECTION 1 — one survivor reaches safety each month -->
+  <section class="dn-rides">
+    <div class="dn-rides__head">
+      <div class="dn-rides__head-inner">
+        <span class="dn-pill">The Escape Club</span>
+        <h2 class="dn-title">one survivor reaches safety <em>each month.</em></h2>
+      </div>
+    </div>
+
+    <div class="dn-rides__body">
+      <div class="dn-rides__grid">
+        <!-- LEFT: sticky looping video -->
+        <div class="dn-media">
+          <video
+            class="dn-media__vid"
+            src="/vid/impact-freedomrides.mp4"
+            autoplay muted loop playsinline preload="auto"
+            aria-label="A Freedom Ride in motion"
+          ></video>
+        </div>
+
+        <!-- RIGHT: flow diagram + copy + CTA -->
+        <div class="dn-rides__content">
+          <div class="dn-flow" role="img" aria-label="How a Freedom Ride works: enter pickup, destination and survivor name; advocate logs into the Lyft Concierge dashboard; ride dispatched to survivor; advocate and Army Pink coordinator monitor the ride; arrival confirmation logged.">
+            <img class="dn-flow__curve" src="/img/donate/flow-curve.svg" alt="" aria-hidden="true" />
+            {flowSteps.map((step, i) => (
+              <img class="dn-flow__node" src={`/img/donate/node-${i + 1}.svg`} alt="" aria-hidden="true" style={`left:${step.node.left};top:${step.node.top};`} />
+            ))}
+            {flowSteps.map((step) => (
+              <span
+                class="dn-flow__label"
+                style={`left:${step.label_pos.left};top:${step.label_pos.top};width:${step.w};${step.label_pos.center ? 'transform:translateY(-50%);' : ''}`}
+              >{step.label}</span>
+            ))}
+          </div>
+
+          <p class="dn-body">{escapeClubBody}</p>
+          <a href="#" class="dn-btn" data-donate-panel>Power Safe Exits</a>
+        </div>
+      </div>
+      <div class="dn-wave" aria-hidden="true"></div>
+    </div>
+  </section>
+
+  <!-- SECTION 2 — 200 Rides to freedom -->
+  <section class="dn-give">
+    <div class="dn-give__head">
+      <div class="dn-give__head-inner">
+        <span class="dn-pill">Pathway to Freedom</span>
+        <h2 class="dn-title">200 Rides to <em>freedom.</em></h2>
+      </div>
+    </div>
+
+    <div class="dn-give__body">
+      <div class="dn-give__grid">
+        <!-- LEFT: copy + CTA -->
+        <div class="dn-give__content">
+          <p class="dn-body dn-body--light">{escapeClubBody}</p>
+          <a href="#" class="dn-btn" data-donate-panel>Fund 200 rides</a>
+        </div>
+        <!-- RIGHT: portrait placeholder -->
+        <div class="dn-give__media" aria-hidden="true"></div>
+      </div>
+      <div class="dn-wave dn-wave--footer" aria-hidden="true"></div>
+    </div>
+  </section>
+
+</Layout>

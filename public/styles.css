@@ -187,6 +187,53 @@ img {
   color: var(--pink);
 }
 
+/* --- Nav dropdown (hover/focus on desktop) --- */
+.nav-links .has-dropdown {
+  position: relative;
+}
+
+.nav-dropdown {
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%) translateY(6px);
+  min-width: 230px;
+  list-style: none;
+  background: var(--offwhite);
+  border: 1px solid var(--beige-dark);
+  border-radius: 12px;
+  box-shadow: 0 14px 34px rgba(0, 0, 0, 0.1);
+  padding: 0.4rem;
+  display: flex;
+  flex-direction: column;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity var(--duration) var(--ease), transform var(--duration) var(--ease);
+  z-index: 1200;
+}
+
+.nav-links .has-dropdown:hover > .nav-dropdown,
+.nav-links .has-dropdown:focus-within > .nav-dropdown {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  transform: translateX(-50%) translateY(0);
+}
+
+.nav-dropdown a {
+  display: block;
+  padding: 0.55rem 0.85rem;
+  border-radius: 8px;
+  white-space: nowrap;
+  font-size: 0.88rem;
+}
+
+.nav-dropdown a:hover {
+  background: var(--cream);
+  color: var(--pink-dark);
+}
+
 .nav-cta {
   background: var(--pink);
   color: var(--white) !important;
@@ -1597,6 +1644,24 @@ button.featured-card {
 
   .nav-links.open {
     display: flex;
+  }
+
+  /* On mobile the dropdown is a static, indented nested list (no hover). */
+  .nav-dropdown {
+    position: static;
+    transform: none;
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+    min-width: 0;
+    background: transparent;
+    border: none;
+    box-shadow: none;
+    padding: 0.25rem 0 0.25rem 1rem;
+  }
+
+  .nav-dropdown a {
+    padding: 0.4rem 0;
   }
 
   .nav-donate {
@@ -4163,4 +4228,238 @@ body.overlay-open {
   .faq-icon,
   .faq-icon::before,
   .faq-icon::after { transition: none !important; }
+}
+
+/* ============================================================
+   DONATE PAGE — "Safe exit is a right" / Freedom Rides
+   (Figma: GRKqdUqt9R6Qjri126Dj7y, node 154:346)
+   Palette: cream #e7e0d6, sunny #FDD36A, blue-grey #6A7D9A,
+   ink #686565, pink #d4728c, label #b85a73, brown #533C00
+   ============================================================ */
+.dn-hero {
+  position: relative;
+  height: 100svh;
+  overflow: hidden;
+  background: #000;
+  /* shrinks from fullscreen to 80vh once the video ends or the user scrolls */
+  transition: height 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.dn-hero.is-shrunk { height: 70svh; }
+.dn-hero__vid {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+@media (prefers-reduced-motion: reduce) {
+  .dn-hero { height: 70svh; transition: none; }
+}
+
+/* Shared bits */
+.dn-pill {
+  font-family: 'Inter', sans-serif;
+  font-weight: 600;
+  font-size: 0.8rem;
+  letter-spacing: 0.02em;
+  color: #b85a73;
+}
+.dn-title {
+  font-family: 'Inter', sans-serif;
+  font-weight: 600;
+  font-size: clamp(2.2rem, 5.5vw, 4.5rem);
+  line-height: 1.08;
+  letter-spacing: -0.02em;
+  color: #686565;
+  margin: 0;
+}
+.dn-title em {
+  font-family: 'Playfair Display', serif;
+  font-style: italic;
+  font-weight: 400;
+}
+.dn-body {
+  font-size: clamp(1rem, 1.4vw, 1.4rem);
+  line-height: 1.4;
+  font-weight: 500;
+  color: #686565;
+  max-width: 590px;
+  margin: 0;
+}
+.dn-body--light { color: #fdfbf7; }
+.dn-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  align-self: flex-start;
+  background: #d4728c;
+  border: 2px solid #d4728c;
+  color: #fff;
+  font-family: 'Inter', sans-serif;
+  font-weight: 600;
+  font-size: 0.95rem;
+  padding: 0.85rem 2.1rem;
+  border-radius: 59px;
+  transition: background var(--duration) var(--ease), transform var(--duration) var(--ease);
+}
+.dn-btn:hover {
+  background: #c25f7b;
+  border-color: #c25f7b;
+  color: #fff;
+  transform: translateY(-1px);
+}
+
+/* Wavy divider stamped over the bottom edge of a colored band */
+.dn-wave {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -1px;
+  height: 60px;
+  background: #e7e0d6;
+  -webkit-mask: url('/img/donate/wave.svg') no-repeat center bottom;
+  mask: url('/img/donate/wave.svg') no-repeat center bottom;
+  -webkit-mask-size: 100% 100%;
+  mask-size: 100% 100%;
+}
+/* Last wave sits above the dark footer, so it blends into it instead of cream */
+.dn-wave--footer { background: var(--text); }
+
+/* ---- Section 1: one survivor reaches safety each month ---- */
+.dn-rides { background: #e7e0d6; }
+.dn-rides__head { background: #e7e0d6; }
+.dn-rides__head-inner {
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: clamp(3rem, 9vw, 9.4rem) var(--space-md) clamp(2rem, 5vw, 4.6rem);
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  text-align: right;
+  gap: 0.75rem;
+}
+.dn-rides__head .dn-title { max-width: 620px; }
+
+.dn-rides__body {
+  position: relative;
+  background: #FDD36A;
+}
+.dn-rides__grid {
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: clamp(2.5rem, 5vw, 4.8rem) var(--space-md) clamp(4rem, 8vw, 7.5rem);
+  display: grid;
+  grid-template-columns: minmax(0, 420px) 1fr;
+  gap: clamp(2rem, 5vw, 5rem);
+}
+/* Grid item stretches to the row height so the sticky video has travel room */
+.dn-media { position: relative; }
+.dn-media__vid {
+  position: sticky;
+  top: 50%;
+  transform: translateY(-50%);
+  display: block;
+  width: 100%;
+  aspect-ratio: 491 / 754;
+  object-fit: cover;
+  border-radius: 20px;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.18);
+}
+.dn-rides__content {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: clamp(2rem, 4vw, 3.5rem);
+}
+
+/* Freedom Rides flow diagram (curve + node markers + labels, placed by %) */
+.dn-flow {
+  position: relative;
+  width: 100%;
+  max-width: 560px;
+  aspect-ratio: 636 / 465;
+  margin-left: auto;
+  font-family: 'Inter', sans-serif;
+  font-size: clamp(8px, 1.15vw, 11px);
+  color: #533C00;
+}
+.dn-flow__curve {
+  position: absolute;
+  left: 8.4%;
+  top: 18.2%;
+  width: 87.8%;
+  height: 72.4%;
+}
+.dn-flow__node {
+  position: absolute;
+  width: 6.3%;
+  height: auto;
+  aspect-ratio: 1;
+}
+.dn-flow__label {
+  position: absolute;
+  line-height: 1.35;
+  font-weight: 400;
+}
+
+/* ---- Section 2: 200 Rides to freedom ---- */
+.dn-give { background: #e7e0d6; }
+.dn-give__head { background: #e7e0d6; }
+.dn-give__head-inner {
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: clamp(3.5rem, 11vw, 12.7rem) var(--space-md) clamp(2rem, 5vw, 5.8rem);
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.75rem;
+}
+/* keep the heading on the left half so the lifted portrait doesn't cover it */
+.dn-give__head .dn-title { max-width: 520px; }
+.dn-give__body {
+  position: relative;
+  background: #6A7D9A;
+}
+.dn-give__grid {
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: clamp(2.5rem, 5vw, 4.8rem) var(--space-md) clamp(4rem, 8vw, 7.5rem);
+  display: grid;
+  grid-template-columns: 1fr minmax(0, 420px);
+  gap: clamp(2rem, 5vw, 5rem);
+  align-items: center;
+}
+.dn-give__content {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: clamp(2rem, 4vw, 3.5rem);
+}
+.dn-give__media {
+  width: 100%;
+  aspect-ratio: 491 / 754;
+  background: #d9d9d9;
+  border-radius: 20px;
+  /* lift up to overlap the cream heading band above, like the design */
+  margin-top: clamp(-11rem, -12vw, -5rem);
+  align-self: start;
+}
+
+@media (max-width: 860px) {
+  .dn-rides__grid,
+  .dn-give__grid { grid-template-columns: 1fr; }
+  .dn-rides__head-inner { align-items: flex-start; text-align: left; }
+  /* On mobile drop the sticky pin — just show the video inline */
+  .dn-media__vid {
+    position: static;
+    transform: none;
+    max-width: 360px;
+  }
+  .dn-give__media {
+    margin-top: 0;
+    max-width: 360px;
+    order: -1;
+  }
+  .dn-flow { margin: 0 auto; }
 }

@@ -13,7 +13,12 @@ const navLinks = [
   { href: '/', label: 'Home' },
   { href: '/mission', label: 'Mission' },
   { href: '/team', label: 'Leadership' },
-  { href: '/give', label: 'Get Involved' },
+  { href: '/donate', label: 'Get Involved', children: [
+    { href: '/donate', label: 'Donate' },
+    { href: '/partners', label: 'Partner' },
+    { href: '/volunteers', label: 'Volunteer' },
+    { href: '/community', label: 'Activate your community' },
+  ] },
   { href: '/wellness-portal', label: 'Calm Room' },
   { href: '/partners', label: 'Partners' },
 ];
@@ -75,8 +80,15 @@ function isActive(href: string) {
       </button>
       <ul class="nav-links">
         {navLinks.map(link => (
-          <li>
-            <a href={link.href} aria-current={isActive(link.href) ? 'page' : undefined}>{link.label}</a>
+          <li class={link.children ? 'has-dropdown' : undefined}>
+            <a href={link.href} aria-current={isActive(link.href) ? 'page' : undefined} aria-haspopup={link.children ? 'true' : undefined}>{link.label}</a>
+            {link.children && (
+              <ul class="nav-dropdown">
+                {link.children.map(child => (
+                  <li><a href={child.href}>{child.label}</a></li>
+                ))}
+              </ul>
+            )}
           </li>
         ))}
       </ul>
@@ -128,7 +140,7 @@ function isActive(href: string) {
           <ul>
             <li><a href="/">Home</a></li>
             <li><a href="/mission">Mission</a></li>
-            <li><a href="/give">Get Involved</a></li>
+            <li><a href="/donate">Get Involved</a></li>
             <li><a href="/wellness-portal">Calm Room</a></li>
             <li><a href="/partners">Partners</a></li>
             <li><a href="/team">Leadership</a></li>
