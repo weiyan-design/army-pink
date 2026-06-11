@@ -67,9 +67,26 @@ const volunteersByCat = volunteers.map((p) => ({ ...p, category: categorize(p.ti
 
 <Layout title="Volunteers — Army Pink" description="The volunteers behind Army Pink — the people giving their time to ensure every survivor has a safe way out.">
 
+  <!-- HERO — contained blush card: heading + copy + CTA left, butterfly loop right -->
+  <section class="vol-hero">
+    <div class="vol-hero__card">
+      <div class="vol-hero__text">
+        <h1 class="tp-display vol-hero__title reveal-item"><span class="tp-w tp-w--blue">meet</span><span class="tp-w tp-w--orange">the</span><br /><span class="tp-w tp-w--blue">volunteers</span></h1>
+        <p class="vol-hero__sub reveal-item">Volunteers power every escape. Bring your skills — leave with purpose. Join the team.</p>
+        <a href="#" class="dn-btn reveal-item">Become a Volunteer</a>
+      </div>
+      <div class="vol-hero__media reveal-item">
+        <video
+          src="/vid/volunteer-hero.mp4"
+          autoplay muted loop playsinline preload="auto"
+          aria-hidden="true"
+        ></video>
+      </div>
+    </div>
+  </section>
+
   <section class="tp-section" id="tp-grid">
     <div class="tp-section-inner">
-      <h1 class="tp-display reveal-item"><span class="tp-w tp-w--pink">meet</span><span class="tp-w tp-w--orange">the</span><span class="tp-w tp-w--pink">volunteers</span></h1>
 
       <div class="tp-chips-wrap reveal-item">
         <button type="button" class="tp-chips-arrow tp-chips-arrow-prev" aria-label="Scroll categories left">‹</button>
