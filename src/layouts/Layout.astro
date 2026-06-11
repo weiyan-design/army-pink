@@ -12,15 +12,14 @@ const {
 const navLinks = [
   { href: '/', label: 'Home' },
   { href: '/mission', label: 'Mission' },
-  { href: '/team', label: 'Leadership' },
+  { href: '/wellness-portal', label: 'Calm Room' },
   { href: '/donate', label: 'Get Involved', children: [
     { href: '/donate', label: 'Donate' },
     { href: '/partners', label: 'Partner' },
     { href: '/volunteers', label: 'Volunteer' },
     { href: '/community', label: 'Activate your community' },
   ] },
-  { href: '/wellness-portal', label: 'Calm Room' },
-  { href: '/partners', label: 'Partners' },
+  { href: '/team', label: 'Leadership' },
 ];
 const path = Astro.url.pathname.replace(/\/$/, '') || '/';
 function isActive(href: string) {

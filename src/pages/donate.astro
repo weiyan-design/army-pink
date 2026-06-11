@@ -12,6 +12,15 @@ const flowSteps = [
 ];
 
 const escapeClubBody = "The Escape Club is Army Pink's monthly giving community for supporters who want to help sustain Freedom Rides over time. Through recurring gifts, members help keep safe, discreet transportation available for survivors when transportation is the barrier between danger and the next step toward safety.";
+
+// Progress tracker. Hardcoded for now; wired to a Givebutter Netlify Function
+// later (rides = floor(amount raised / $50), goal 200 = $10,000). The values
+// below are the no-JS / initial fallback state.
+const ridesFunded = 102;
+const ridesGoal = 200;
+const trackerTicks = 56;
+const trackerFilled = Math.round((ridesFunded / ridesGoal) * trackerTicks);
+const trackerPct = (ridesFunded / ridesGoal) * 100;
 ---
 
 <Layout title="Donate — Army Pink" description="Safe exit is a right. Join The Escape Club — Army Pink's monthly giving community sustaining Freedom Rides for survivors.">
@@ -93,7 +102,7 @@ const escapeClubBody = "The Escape Club is Army Pink's monthly giving community 
             {flowSteps.map((step) => (
               <span
                 class="dn-flow__label"
-                style={`left:${step.label_pos.left};top:${step.label_pos.top};width:${step.w};${step.label_pos.center ? 'transform:translateY(-50%);' : ''}`}
+                style={`left:${step.label_pos.left};top:${step.label_pos.top};${step.label_pos.center ? 'transform:translateY(-50%);' : ''}`}
               >{step.label}</span>
             ))}
           </div>
@@ -117,16 +126,114 @@ const escapeClubBody = "The Escape Club is Army Pink's monthly giving community 
 
     <div class="dn-give__body">
       <div class="dn-give__grid">
-        <!-- LEFT: copy + CTA -->
+        <!-- LEFT: copy + tracker + CTA -->
         <div class="dn-give__content">
-          <p class="dn-body dn-body--light">{escapeClubBody}</p>
+          <p class="dn-give__lead">$50 helps fund one ride. Help us reach 200 rides.</p>
+
+          <div
+            class="dn-tracker"
+            data-tracker
+            data-rides={ridesFunded}
+            data-goal={ridesGoal}
+            role="progressbar"
+            aria-valuemin="0"
+            aria-valuemax={ridesGoal}
+            aria-valuenow={ridesFunded}
+            aria-label={`${ridesFunded} of ${ridesGoal} rides funded`}
+          >
+            <div class="dn-tracker__bar">
+              <div class="dn-tracker__bubble" style={`left:${trackerPct}%`}>
+                <span class="dn-tracker__count">{ridesFunded}</span>
+                <span class="dn-tracker__label">Rides Funded</span>
+              </div>
+              {Array.from({ length: trackerTicks }).map((_, i) => (
+                <span class={`dn-tracker__tick${i < trackerFilled ? ' is-filled' : ''}`}></span>
+              ))}
+            </div>
+          </div>
+
+          <p class="dn-body dn-body--light">With an initial goal of $10,000, the campaign helps fund 200 rides; approximately $50 funds one ride to safety. Each gift supports safe, discreet transportation for survivors who need to leave unsafe environments, reach safe destinations, or access critical destinations such as shelter intake, medical care, legal support, trusted support networks, or another approved place of safety. A ride at the right time can save a life.</p>
           <a href="#" class="dn-btn" data-donate-panel>Fund 200 rides</a>
         </div>
-        <!-- RIGHT: portrait placeholder -->
-        <div class="dn-give__media" aria-hidden="true"></div>
+        <!-- RIGHT: looping portrait video -->
+        <div class="dn-give__media">
+          <video
+            class="dn-give__vid"
+            src="/vid/give-impact-loop.mp4"
+            autoplay muted loop playsinline preload="auto"
+            aria-label="Army Pink Freedom Rides impact loop"
+          ></video>
+        </div>
       </div>
       <div class="dn-wave dn-wave--footer" aria-hidden="true"></div>
     </div>
   </section>
+
+  <script is:inline>
+    (function () {
+      var tracker = document.querySelector('[data-tracker]');
+      if (!tracker) return;
+      var bubble = tracker.querySelector('.dn-tracker__bubble');
+      var countEl = tracker.querySelector('.dn-tracker__count');
+      var ticks = tracker.querySelectorAll('.dn-tracker__tick');
+      var goal = parseInt(tracker.getAttribute('data-goal'), 10) || 200;
+      var target = parseInt(tracker.getAttribute('data-rides'), 10) || 0;
+      var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      var current = 0;
+
+      function paint(rides) {
+        rides = Math.max(0, Math.min(Math.round(rides), goal));
+        current = rides;
+        var frac = goal ? rides / goal : 0;
+        var filled = Math.round(frac * ticks.length);
+        for (var i = 0; i < ticks.length; i++) {
+          ticks[i].classList.toggle('is-filled', i < filled);
+        }
+        bubble.style.left = (frac * 100) + '%';
+        countEl.textContent = rides;
+        tracker.setAttribute('aria-valuenow', rides);
+        tracker.setAttribute('aria-label', rides + ' of ' + goal + ' rides funded');
+      }
+
+      function animateTo(to) {
+        if (reduce) { paint(to); return; }
+        var from = current, start = null, dur = 1100;
+        function frame(ts) {
+          if (start === null) start = ts;
+          var p = Math.min((ts - start) / dur, 1);
+          var eased = 1 - Math.pow(1 - p, 3);
+          paint(from + (to - from) * eased);
+          if (p < 1) requestAnimationFrame(frame);
+        }
+        requestAnimationFrame(frame);
+      }
+
+      // Hook for wiring live data later (Givebutter Netlify Function):
+      //   fetch('/.netlify/functions/givebutter-progress')
+      //     .then(function (r) { return r.json(); })
+      //     .then(function (d) { tracker.setRides(Math.floor(d.raised / 50)); });
+      // Also call it after the donate popup closes for a near-live refresh.
+      tracker.setRides = function (n) { target = n; animateTo(n); };
+
+      // Reset to 0 so the count animates up cleanly when scrolled into view.
+      if (!reduce) paint(0);
+
+      var played = false;
+      if ('IntersectionObserver' in window) {
+        var io = new IntersectionObserver(function (entries) {
+          for (var i = 0; i < entries.length; i++) {
+            if (entries[i].isIntersecting && !played) {
+              played = true;
+              animateTo(target);
+              io.disconnect();
+            }
+          }
+        }, { threshold: 0.4 });
+        io.observe(tracker);
+      } else {
+        paint(target);
+      }
+    })();
+  </script>
 
 </Layout>
