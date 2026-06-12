@@ -415,7 +415,7 @@ img {
   left: 50%;
   transform: translate(-50%, -50%);
   width: min(
-    calc(100vw - 2 * var(--hero-pad)),
+    calc(80vw - 2 * var(--hero-pad)),
     calc((100svh - var(--header-h) - 2 * var(--hero-pad)) * 16 / 9)
   );
   aspect-ratio: 16 / 9;
@@ -511,7 +511,8 @@ img {
 
 /* --- Statement Section (curtain that rises over the hero) --- */
 .statement-scroll-wrap {
-  height: 200vh;
+  /* No pin — the statement scrolls through normally; the wrap only provides
+     the rounded curtain edge that rises over the sticky hero. */
   position: relative;
   z-index: 1;
   margin-top: -2.4rem;
@@ -522,15 +523,79 @@ img {
 }
 
 .section-statement {
-  position: sticky;
-  top: 0;
-  height: 100vh;
+  min-height: 60vh;
   background: var(--cream);
   padding: 0 var(--space-md);
   display: flex;
   align-items: center;
   justify-content: center;
   text-align: center;
+}
+
+/* Act layers. The mission act sits in normal flow; the quote act (currently
+   unused — re-add its markup to restore the crossfade) overlays absolutely. */
+.statement-act {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  will-change: opacity, transform;
+}
+
+.statement-act--quote {
+  position: absolute;
+  inset: 0;
+  padding: 0 var(--space-md);
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* --- Founder quote section (under the stats; blur-reveal like Our Mission) --- */
+.quote-section {
+  /* positioned + z-index so the cream bg paints over the sticky home hero */
+  position: relative;
+  z-index: 1;
+  background: var(--cream);
+  /* Same construction as .section-statement: 60vh + centering, so the air
+     above/below the quote equals the mission section's by definition. */
+  min-height: 60vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-lg) var(--space-md);
+}
+
+/* Home only: Robin's quote mirrors the mission statement's type + box —
+   same family/weight/size/line-height and the same 960px centered measure. */
+.statement-act--quote .tp-quote,
+.quote-section .tp-quote {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 0;
+}
+
+.statement-act--quote .tp-quote-text,
+.quote-section .tp-quote-text {
+  font-weight: 400;
+  font-size: clamp(1.75rem, 4vw, 3.25rem);
+  line-height: 1.3;
+  letter-spacing: -0.028em;
+  color: var(--dark-grey);
+  margin: 0 auto;
+}
+
+/* Chip sits BELOW the quote as a centered attribution (no float, so the
+   text wraps symmetrically — exactly like the mission statement). */
+.quote-section .tp-quote-chip {
+  float: none;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: fit-content;
+  margin: var(--space-md) auto 0;
+  shape-outside: none;
 }
 
 .statement-text {
@@ -558,6 +623,117 @@ img {
 .statement-space {
   display: inline-block;
   width: 0.28em;
+}
+
+/* --- Stats section: pinned intro text left, tall stat cells right --- */
+.stats-section {
+  /* Positioned + z-index so the cream bg paints OVER the sticky home hero
+     video (same trick as .statement-scroll-wrap) */
+  position: relative;
+  z-index: 1;
+  background: var(--cream);
+  padding: var(--space-2xl) var(--space-md);
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+  gap: clamp(2rem, 6vw, 6rem);
+  align-items: start;
+  max-width: 1120px;
+  margin: 0 auto;
+}
+
+/* Left text pins under the sticky nav while the cells scroll past */
+.stats-text {
+  position: sticky;
+  top: 120px;
+}
+
+.stats-text p {
+  font-size: clamp(1.05rem, 1.5vw, 1.3rem);
+  line-height: 1.65;
+  color: var(--text);
+  margin: 0;
+  max-width: 26em;
+}
+
+.stats-cells {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-items: start;
+}
+
+.stats-col {
+  display: flex;
+  flex-direction: column;
+  will-change: transform; /* JS parallax drifts the columns on scroll */
+}
+
+/* Right stack starts lower, like the reference layout */
+.stats-col--offset {
+  margin-top: clamp(2.5rem, 6vw, 4.5rem);
+  margin-left: -1px; /* share the vertical border line with the left stack */
+}
+
+.stat-cell {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 2.5rem;
+  min-height: clamp(220px, 26vw, 320px);
+  border: 1px solid var(--beige-dark);
+  background: var(--cream);
+  padding: 1.4rem 1.5rem 1.2rem;
+}
+
+/* Collapse doubled horizontal borders within a stack */
+.stats-col .stat-cell + .stat-cell {
+  border-top: 0;
+}
+
+.stat-value {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: clamp(2rem, 3.8vw, 3.4rem);
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+  color: var(--pink);
+}
+
+.stat-label {
+  font-size: clamp(0.82rem, 1.1vw, 0.95rem);
+  line-height: 1.45;
+  color: var(--text-light);
+}
+
+@media (max-width: 860px) {
+  .stats-grid {
+    grid-template-columns: 1fr;
+    gap: var(--space-lg);
+  }
+  .stats-text {
+    position: static;
+  }
+}
+
+@media (max-width: 600px) {
+  .stats-cells {
+    grid-template-columns: 1fr;
+  }
+  .stats-col--offset {
+    margin-top: 0;
+    margin-left: 0;
+  }
+  .stats-col .stat-cell {
+    border-top: 0;
+  }
+  .stats-col:first-child .stat-cell:first-child {
+    border-top: 1px solid var(--beige-dark);
+  }
+  .stat-cell {
+    min-height: 200px;
+  }
 }
 
 /* --- Wellness Portal Hero --- */
