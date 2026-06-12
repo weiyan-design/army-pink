@@ -3081,6 +3081,275 @@ body.overlay-open {
   border-top: 1px solid rgba(0, 0, 0, 0.08);
 }
 
+/* Colored display title — lowercase Playfair, tight tracking, words abut */
+.tp-display {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: clamp(2.75rem, 7vw, 5rem);
+  line-height: 1;
+  letter-spacing: -0.02em;
+  text-transform: lowercase;
+  margin: 0;
+}
+
+.tp-display .tp-w--pink { color: var(--pink); }
+.tp-display .tp-w--orange { color: var(--orange); }
+
+.tp-display--volunteers {
+  margin-top: var(--space-2xl);
+  padding-top: var(--space-xl);
+  border-top: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+/* Art-directed founder quote — oversized mark, inline avatar chip, brand accents.
+   Scales fluidly: clamp()-driven type + a chip that floats into the text and
+   stacks above it at narrow widths. */
+/* Full-viewport landing quote — fills the screen on load, scroll reveals team. */
+.tp-hero-quote {
+  min-height: 80vh;
+  min-height: 80svh;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: clamp(5rem, 12vh, 9rem) var(--space-md) var(--space-lg);
+  position: relative;
+  background: var(--offwhite);
+}
+
+.tp-quote {
+  position: relative;
+  max-width: 1120px;
+  margin: auto;
+  padding-top: clamp(2.5rem, 7vw, 4.5rem);
+  text-align: center;
+}
+
+/* Scroll cue pinned near the bottom of the landing viewport. */
+.tp-scroll-cue {
+  position: absolute;
+  bottom: clamp(1.5rem, 4vh, 3rem);
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  text-decoration: none;
+  color: var(--text-muted);
+}
+
+.tp-scroll-cue-text {
+  font-family: var(--font-body);
+  font-size: 0.7rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+.tp-scroll-cue-arrow {
+  width: 14px;
+  height: 14px;
+  border-right: 2px solid currentColor;
+  border-bottom: 2px solid currentColor;
+  transform: rotate(45deg);
+  animation: tp-cue-bounce 1.8s var(--ease) infinite;
+}
+
+@keyframes tp-cue-bounce {
+  0%, 100% { transform: rotate(45deg) translate(0, 0); }
+  50% { transform: rotate(45deg) translate(3px, 3px); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tp-scroll-cue-arrow { animation: none; }
+}
+
+/* Ghosted oversized opening quotation mark, tinted with brand pink. */
+.tp-quote-mark {
+  position: absolute;
+  top: clamp(-0.6rem, -1vw, -0.2rem);
+  left: 50%;
+  transform: translateX(-50%);
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: clamp(7rem, 18vw, 13rem);
+  line-height: 1;
+  color: var(--pink-light);
+  opacity: 0.65;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Loose hand-drawn squiggle, upper-right of the mark. */
+.tp-quote-squiggle {
+  position: absolute;
+  top: clamp(0.5rem, 2vw, 1.5rem);
+  right: clamp(4%, 8vw, 12%);
+  width: clamp(48px, 8vw, 84px);
+  height: auto;
+  opacity: 0.9;
+  z-index: 0;
+}
+
+/* CSS vars don't resolve in SVG presentation attributes — set stroke here. */
+.tp-quote-squiggle path {
+  stroke: var(--pink);
+}
+
+.tp-quote-text {
+  position: relative;
+  z-index: 1;
+  display: flow-root; /* contain the floated chip */
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: clamp(2.9rem, 7.2vw, 5.2rem);
+  line-height: 1;
+  color: var(--text);
+  letter-spacing: -0.01em;
+}
+
+/* Avatar chip floats into the text flow; text wraps beside it. */
+.tp-quote-chip {
+  float: left;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin: 0.4em 0.9rem 0.2rem 0;
+  padding: 0;
+  shape-outside: inset(0 round 14px);
+}
+
+.tp-quote-chip img {
+  width: clamp(52px, 8vw, 76px);
+  height: clamp(52px, 8vw, 76px);
+  border-radius: 14px;
+  object-fit: cover;
+  /* Full colour — deliberately not the grayscale card treatment. */
+  filter: none;
+  flex-shrink: 0;
+}
+
+.tp-quote-chip-meta {
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+  line-height: 1.25;
+}
+
+.tp-quote-chip-name {
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: clamp(0.85rem, 1.4vw, 1rem);
+  color: var(--text);
+}
+
+.tp-quote-chip-role {
+  font-family: var(--font-body);
+  font-weight: 400;
+  font-size: clamp(0.72rem, 1.2vw, 0.85rem);
+  color: var(--text-muted);
+}
+
+/* Small inline orange dot accent. */
+.tp-quote-dot {
+  display: inline-block;
+  width: 0.42em;
+  height: 0.42em;
+  border-radius: 50%;
+  background: var(--orange);
+  vertical-align: middle;
+  margin: 0 0.1em;
+}
+
+/* Narrow screens: chip sits centered above the quote instead of floating. */
+@media (max-width: 600px) {
+  .tp-quote-chip {
+    float: none;
+    justify-content: center;
+    margin: 0 auto 1.2rem;
+  }
+}
+
+/* --- Editorial leadership rows — alternating left/right photo + bio --- */
+.tp-editorial {
+  margin-top: var(--space-xl);
+  display: flex;
+  flex-direction: column;
+  gap: clamp(3.5rem, 8vw, 7rem);
+}
+
+.tp-ed-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: clamp(1.5rem, 5vw, 4rem);
+  align-items: center;
+}
+
+/* Odd rows flip: text on the left, photo on the right. */
+.tp-ed-row:nth-child(even) .tp-ed-photo { order: 2; }
+
+.tp-ed-photo {
+  margin: 0;
+}
+
+.tp-ed-photo img {
+  width: 100%;
+  aspect-ratio: 4 / 5;
+  object-fit: cover;
+  display: block;
+  border-radius: 1.25rem;
+}
+
+.tp-ed-photo figcaption {
+  margin-top: 0.75rem;
+  text-align: center;
+  font-family: var(--font-body);
+  font-size: 0.72rem;
+  letter-spacing: 0.04em;
+  color: var(--text-muted);
+}
+
+.tp-ed-name {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: clamp(1.6rem, 3vw, 2.4rem);
+  line-height: 1.1;
+  color: var(--text);
+  margin: 0;
+  padding-bottom: 0.15em;
+  border-bottom: 1px solid var(--pink-light);
+  display: inline-block;
+}
+
+.tp-ed-role {
+  font-family: var(--font-body);
+  font-size: clamp(0.85rem, 1.4vw, 1rem);
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  color: var(--pink-dark);
+  margin: 0.6rem 0 var(--space-sm);
+}
+
+.tp-ed-bio p {
+  font-size: clamp(0.95rem, 1.3vw, 1.05rem);
+  line-height: 1.75;
+  color: var(--text-light);
+  margin: 0;
+}
+
+/* Stack on narrow screens; photo always on top, equal order. */
+@media (max-width: 760px) {
+  .tp-ed-row {
+    grid-template-columns: 1fr;
+    gap: var(--space-md);
+    max-width: 520px;
+    margin: 0 auto;
+  }
+  .tp-ed-row:nth-child(even) .tp-ed-photo { order: 0; }
+}
+
 .tp-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
