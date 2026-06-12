@@ -61,6 +61,13 @@ export const team = [
     sourcePhoto: "https://images.squarespace-cdn.com/content/v1/67b1835d7acc0b372c824b90/68231ec8-097e-4609-8a37-da4740bc2568/kathy.png",
   },
   {
+    slug: "liliana-pettenkofer",
+    name: "Liliana Pettenkofer",
+    title: "Fractional CMO",
+    bio: "Liliana Pettenkofer leads Army Pink's marketing and communications strategy as Fractional CMO, bringing extensive experience in brand development, audience engagement, and mission-driven storytelling. She is focused on building a clear and cohesive public presence that expands awareness, strengthens partnerships, and supports sustainable growth. Her leadership ensures that all messaging is aligned, impactful, and designed to connect meaningfully with survivors and supporters while advancing the organization's long-term visibility and reach.",
+    photo: "/img/people/liliana-pettenkofer.jpg",
+  },
+  {
     slug: "bill-hensley",
     name: "Bill Hensley",
     title: "Founding Director",

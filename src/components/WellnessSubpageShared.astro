@@ -1,0 +1,545 @@
+---
+// Shared shell for wellness-portal sub-pages.
+// Each room (Calm Room, Library, Wellness Programs) passes its own props.
+// Navigation chrome on sub-pages:
+//   - Desktop: door switcher trio (sticky below nav) + end-of-page room invitation
+//   - Mobile:  top breadcrumb only
+interface Props {
+  roomIndex: number;
+  roomTitle: string;
+  roomImage: string;
+}
+const { roomIndex, roomTitle, roomImage } = Astro.props;
+
+const ROOMS = [
+  {
+    index: 0,
+    short: 'Calm Room',
+    title: 'The Calm Room',
+    desc: 'Pause and ground. Soft soundscapes, breathing, and quiet visuals.',
+    image: 'https://images.unsplash.com/photo-1545389336-cf090694435e?w=900&q=80',
+    url: '/wellness-portal/calm-room'
+  },
+  {
+    index: 1,
+    short: 'Pathway to Freedom',
+    title: 'Pathway to Freedom Library',
+    desc: 'Workbooks, guides, and the flagship 28-Day Journey.',
+    image: 'https://images.unsplash.com/photo-1499209974431-9dddcece7f88?w=900&q=80',
+    url: '/wellness-portal/library'
+  },
+  {
+    index: 2,
+    short: 'Wellness Programs',
+    title: 'Wellness Programs',
+    desc: 'One-year free access to partner platforms and guided practices.',
+    image: 'https://images.unsplash.com/photo-1506126613408-eca07ce68773?w=900&q=80',
+    url: '/wellness-portal/wellness-experiences'
+  }
+];
+const otherRooms = ROOMS.filter(r => r.index !== roomIndex);
+---
+
+<!-- ===== ENTRY / EXIT OVERLAY ARCH ===== -->
+<div class="wpsub-overlay" id="wpsubOverlay" aria-hidden="true">
+  <div class="wpsub-overlay-arch" id="wpsubOverlayArch">
+    <svg viewBox="0 0 320 400" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
+      <defs>
+        <clipPath id="wpsubOverlayClip" clipPathUnits="userSpaceOnUse">
+          <path id="wpsubOverlayPath" d="" />
+        </clipPath>
+      </defs>
+      <image id="wpsubOverlayImage" href={roomImage}
+             x="0" y="0" width="320" height="400"
+             preserveAspectRatio="xMidYMid slice"
+             clip-path="url(#wpsubOverlayClip)" />
+    </svg>
+  </div>
+</div>
+
+<!-- ===== DOOR SWITCHER (DESKTOP) ===== -->
+<nav class="wpsub-switcher" aria-label="Wellness Portal rooms">
+  <div class="wpsub-switcher-inner">
+    <a href="/wellness-portal" class="wpsub-switcher-hub" data-nav="hub">
+      <span class="wpsub-hub-icon" aria-hidden="true">◀</span>
+      <span>Wellness Portal</span>
+    </a>
+    <div class="wpsub-switcher-rooms">
+      {ROOMS.map(room => (
+        <a
+          href={room.url}
+          class={`wpsub-switcher-room ${room.index === roomIndex ? 'is-active' : ''}`}
+          data-nav="room"
+          data-index={room.index}
+          data-image={room.image}
+        >
+          <svg class="wpsub-mini-arch" viewBox="0 0 24 30" aria-hidden="true">
+            <path d="M2 14 A10 10 0 0 1 22 14 L22 27 L2 27 Z" />
+          </svg>
+          <span class="wpsub-switcher-label">{room.short}</span>
+        </a>
+      ))}
+    </div>
+  </div>
+</nav>
+
+<!-- ===== BREADCRUMB (MOBILE) ===== -->
+<nav class="wpsub-breadcrumb" aria-label="Breadcrumb">
+  <a href="/wellness-portal" data-nav="hub">Wellness Portal</a>
+  <span class="wpsub-breadcrumb-sep" aria-hidden="true">›</span>
+  <span class="wpsub-breadcrumb-current" aria-current="page">{roomTitle}</span>
+</nav>
+
+<!-- ===== ROOM HEADER ===== -->
+<header class="wpsub-hero">
+  <div class="container">
+    <span class="pill-label">Wellness Portal</span>
+    <h1>{roomTitle}</h1>
+    <p>Placeholder content — same Empowering, Featured, and Wellness Programs rows on all three rooms for now. Room-specific content comes later.</p>
+  </div>
+</header>
+
+<!-- ===== EMPOWERING SERIES (placeholder shared content) ===== -->
+<section class="section section-empowering">
+  <div class="container">
+    <div class="empowering-grid">
+      <div class="empowering-image">
+        <img src="/img/empowering-hero.jpg" alt="Yoga silhouette at sunset" />
+      </div>
+      <div class="empowering-text">
+        <span class="pill-label">Empowering Series</span>
+        <h2>Your body kept you safe.<br>Now let it rest.</h2>
+        <p>
+          Movement that meets you where you are, whether you're stepping onto
+          the mat for the first time or finding your way back.
+        </p>
+        <div class="thumb-row-wrap">
+          <button class="thumb-arrow thumb-arrow-prev" aria-label="Scroll left">&lsaquo;</button>
+          <div class="thumb-row">
+            <a href="https://www.doyogawithme.com/yoga-series/yoga-program-calm-chaos" target="_blank" rel="noopener" class="thumb-card">
+              <img src="/img/thumb-calm-chaos.jpg" alt="Calm in the Chaos" />
+              <div class="thumb-overlay">
+                <span class="thumb-title">Calm in the Chaos</span>
+                <span class="thumb-meta">Intermediate</span>
+              </div>
+            </a>
+            <a href="https://www.doyogawithme.com/yoga-series/busy-place-quiet-mind" target="_blank" rel="noopener" class="thumb-card">
+              <img src="/img/thumb-quiet-mind.jpg" alt="Busy Place Quiet Mind" />
+              <div class="thumb-overlay">
+                <span class="thumb-title">Busy Place Quiet Mind</span>
+                <span class="thumb-meta">All levels</span>
+              </div>
+            </a>
+            <a href="https://www.doyogawithme.com/yoga-series/inner-strength-series" target="_blank" rel="noopener" class="thumb-card">
+              <img src="/img/thumb-inner-strength.jpg" alt="Inner Strength Series" />
+              <div class="thumb-overlay">
+                <span class="thumb-title">Inner Strength</span>
+                <span class="thumb-meta">Intermediate</span>
+              </div>
+            </a>
+          </div>
+          <button class="thumb-arrow thumb-arrow-next" aria-label="Scroll right">&rsaquo;</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== FEATURED CLASSES (placeholder shared content) ===== -->
+<section class="section section-featured">
+  <div class="container">
+    <div class="featured-wrap">
+      <button class="thumb-arrow thumb-arrow-prev" aria-label="Scroll left">&lsaquo;</button>
+      <div class="featured-grid">
+        <a href="https://www.doyogawithme.com/content/yoga-nidra-jennifer-piercy" target="_blank" rel="noopener" class="featured-card">
+          <span class="pill-label pill-small">Sleep Aids</span>
+          <img src="/img/featured-yoga-nidra.jpg" alt="Yoga Nidra" />
+          <div class="featured-content">
+            <h3>Yoga Nidra</h3>
+            <p class="featured-meta">Guided deep relaxation</p>
+          </div>
+        </a>
+        <a href="https://www.doyogawithme.com/content/ease-into-sleep" target="_blank" rel="noopener" class="featured-card">
+          <span class="pill-label pill-small">Sleep Aids</span>
+          <img src="/img/featured-ease-sleep.jpg" alt="Ease into Sleep" />
+          <div class="featured-content">
+            <h3>Ease into Sleep</h3>
+            <p class="featured-meta">Floor-based gentle movement</p>
+          </div>
+        </a>
+        <a href="https://www.doyogawithme.com/content/intro-box-breathing" target="_blank" rel="noopener" class="featured-card">
+          <span class="pill-label pill-small">Breathe Better</span>
+          <img src="/img/featured-box-breathing.jpg" alt="Box Breathing" />
+          <div class="featured-content">
+            <h3>Box Breathing</h3>
+            <p class="featured-meta">4-count calming technique</p>
+          </div>
+        </a>
+        <a href="https://www.doyogawithme.com/content/guided-meditations-kids" target="_blank" rel="noopener" class="featured-card">
+          <span class="pill-label pill-small">For Kids</span>
+          <img src="https://images.unsplash.com/photo-1503454537195-1dcabb73ffb9?w=600&q=80" alt="Kids Meditation" />
+          <div class="featured-content">
+            <h3>Kids Meditation</h3>
+            <p class="featured-meta">Beginner &middot; 10 min</p>
+          </div>
+        </a>
+        <a href="https://www.doyogawithme.com/content/kids-jungle-walk" target="_blank" rel="noopener" class="featured-card">
+          <span class="pill-label pill-small">For Kids</span>
+          <img src="https://images.unsplash.com/photo-1588286840104-8957b019727f?w=600&q=80" alt="Kids Yoga" />
+          <div class="featured-content">
+            <h3>Kids Yoga</h3>
+            <p class="featured-meta">Beginner &middot; 20 min</p>
+          </div>
+        </a>
+      </div>
+      <button class="thumb-arrow thumb-arrow-next" aria-label="Scroll right">&rsaquo;</button>
+    </div>
+  </div>
+</section>
+
+<!-- ===== WELLNESS PROGRAMS (placeholder shared content) ===== -->
+<section class="section section-programs">
+  <div class="container">
+    <div class="empowering-grid empowering-grid-reversed">
+      <div class="empowering-text">
+        <span class="pill-label">Wellness Programs</span>
+        <h2>Healing isn't one size fits all. Find what fits you.</h2>
+        <p>
+          Structured programs with real support - from managing anxiety to navigating
+          life changes. Bursaries available so cost is never a barrier.
+        </p>
+        <div class="thumb-row-wrap">
+          <button class="thumb-arrow thumb-arrow-prev" aria-label="Scroll left">&lsaquo;</button>
+          <div class="thumb-row">
+            <a href="https://courses.doyogawithme.com/courses/mindful-about-menopause-support-online-program" target="_blank" rel="noopener" class="thumb-card">
+              <img src="/img/thumb-menopause.jpg" alt="Mindful about Menopause" />
+              <div class="thumb-overlay">
+                <span class="thumb-title">Mindful about Menopause</span>
+                <span class="thumb-meta">Program</span>
+              </div>
+            </a>
+            <a href="https://courses.doyogawithme.com/courses/let-go-of-anxiety-and-fear" target="_blank" rel="noopener" class="thumb-card">
+              <img src="/img/thumb-anxiety.jpg" alt="Let Go of Anxiety" />
+              <div class="thumb-overlay">
+                <span class="thumb-title">Let Go of Anxiety</span>
+                <span class="thumb-meta">Program</span>
+              </div>
+            </a>
+          </div>
+          <button class="thumb-arrow thumb-arrow-next" aria-label="Scroll right">&rsaquo;</button>
+        </div>
+      </div>
+      <div class="empowering-image">
+        <img src="/img/programs-hero.jpg" alt="Person meditating outdoors" />
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== END-OF-PAGE ROOM INVITATION (DESKTOP) ===== -->
+<section class="wpsub-also-rooms">
+  <div class="container">
+    <div class="wpsub-also-rooms-head">
+      <span class="pill-label">Continue</span>
+      <h2>Or step into another room</h2>
+    </div>
+    <div class="wpsub-also-rooms-grid">
+      {otherRooms.map(room => (
+        <a
+          href={room.url}
+          class="wpsub-room-card"
+          data-nav="room"
+          data-index={room.index}
+          data-image={room.image}
+        >
+          <div class="wpsub-room-card-photo" style={`background-image: url(${room.image});`}></div>
+          <div class="wpsub-room-card-body">
+            <h3>{room.title}</h3>
+            <p>{room.desc}</p>
+            <span class="wpsub-room-card-cta">Step inside →</span>
+          </div>
+        </a>
+      ))}
+    </div>
+  </div>
+</section>
+
+<!-- ===== STYLES ===== -->
+<style>
+  /* Room header strip */
+  .wpsub-hero {
+    padding: 6rem 0 3rem;
+    background: var(--cream);
+    text-align: center;
+  }
+  .wpsub-hero h1 {
+    font-family: var(--font-display);
+    font-size: clamp(2rem, 5vw, 3.5rem);
+    font-weight: 500;
+    color: var(--dark-grey);
+    letter-spacing: -0.02em;
+    margin: 0.5rem 0 1rem;
+  }
+  .wpsub-hero p {
+    max-width: 520px;
+    margin: 0 auto;
+    color: var(--text-light);
+    line-height: 1.6;
+  }
+
+  /* ───────── Door switcher (desktop only) ─────────
+     Sticky below the main nav. Three mini arches + hub return. */
+  .wpsub-switcher {
+    position: sticky;
+    top: 80px;             /* sits below the 80px main nav */
+    z-index: 990;          /* above grain (50), below nav (1100) and banner (1000) */
+    background: rgba(253, 251, 247, 0.92);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border-bottom: 1px solid rgba(104, 101, 101, 0.10);
+  }
+  .wpsub-switcher-inner {
+    max-width: 1120px;
+    margin: 0 auto;
+    padding: 0.75rem 2rem;
+    display: flex;
+    align-items: center;
+    gap: 2.5rem;
+  }
+  .wpsub-switcher-hub {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--text-light);
+    text-decoration: none;
+    font-size: 0.85rem;
+    font-weight: 500;
+    letter-spacing: 0.02em;
+    transition: color 200ms ease;
+  }
+  .wpsub-switcher-hub:hover { color: var(--dark-grey); }
+  .wpsub-hub-icon { font-size: 0.7rem; }
+
+  .wpsub-switcher-rooms {
+    display: flex;
+    gap: 2rem;
+    margin-left: auto;
+  }
+  .wpsub-switcher-room {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.55rem;
+    text-decoration: none;
+    color: var(--text-light);
+    font-size: 0.9rem;
+    font-weight: 500;
+    padding: 0.35rem 0;
+    border-bottom: 2px solid transparent;
+    transition: color 200ms ease, border-color 200ms ease;
+  }
+  .wpsub-switcher-room:hover { color: var(--dark-grey); }
+  .wpsub-switcher-room.is-active {
+    color: var(--dark-grey);
+    border-bottom-color: var(--dark-grey);
+    pointer-events: none;       /* can't click the room you're already in */
+  }
+
+  /* Mini-arch SVG icon: filled when active, outline otherwise */
+  .wpsub-mini-arch {
+    width: 18px;
+    height: 22px;
+    flex-shrink: 0;
+  }
+  .wpsub-mini-arch path {
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2;
+    stroke-linejoin: round;
+    transition: fill 200ms ease;
+  }
+  .wpsub-switcher-room.is-active .wpsub-mini-arch path {
+    fill: currentColor;
+  }
+
+  /* ───────── Breadcrumb (mobile only) ───────── */
+  .wpsub-breadcrumb {
+    display: none;             /* shown on mobile via media query */
+    position: sticky;
+    top: 65px;
+    z-index: 990;
+    background: rgba(253, 251, 247, 0.92);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    padding: 0.7rem 1.25rem;
+    font-size: 0.85rem;
+    color: var(--text-light);
+    border-bottom: 1px solid rgba(104, 101, 101, 0.10);
+  }
+  .wpsub-breadcrumb a {
+    color: var(--dark-grey);
+    text-decoration: none;
+    font-weight: 500;
+  }
+  .wpsub-breadcrumb-sep { margin: 0 0.5rem; opacity: 0.5; }
+  .wpsub-breadcrumb-current { color: var(--text-muted); }
+
+  /* ───────── End-of-page room invitation (desktop only) ───────── */
+  .wpsub-also-rooms {
+    display: block;
+    padding: 5rem 0 7rem;
+    background: var(--cream);
+  }
+  .wpsub-also-rooms-head {
+    text-align: center;
+    margin-bottom: 3rem;
+  }
+  .wpsub-also-rooms-head h2 {
+    font-family: var(--font-display);
+    font-size: clamp(1.6rem, 3vw, 2.4rem);
+    font-weight: 500;
+    color: var(--dark-grey);
+    letter-spacing: -0.02em;
+    margin-top: 0.5rem;
+  }
+  .wpsub-also-rooms-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 2rem;
+    max-width: 920px;
+    margin: 0 auto;
+  }
+  .wpsub-room-card {
+    display: flex;
+    flex-direction: column;
+    text-decoration: none;
+    color: inherit;
+    background: rgba(255,255,255,0.4);
+    border-radius: 16px;
+    overflow: hidden;
+    border: 1px solid rgba(104, 101, 101, 0.10);
+    transition: transform 300ms ease, box-shadow 300ms ease;
+  }
+  .wpsub-room-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 24px rgba(104, 101, 101, 0.12);
+  }
+  .wpsub-room-card-photo {
+    aspect-ratio: 16 / 9;
+    background-size: cover;
+    background-position: center;
+  }
+  .wpsub-room-card-body {
+    padding: 1.5rem 1.75rem 1.75rem;
+  }
+  .wpsub-room-card-body h3 {
+    font-family: var(--font-display);
+    font-size: 1.5rem;
+    font-weight: 500;
+    color: var(--dark-grey);
+    letter-spacing: -0.01em;
+    margin: 0 0 0.5rem;
+  }
+  .wpsub-room-card-body p {
+    color: var(--text-light);
+    line-height: 1.55;
+    margin: 0 0 1rem;
+  }
+  .wpsub-room-card-cta {
+    color: var(--pink);
+    font-weight: 500;
+  }
+
+  /* ───────── Entry/exit overlay arch ───────── */
+  .wpsub-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 1200;          /* above nav so cross-page transitions cover everything */
+    pointer-events: none;
+    visibility: hidden;
+  }
+  .wpsub-overlay.is-visible {
+    visibility: visible;
+  }
+  .wpsub-overlay-arch {
+    position: fixed;
+    inset: 0;
+    width: 100vw;
+    height: 100vh;
+    opacity: 0;
+    transition: opacity 350ms ease;
+    will-change: opacity;
+  }
+  .wpsub-overlay-arch svg { width: 100%; height: 100%; display: block; }
+  .wpsub-overlay.is-arch-shown .wpsub-overlay-arch { opacity: 1; }
+
+  /* ───────── Mobile breakpoint ───────── */
+  @media (max-width: 768px) {
+    .wpsub-switcher { display: none; }
+    .wpsub-breadcrumb { display: block; }
+    .wpsub-also-rooms { display: none; }
+    .wpsub-hero { padding-top: 4rem; }
+  }
+</style>
+
+<!-- ===== ENTRY / EXIT SCRIPT ===== -->
+<script is:inline define:vars={{ roomIndex, roomImage }}>
+  (() => {
+    const VIEW_W = 320, VIEW_H = 400;
+    function buildArchPath(width, height, waveAmp, waveFreq, ph) {
+      const topPad = 2, bottomPad = 8;
+      const r = width / 2;
+      const archY = r + topPad;
+      const waveCenter = height - bottomPad;
+      const samples = 60;
+      let d = `M 0 ${archY} A ${r} ${r} 0 0 1 ${width} ${archY} L ${width} ${waveCenter}`;
+      for (let i = 0; i <= samples; i++) {
+        const x = width - (i / samples) * width;
+        const t = (i / samples) * Math.PI * 2 * waveFreq + ph;
+        const y = waveCenter + Math.sin(t) * waveAmp;
+        d += ` L ${x.toFixed(2)} ${y.toFixed(2)}`;
+      }
+      return d + ' Z';
+    }
+
+    // Drop any stale entry flag from the hub — entry overlay is no longer used.
+    // The hub's expand-and-fade is the full transition; the sub-page just paints.
+    sessionStorage.removeItem('wpArchEntry');
+
+    // ─── EXIT helper ───
+    // All in-portal navigation (hub link, room-to-room) is a plain page swap.
+    // The arch overlay is only used for hub → sub-page entry (set by the hub),
+    // not for departures from sub-pages.
+    let isLeaving = false;
+    function leaveTo(opts) {
+      if (isLeaving) return;
+      isLeaving = true;
+      window.location.href = opts.url;
+    }
+
+    // Hub navigation (clicking "Wellness Portal" in switcher or breadcrumb)
+    document.querySelectorAll('[data-nav="hub"]').forEach(el => {
+      el.addEventListener('click', (e) => {
+        e.preventDefault();
+        leaveTo({ kind: 'hub', url: '/wellness-portal', image: roomImage });
+      });
+    });
+
+    // Room-to-room navigation (clicking another room in switcher or end-of-page cards)
+    document.querySelectorAll('[data-nav="room"]').forEach(el => {
+      el.addEventListener('click', (e) => {
+        const idx = parseInt(el.dataset.index, 10);
+        if (idx === roomIndex) {
+          e.preventDefault();
+          return;
+        }
+        e.preventDefault();
+        leaveTo({
+          kind: 'room',
+          url: el.getAttribute('href'),
+          index: idx,
+          image: el.dataset.image
+        });
+      });
+    });
+  })();
+</script>

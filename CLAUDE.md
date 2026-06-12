@@ -35,7 +35,8 @@ A wellness portal for domestic-violence survivors, built with Army Pink in partn
 | `/mission` | `mission.astro` | Story, values, link to /team |
 | `/team` | `team.astro` | Flip-card grid, all 66 people from `team.js` |
 | `/escape-club` | `escape-club.astro` | Community + tier cards |
-| `/wellness-portal` | `wellness-portal.astro` | Has the OLD `.hero` markup (video + wave + flower) — see "Open threads" |
+| `/wellness-portal` | `wellness-portal.astro` | Coverflow doors hero (3 arches in a perspective carousel); legacy yoga sections below the hero pending redesign |
+| `/wellness-portal/calm-room`, `/library`, `/wellness-experiences` | nested under `src/pages/wellness-portal/` | Sub-pages; each is 12 lines importing `WellnessSubpageShared.astro` with per-room props |
 | `/partners` | `partners.astro` | Vedanta featured, partnership models |
 | `/privacy`, `/sms-terms`, `/disclaimer`, `/contact` | legal pages | |
 
@@ -63,7 +64,9 @@ Nav, footer, crisis banner, safe exit appear automatically.
 - **Global grain z-index.** `body::before` at `z-index: 50` — over content, under nav (1100+), donate (1100+), safe-exit (9000), crisis banner (1000). Don't stack two grain layers via multiply (goes too dark).
 - **Lenis + `scroll-behavior`.** Lenis (`lerp: 0.1`) is initialized in `Layout.astro`. `html { scroll-behavior: smooth }` was removed from `public/styles.css` because the combo caused stutter. Per-row `scroll-behavior: smooth` on `.thumb-row` / `.carousel-track` are kept intentionally (horizontal scroll containers).
 - **Statement char blur requires word wrappers.** Per-char `display: inline-block` spans can break mid-word — wrap chars in `.statement-word { display: inline-block; white-space: nowrap }`. Spaces use `.statement-space` with `width: 0.28em`.
-- **Wellness portal hero discrepancy.** Build history (2026-05-24) describes a coverflow doors hero, but `wellness-portal.astro` currently has the old `.hero` markup. Either reverted, in an unmerged worktree, or never landed. Investigate before doing more wellness-portal work.
+- **Wellness portal sub-page navigation** uses a sessionStorage handoff (`wpArchEntry` / `wpArchExit` keys) to bridge a single arch animation across page navigation. Source page renders overlay arch at fullscreen → navigate → destination renders the same arch fullscreen → fades out. Fade-in flicker on destination is killed by forcing `transitionDuration='0s'` before adding `is-arch-shown`, then restoring. See `src/components/WellnessSubpageShared.astro` entry script.
+- **Sub-page → hub navigation is intentionally simple** (no arch animation), while hub → sub-page uses the full arch expansion. Wei's feedback was that the arch-contract-on-hub from the switcher read as a "flash" — keep the ceremonial expansion for entry only.
+- **`astro dev` / `astro build` silently hangs** = `node_modules` corruption (typically a missing transitive dep). Recovery: `pkill -9 -f astro && rm -rf node_modules package-lock.json .astro && npm install`. The error is on stderr but terminal-buffered, so dev/build appears to hang at "astro dev" / "Building static entrypoints..." with no output. Saw `http-cache-semantics` missing once — likely caused by aborted `npm run dev` cycles.
 
 ---
 

@@ -765,5 +765,16 @@
       });
     });
   });
+
+  // --- Hero Flower Scroll Rotation (escape-club wavy hero) ---
+  var flower = document.querySelector('.hero-flower');
+  if (flower) {
+    var flowerHero = document.querySelector('.hero');
+    window.addEventListener('scroll', function () {
+      var rect = flowerHero.getBoundingClientRect();
+      var progress = Math.min(Math.max(-rect.top / rect.height, 0), 1);
+      flower.style.transform = 'rotate(' + (progress * 180) + 'deg)';
+    }, { passive: true });
+  }
 })();
 

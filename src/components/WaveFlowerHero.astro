@@ -1,0 +1,76 @@
+---
+// Wavy video hero with a flower that rotates as you scroll through it.
+// Full-bleed background video → frosted glass card → wave cresting along the
+// bottom edge → flower centred over the wave (0→180° rotation driven by the
+// "Hero Flower Scroll Rotation" block in public/script.js, keyed off .hero-flower).
+//
+// Usage:
+//   <WaveFlowerHero
+//     pill="Escape Club"
+//     heading="A community that understands<br>what you've been through."
+//     sub="The Escape Club is Army Pink's private community…"
+//     waveFill="var(--beige)"        // match the section directly below
+//     actions={[
+//       { href: '#join', label: 'Join the community', primary: true },
+//       { href: '#tiers', label: 'See membership options' },
+//     ]}
+//   />
+//
+// `heading` and `sub` accept inline HTML (e.g. <br>). `waveFill` should match
+// the background of whatever section follows so the wave melts into it.
+// `glass` (default true) wraps the copy in a frosted card; set false to drop
+// the card and lay the copy directly over the video.
+interface Action {
+  href: string;
+  label: string;
+  primary?: boolean;
+}
+interface Props {
+  pill?: string;
+  heading?: string;
+  sub?: string;
+  actions?: Action[];
+  video?: string;
+  waveFill?: string;
+  flower?: string;
+  glass?: boolean;
+}
+const {
+  pill,
+  heading,
+  sub,
+  actions = [],
+  video = '/vid/safe%20exit%20is%20a%20right%20(1).mp4',
+  waveFill = 'var(--cream)',
+  flower = '/img/flower-4.png',
+  glass = true,
+} = Astro.props;
+---
+
+<header class="hero" id="home">
+  <video class="hero-video" autoplay muted loop playsinline>
+    <source src={video} type="video/mp4" />
+  </video>
+  {(pill || heading || sub || actions.length > 0) && (
+    <div class="container">
+      <div class={glass ? 'hero-glass' : 'hero-bare'}>
+        {pill && <span class="pill-label">{pill}</span>}
+        {heading && <h1 set:html={heading} />}
+        {sub && <p class="hero-sub" set:html={sub} />}
+        {actions.length > 0 && (
+          <div class="hero-actions">
+            {actions.map(a => (
+              <a href={a.href} class={a.primary ? 'btn btn-primary' : 'btn btn-ghost-light'}>{a.label}</a>
+            ))}
+          </div>
+        )}
+      </div>
+    </div>
+  )}
+  <svg class="hero-wave" viewBox="0 0 1440 80" preserveAspectRatio="none" aria-hidden="true">
+    <path d="M0,60 C360,0 540,80 720,40 C900,0 1080,80 1440,20 L1440,80 L0,80 Z" fill={waveFill} />
+  </svg>
+</header>
+<div class="hero-flower-wrap">
+  <img src={flower} class="hero-flower" alt="" aria-hidden="true" />
+</div>

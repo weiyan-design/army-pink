@@ -11,21 +11,101 @@ const leadershipSlugs = [
   'diana-drews',
   'cynthia-modders',
   'kathy-hallen',
+  'liliana-pettenkofer',
 ];
 const volunteers = team.filter((p) => !leadershipSlugs.includes(p.slug));
+
+// Category chips. Volunteers have no category field in the data, so we infer
+// one from each person's job title via ordered keyword rules (first match
+// wins). Order matters where titles carry two signals — e.g. "Salesforce
+// Designer" resolves to tech (salesforce checked before design), while
+// "Animation Developer" resolves to design (animation checked before the
+// generic "developer" → tech rule).
+const categories = [
+  { id: 'tech', label: 'Technology & Systems' },
+  { id: 'design', label: 'Design & Creative' },
+  { id: 'comms', label: 'Communications & Social' },
+  { id: 'fundraising', label: 'Fundraising & Grants' },
+  { id: 'strategy', label: 'Strategy & Operations' },
+  { id: 'outreach', label: 'Outreach & Partnerships' },
+];
+
+const categoryRules = [
+  // Fundraising & Grants
+  ['grant', 'fundraising'], ['fundrais', 'fundraising'], ['revenue', 'fundraising'],
+  // Outreach & Partnerships (before strategy so "Ambassador Strategy" → outreach)
+  ['partnership', 'outreach'], ['outreach', 'outreach'], ['campus', 'outreach'],
+  ['ambassador', 'outreach'], ['launch advocate', 'outreach'],
+  // Technology & Systems — Salesforce/infra explicit, so "Salesforce Designer" → tech
+  ['salesforce', 'tech'], ['cloud', 'tech'], ['automation', 'tech'], ['microsoft', 'tech'],
+  ['it specialist', 'tech'], ['system', 'tech'], ['engineer', 'tech'],
+  ['integration', 'tech'], ['digital support', 'tech'], ['tech', 'tech'],
+  // Design & Creative — before the generic "developer" rule below
+  ['design', 'design'], ['creative', 'design'], ['motion', 'design'],
+  ['animation', 'design'], ['animator', 'design'], ['visual', 'design'], ['brand', 'design'],
+  // Technology & Systems — generic developer after design
+  ['developer', 'tech'],
+  // Communications & Social
+  ['communication', 'comms'], ['social', 'comms'], ['media', 'comms'], ['content', 'comms'],
+  ['storytell', 'comms'], ['pinterest', 'comms'], ['writer', 'comms'], ['digital', 'comms'],
+  // Strategy & Operations (catch-all for remaining leadership-ish titles)
+  ['strateg', 'strategy'], ['operations', 'strategy'], ['project', 'strategy'],
+  ['coordinator', 'strategy'], ['manager', 'strategy'], ['advisor', 'strategy'],
+  ['director', 'strategy'], ['wellness', 'strategy'], ['founding', 'strategy'],
+];
+
+function categorize(title) {
+  const t = (title || '').toLowerCase();
+  for (const [kw, cat] of categoryRules) {
+    if (t.includes(kw)) return cat;
+  }
+  return '';
+}
+
+const volunteersByCat = volunteers.map((p) => ({ ...p, category: categorize(p.title) }));
 ---
 
 <Layout title="Volunteers — Army Pink" description="The volunteers behind Army Pink — the people giving their time to ensure every survivor has a safe way out.">
 
+  <!-- HERO — contained blush card: heading + copy + CTA left, butterfly loop right -->
+  <section class="vol-hero">
+    <div class="vol-hero__card">
+      <div class="vol-hero__text">
+        <h1 class="tp-display vol-hero__title reveal-item"><span class="tp-w tp-w--blue">meet</span><span class="tp-w tp-w--orange">the</span><br /><span class="tp-w tp-w--blue">volunteers</span></h1>
+        <p class="vol-hero__sub reveal-item">Volunteers power every escape. Bring your skills — leave with purpose. Join the team.</p>
+        <a href="#" class="dn-btn reveal-item">Become a Volunteer</a>
+      </div>
+      <div class="vol-hero__media reveal-item">
+        <video
+          src="/vid/volunteer-hero.mp4"
+          autoplay muted loop playsinline preload="auto"
+          aria-hidden="true"
+        ></video>
+      </div>
+    </div>
+  </section>
+
   <section class="tp-section" id="tp-grid">
     <div class="tp-section-inner">
-      <h1 class="tp-display reveal-item"><span class="tp-w tp-w--pink">meet</span><span class="tp-w tp-w--orange">the</span><span class="tp-w tp-w--pink">volunteers</span></h1>
+
+      <div class="tp-chips-wrap reveal-item">
+        <button type="button" class="tp-chips-arrow tp-chips-arrow-prev" aria-label="Scroll categories left">‹</button>
+        <div class="tp-chips" role="group" aria-label="Filter volunteers by category">
+          <button type="button" class="tp-chip is-active" data-cat="all" aria-pressed="true">All</button>
+          {categories.map((cat) => (
+            <button type="button" class="tp-chip" data-cat={cat.id} aria-pressed="false">{cat.label}</button>
+          ))}
+        </div>
+        <button type="button" class="tp-chips-arrow tp-chips-arrow-next" aria-label="Scroll categories right">›</button>
+      </div>
+
       <div class="tp-grid">
-        {volunteers.map((person) => (
+        {volunteersByCat.map((person) => (
           <button
             type="button"
             class="tp-card"
             data-slug={person.slug}
+            data-category={person.category}
             aria-expanded="false"
             aria-label={`${person.name}, ${person.title}. Click to read bio.`}
           >
@@ -37,7 +117,6 @@ const volunteers = team.filter((p) => !leadershipSlugs.includes(p.slug));
                 <div class="tp-meta">
                   <h3 class="tp-name">{person.name}</h3>
                   <p class="tp-title">{person.title}</p>
-                  <span class="tp-toggle" aria-hidden="true"></span>
                 </div>
               </div>
               <div class="tp-face tp-face--back">
@@ -46,7 +125,6 @@ const volunteers = team.filter((p) => !leadershipSlugs.includes(p.slug));
                     <h3 class="tp-back-name">{person.name}</h3>
                     <p class="tp-back-title">{person.title}</p>
                   </div>
-                  <span class="tp-close" aria-hidden="true">×</span>
                 </div>
                 <p class="tp-bio">{person.bio}</p>
               </div>
@@ -91,6 +169,44 @@ const volunteers = team.filter((p) => !leadershipSlugs.includes(p.slug));
           active = null;
         }
       });
+
+      // Category chips: filter the grid to volunteers whose inferred category
+      // matches the selected chip. "All" clears the filter.
+      const chips = document.querySelectorAll('.tp-chip');
+      const cards = grid.querySelectorAll('.tp-card');
+      chips.forEach((chip) => {
+        chip.addEventListener('click', () => {
+          const cat = chip.dataset.cat;
+          chips.forEach((c) => {
+            const on = c === chip;
+            c.classList.toggle('is-active', on);
+            c.setAttribute('aria-pressed', on ? 'true' : 'false');
+          });
+          if (active) unflip(active), (active = null);
+          cards.forEach((card) => {
+            const show = cat === 'all' || card.dataset.category === cat;
+            card.hidden = !show;
+          });
+        });
+      });
+
+      // Chips row overflow: fade edges + show arrows only when it scrolls.
+      const chipsWrap = document.querySelector('.tp-chips-wrap');
+      const chipsRow = chipsWrap && chipsWrap.querySelector('.tp-chips');
+      if (chipsWrap && chipsRow) {
+        const prev = chipsWrap.querySelector('.tp-chips-arrow-prev');
+        const next = chipsWrap.querySelector('.tp-chips-arrow-next');
+        function updateChipFades() {
+          const maxScroll = chipsRow.scrollWidth - chipsRow.clientWidth;
+          chipsWrap.classList.toggle('fade-left', chipsRow.scrollLeft > 4);
+          chipsWrap.classList.toggle('fade-right', chipsRow.scrollLeft < maxScroll - 4);
+        }
+        chipsRow.addEventListener('scroll', updateChipFades);
+        window.addEventListener('resize', updateChipFades);
+        if (prev) prev.addEventListener('click', () => chipsRow.scrollBy({ left: -200, behavior: 'smooth' }));
+        if (next) next.addEventListener('click', () => chipsRow.scrollBy({ left: 200, behavior: 'smooth' }));
+        setTimeout(updateChipFades, 200);
+      }
     })();
   </script>
 

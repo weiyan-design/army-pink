@@ -620,3 +620,82 @@ Each page ends with a small IIFE that finds `[data-section-link]` anchors, obser
 - Netlify dashboard: set `support@armypink.org` as form notification recipient.
 - Verify `support@armypink.org` mailbox exists / forwards correctly — referenced on all four new pages.
 - Confirm phone `(213) 579-5051` is correct.
+
+---
+
+## Wellness Portal Sub-pages + Switcher Navigation (2026-05-25 → 2026-06-04)
+
+**TL;DR:** The coverflow doors hero (built 2026-05-24) now navigates to **real nested sub-page routes**, not a fake overlay reveal. Each "Step inside" CTA expands the active arch to fullscreen, then navigates to `/wellness-portal/<room>` with a sessionStorage handoff so the destination renders the arch already at fullscreen and fades it out — true crossfade across page navigation.
+
+**Three sub-page routes:**
+- `src/pages/wellness-portal/calm-room.astro` → `/wellness-portal/calm-room`
+- `src/pages/wellness-portal/library.astro` → `/wellness-portal/library`
+- `src/pages/wellness-portal/wellness-experiences.astro` → `/wellness-portal/wellness-experiences`
+
+Each is a 12-line file that imports `Layout.astro` + `WellnessSubpageShared.astro` and passes `roomIndex`, `roomTitle`, `roomImage` props. All chrome and placeholder content lives in the shared component.
+
+**Note on the third route:** file is `wellness-experiences.astro` but the display label was renamed to "Wellness Programs". URL/file rename to `/wellness-portal/wellness-programs` not yet done.
+
+**`src/components/WellnessSubpageShared.astro`** (new component, single source of truth for sub-page UX):
+- `ROOMS` array in frontmatter — room metadata (index, short label, full title, photo URL, route)
+- Entry/exit overlay arch (used for cross-page animation handoff at `z-index: 1200` — above ALL site chrome so the navigation moment is invisible)
+- Door switcher trio (desktop, sticky `top: 80px`, `z-index: 990`) — mini-arch icons + room labels
+- Mobile breadcrumb (`Wellness Portal › <room>`, sticky below nav)
+- End-of-page "Or step into another room" card grid showing the *other* two rooms (desktop only)
+- Placeholder shared content: Empowering Series + Featured Classes + Wellness Programs sections (identical on all 3 rooms for now)
+- Inline entry/exit animation script
+
+**Mini-arch SVG icon** (switcher trio): inline `<svg viewBox="0 0 24 30"><path d="M2 14 A10 10 0 0 1 22 14 L22 27 L2 27 Z" /></svg>`. **Flat bottom** (no wave) per Wei — wave was unreadable at icon scale. Filled when active, 2px outline when inactive. Active room has `pointer-events: none`.
+
+**Navigation patterns by viewport:**
+
+| Pattern | Desktop | Mobile (≤768px) |
+|---|---|---|
+| `.wpsub-switcher` (door switcher trio) | ✓ Sticky below nav | ✗ Hidden |
+| `.wpsub-breadcrumb` (top breadcrumb) | ✗ Hidden | ✓ Sticky below nav |
+| `.wpsub-also-rooms` (end-of-page card grid) | ✓ Two other rooms | ✗ Hidden |
+
+**Cross-page animation via sessionStorage:**
+- `wpArchEntry` JSON `{ roomIndex, roomImage }`: set on source page before navigation, read by destination on load → destination renders overlay arch at fullscreen with that photo, then fades it out
+- `wpArchExit` JSON `{ roomIndex, roomImage }`: set on sub-page before navigating to hub, read by hub on load → hub scrolls carousel to that door, renders arch at fullscreen, contracts to slot (700ms)
+- Both keys are removed by the destination after reading — a hard refresh clears state
+
+**Animation choreography:**
+
+| Source → destination | Animation |
+|---|---|
+| Hub `/wellness-portal` → sub-page (via "Step inside" CTA or active arch click) | Full arch expansion 700ms, wave amp 5→2 → navigate → destination renders arch at fullscreen, fades it out |
+| Sub-page → another sub-page (via switcher mini-arch or end-of-page card) | Overlay arch (destination's photo) fades in 350ms over current page → navigate → destination shows arch at fullscreen instantly (no fade-in flicker), fades out 350ms |
+| Sub-page → hub (via switcher hub link or mobile breadcrumb) | **Simple instant navigation, no arch animation.** Per Wei's "Just fade into the page" feedback — the arch-contract-on-hub was perceived as a flash. |
+
+**Fade-in flicker fix:** when a sub-page lands with an entry overlay arch, the arch must paint at opacity 1 *immediately* (matching the full-opacity arch the source page just had). Naive approach (CSS opacity transition from 0 to 1) produces a 350ms fade-in flicker before the fade-out begins. Fix: `arch.style.transitionDuration = '0s'`, add `is-arch-shown` class, force reflow with `void arch.offsetHeight`, restore transition. Now the arch shows at opacity 1 instantly, then fades out cleanly. Pattern is in the entry script in `WellnessSubpageShared.astro`.
+
+**Hub page (`wellness-portal.astro`) changes:**
+- CTA hrefs in `.wp-info-cta` updated from `#` to real sub-page URLs
+- Click handler on active arch added — clicking the centered arch's photo opens the room (in addition to the CTA button); inactive arch clicks still call `scrollToDoor`
+- Removed: old demo overlay code (expand arch + scroll past hub + show modal with placeholder text)
+- Removed: close button (back navigation lives on sub-pages now)
+- Added: `runEntryFromSubpage()` runs on hub load — checks `wpArchExit`, scrolls carousel to right door via `scrollToDoor(idx)`, renders overlay arch at fullscreen, contracts to slot via the same `animateOverlayWave` function used by the open animation
+
+**`overflow: hidden` placement matters** (also documented in the prior session's gotchas, repeated here because it bit us again during this work):
+- `.wp-hub` has `overflow: hidden` — clips side arches that translate off-screen, prevents horizontal scrollbars
+- `.wp-stage` does NOT have `overflow: hidden` — putting it there clips the dome and wave when arch sizing is off by ≤1px
+
+**Why no Astro View Transitions?** Considered using `<ClientRouter />` for built-in cross-page fades, but the wellness-portal carousel uses scroll-driven JS that could conflict with View Transitions' DOM swapping. Manual sessionStorage handoff is more code but predictable.
+
+**Files touched this session:**
+- `src/pages/wellness-portal.astro` — animation overhaul (open animates → navigates; entry-from-subpage contracts)
+- `src/components/WellnessSubpageShared.astro` — new, ~400 lines (created mid-session)
+- `src/pages/wellness-portal/calm-room.astro` — new
+- `src/pages/wellness-portal/library.astro` — new
+- `src/pages/wellness-portal/wellness-experiences.astro` — new
+
+**Dev server / build hang — root cause and recovery (worth memorizing):**
+Both `astro dev` and `astro build` would hang silently — `dev` printed "astro dev" with no port binding; `build` printed "Building static entrypoints..." with no progress. Output looked like Astro itself was hung. Actual cause: `node_modules/http-cache-semantics` was missing (corrupt `node_modules` from multiple aborted `npm run dev` + Ctrl+C cycles earlier in the session). The error was on stderr but buffered, so it didn't surface in the user's terminal until the process was probed directly. **Recovery:**
+```bash
+pkill -9 -f astro
+rm -rf node_modules package-lock.json .astro
+npm install
+npm run dev
+```
+First diagnostic to try if `astro dev` ever silently hangs in the future.

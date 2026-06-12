@@ -119,3 +119,28 @@ The hero is being rebuilt with GSAP ScrollTrigger + Lenis to match Lightship's h
 - [ ] Verify flip behavior + orange shadow on real browsers at 320, 768, 1024, 1440 widths
 - [ ] If `.tp-name` wraps awkwardly at narrow widths, clamp `font-size` or shorten titles in `team.js`
 - [ ] Commit pending: back-face font + padding tweaks (1.25rem name / 1rem title / 0.85rem bio, padding 1.5rem 1.5rem 2rem)
+
+---
+
+## Legal Pages + Contact — Followups (2026-05-25)
+
+- [ ] **Netlify dashboard**: Forms → Settings → notification email → add `support@armypink.org`. The HTML doesn't route by itself.
+- [ ] Verify `support@armypink.org` mailbox/forward actually exists — referenced on `/privacy`, `/sms-terms`, `/disclaimer`, `/contact`
+- [ ] Confirm phone `(213) 579-5051` is correct
+- [ ] Owner review: `/sms-terms` content — TCPA disclosures are template-grade; owner may have their own copy
+- [ ] Legal counsel review: `/disclaimer` §6 limitation-of-liability clause (boilerplate)
+- [ ] Submit a test message via `/contact` form on production and confirm it lands in Netlify dashboard + email notification fires
+
+---
+
+## Wellness Portal Sub-pages — Followups (2026-06-04)
+
+The coverflow doors hero, real sub-page routes, and switcher navigation are all built and working end-to-end. Remaining work:
+
+- [ ] **Rename third sub-page** from `/wellness-portal/wellness-experiences` → `/wellness-portal/wellness-programs` to match the new display label "Wellness Programs". Needs: rename file `wellness-experiences.astro` → `wellness-programs.astro`, update `ROOMS` array URL in `WellnessSubpageShared.astro`, update hub CTA href in `wellness-portal.astro`, add a Netlify redirect from the old URL (or accept the old URL breaks).
+- [ ] **Per-room content.** Sub-pages currently share identical placeholder content (Empowering Series + Featured Classes + Wellness Programs sections, all copied from the hub legacy). Replace with room-specific content (Calm Room = meditation/breathwork, Library = workbooks + 28-Day Journey, Wellness Programs = partner classes).
+- [ ] **Hub below-fold redesign.** `/wellness-portal` still has the legacy Empowering+Featured+Programs sections under the carousel hero. Discussed replacing with: at-a-glance preview grid + 28-Day Journey flagship card + Escape Club nudge. Not yet started.
+- [ ] **Real photos.** All four wellness-portal contexts (hub carousel + 3 sub-pages) still use Unsplash placeholders. Swap for Army Pink-curated photography when ready. Three URLs to replace are in the `ROOMS` array (`WellnessSubpageShared.astro`) and the three `<image href="...">` attributes in the hub's three arches.
+- [ ] **Mobile gesture layer.** Carousel hero on `/wellness-portal` currently uses the same vertical-scroll rotation on mobile as desktop. Discussed adding horizontal swipe to advance/retreat through doors. Not built.
+- [ ] **`prefers-reduced-motion: reduce` fallback.** Should disable the carousel rotation, breathing wave, and arch expand/contract animations. Show all 3 doors statically. Not built.
+- [ ] **Astro View Transitions consideration.** Manual sessionStorage handoff works but is ~200 lines of JS across two files. If the rest of the site eventually adds cross-page fades, evaluate consolidating with `<ClientRouter />` from `astro:transitions`. Skipped this time because the carousel's scroll-driven JS might conflict.
