@@ -63,14 +63,18 @@ const wordmarkWords = WORDMARK.split(' ').map(word => ({
         {calmRoomShelves.flatMap((shelf, i) =>
           shelf.videos.filter(v => v.youtubeId).map(v => (
             <button class="calm-card" type="button" data-cat={String(i)} data-youtube-id={v.youtubeId} data-title={v.title}>
-              <img
-                class="calm-card-img"
-                src={`https://img.youtube.com/vi/${v.youtubeId}/maxresdefault.jpg`}
-                onload={`if(this.naturalWidth<600){this.onload=null;this.src='https://img.youtube.com/vi/${v.youtubeId}/mqdefault.jpg'}`}
-                onerror={`this.onerror=null;this.src='https://img.youtube.com/vi/${v.youtubeId}/mqdefault.jpg'`}
-                alt=""
-                loading="lazy"
-              />
+              {v.cover ? (
+                <img class="calm-card-img" src={v.cover} alt="" loading="lazy" />
+              ) : (
+                <img
+                  class="calm-card-img"
+                  src={`https://img.youtube.com/vi/${v.youtubeId}/maxresdefault.jpg`}
+                  onload={`if(this.naturalWidth<600){this.onload=null;this.src='https://img.youtube.com/vi/${v.youtubeId}/mqdefault.jpg'}`}
+                  onerror={`this.onerror=null;this.src='https://img.youtube.com/vi/${v.youtubeId}/mqdefault.jpg'`}
+                  alt=""
+                  loading="lazy"
+                />
+              )}
               <span class="calm-card-grad" aria-hidden="true"></span>
               <span class="calm-card-play" aria-hidden="true">
                 <svg viewBox="0 0 24 24" width="20" height="20"><path d="M8 5v14l11-7z" fill="currentColor" /></svg>

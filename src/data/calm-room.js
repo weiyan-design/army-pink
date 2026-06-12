@@ -31,6 +31,7 @@ export const calmRoomShelves = [
       { title: 'Healing Angelic Meditation Music', youtubeId: 'MYwyd-RdvXA' },
       { title: 'Calming Meditation — 1 Hour Handpan · Malte Marten', youtubeId: 'uwEaQk5VeS4' },
       { title: '1111hz Light Healing Frequency', youtubeId: 'whI8SZQZOX8' },
+      { title: 'Find Peace — Healing Frequency', youtubeId: '6Q5-rHTTe6Q' },
     ],
   },
   {
@@ -56,9 +57,9 @@ export const calmRoomShelves = [
   {
     title: 'Sanación Española',
     videos: [
-      { title: 'Meditación Guiada — Relajación', youtubeId: 'ue9fs4ticOo' },
+      { title: 'Meditación Guiada — Relajación', youtubeId: 'ue9fs4ticOo', cover: '/img/calm-meditacion-guiada.jpg' },
       { title: 'Meditación en Español en 10 Minutos', youtubeId: 'N3W1jWcpIBs' },
-      { title: 'Meditación para la Mañana — 25 min', youtubeId: '4uoC6QbjwJ8' },
+      { title: 'Meditación para la Mañana — 25 min', youtubeId: '4uoC6QbjwJ8', cover: '/img/calm-meditacion-manana.jpg' },
     ],
   },
   {
