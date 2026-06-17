@@ -55,10 +55,24 @@
     var REVEAL_WINDOW = 0.12;
     var MAX_BLUR = 8;
 
+    var mainNav = document.querySelector('.main-nav');
+    var actMission = document.getElementById('statementActMission');
+    var actQuote = document.getElementById('statementActQuote');
+    // Reveal runs while the section scrolls through (no pin): progress 0 when
+    // the section top enters the viewport bottom, 1 a little after it passes
+    // the nav — TAIL is that overshoot, as a fraction of viewport height.
+    var TAIL = 0.35;
+    // Crossfade windows for the dormant act-2 quote (fractions of a pinned
+    // phase; only used if the quote markup + pin return).
+    var FADE_OUT = [0.30, 0.50];
+    var FADE_IN = [0.52, 0.76];
+
     function updateStatement() {
       var rect = statementScrollWrap.getBoundingClientRect();
+      var navBottom = mainNav ? mainNav.getBoundingClientRect().bottom : 0;
       var scrollSpace = statementScrollWrap.offsetHeight - window.innerHeight;
-      var progress = Math.max(0, Math.min(1, -rect.top / scrollSpace));
+      var span = Math.max(1, (window.innerHeight - navBottom) + window.innerHeight * TAIL);
+      var progress = Math.max(0, Math.min(1, (window.innerHeight - rect.top) / span));
 
       for (var i = 0; i < total; i++) {
         var start = (i / total) * (1 - REVEAL_WINDOW);
@@ -66,11 +80,64 @@
         var blur = MAX_BLUR * (1 - p);
         chars[i].style.setProperty('--blur', blur.toFixed(2) + 'px');
       }
+
+      // Act 1 → Act 2 crossfade, driven by pinned-phase progress
+      if (actMission && actQuote && scrollSpace > 0) {
+        var pinP = Math.max(0, Math.min(1, -rect.top / scrollSpace));
+        var out = Math.max(0, Math.min(1, (pinP - FADE_OUT[0]) / (FADE_OUT[1] - FADE_OUT[0])));
+        var fin = Math.max(0, Math.min(1, (pinP - FADE_IN[0]) / (FADE_IN[1] - FADE_IN[0])));
+        actMission.style.opacity = String(1 - out);
+        actMission.style.transform = 'translateY(' + (-40 * out).toFixed(1) + 'px)';
+        actQuote.style.opacity = String(fin);
+        actQuote.style.transform = 'translateY(' + (36 * (1 - fin)).toFixed(1) + 'px)';
+        actQuote.setAttribute('aria-hidden', fin <= 0 ? 'true' : 'false');
+      }
     }
 
     window.addEventListener('scroll', updateStatement, { passive: true });
     window.addEventListener('resize', updateStatement);
     updateStatement();
+  }
+
+  // --- Founder quote: same char-blur reveal as the mission statement ---
+  var quoteSection = document.querySelector('.quote-section');
+  if (quoteSection) {
+    // Same splitter as the statement section (scoped copy). Only the plain
+    // .q-reveal text runs are split, so the chip + dot markup survive.
+    quoteSection.querySelectorAll('.q-reveal').forEach(function (seg) {
+      var words = seg.textContent.trim().split(/\s+/);
+      var html = '';
+      for (var w = 0; w < words.length; w++) {
+        html += '<span class="statement-word">';
+        for (var c = 0; c < words[w].length; c++) {
+          html += '<span class="statement-char">' + words[w][c] + '</span>';
+        }
+        html += '</span>';
+        if (w < words.length - 1) html += '<span class="statement-space"> </span>';
+      }
+      seg.innerHTML = html;
+    });
+
+    var qChars = quoteSection.querySelectorAll('.statement-char');
+    var Q_WINDOW = 0.12;
+    var Q_MAX_BLUR = 8;
+
+    function updateQuoteReveal() {
+      var rect = quoteSection.getBoundingClientRect();
+      // Progress 0 as the section top enters the viewport bottom; 1 exactly
+      // when the section's center reaches the viewport's center.
+      var span = Math.max(1, (window.innerHeight + rect.height) / 2);
+      var progress = Math.max(0, Math.min(1, (window.innerHeight - rect.top) / span));
+      for (var i = 0; i < qChars.length; i++) {
+        var start = (i / qChars.length) * (1 - Q_WINDOW);
+        var p = Math.max(0, Math.min(1, (progress - start) / Q_WINDOW));
+        qChars[i].style.setProperty('--blur', (Q_MAX_BLUR * (1 - p)).toFixed(2) + 'px');
+      }
+    }
+
+    window.addEventListener('scroll', updateQuoteReveal, { passive: true });
+    window.addEventListener('resize', updateQuoteReveal);
+    updateQuoteReveal();
   }
 
   // --- Hero click-to-toggle + spacebar (while hero in view) ---
@@ -221,6 +288,32 @@
     revealElements.forEach(function (el) {
       observer.observe(el);
     });
+  }
+
+  // --- Stats columns parallax (right column drifts up faster than left) ---
+  var statsCells = document.querySelector('.stats-cells');
+  if (statsCells && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    var statsCols = statsCells.querySelectorAll('.stats-col');
+    if (statsCols.length === 2) {
+      var COL_DRIFT = [36, 280]; // total upward px of travel: [left, right]
+
+      function updateStatsParallax() {
+        // Measure the untransformed parent — the cols' own rects move as
+        // they're translated, which would feed back into the math.
+        var r = statsCells.getBoundingClientRect();
+        var vh = window.innerHeight;
+        var p = Math.max(0, Math.min(1, (vh - r.top) / (vh + r.height)));
+        var centered = p - 0.5; // 0 at mid-journey = natural position
+        statsCols[0].style.transform =
+          'translate3d(0,' + (-centered * COL_DRIFT[0]).toFixed(1) + 'px,0)';
+        statsCols[1].style.transform =
+          'translate3d(0,' + (-centered * COL_DRIFT[1]).toFixed(1) + 'px,0)';
+      }
+
+      window.addEventListener('scroll', updateStatsParallax, { passive: true });
+      window.addEventListener('resize', updateStatsParallax);
+      updateStatsParallax();
+    }
   }
 
   // --- Journey Overlays ---

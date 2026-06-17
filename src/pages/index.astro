@@ -1,10 +1,25 @@
 ---
 import Layout from '../layouts/Layout.astro';
 
+// Stats section — two independent column stacks (right one offset down).
+// Reading order pairs across: 1in3/$50, 200/100+, Fall 2026/Survivor-led.
+const statsCols = [
+  [
+    { value: '1 in 3', label: 'women experience intimate partner violence (CDC)' },
+    { value: '200', label: 'rides in our first LA pilot' },
+    { value: 'Fall 2026', label: 'Freedom Rides launch' },
+  ],
+  [
+    { value: '$50', label: 'funds one ride to safety' },
+    { value: '100+', label: 'volunteers building the mission' },
+    { value: 'Survivor-led', label: "built by people who've lived it" },
+  ],
+];
+
 const partners = [
   {
-    name: 'Vedanta',
-    img: '/img/partner-logo/vedanta.png',
+    name: 'Still Mountain Wellness Retreat',
+    img: '/img/partner-logo/still-mountain.png',
     href: '#',
     paras: [
       'Spiritual & Holistic Retreats partner dedicated to healing, mindfulness, and transformation.',
@@ -78,12 +93,136 @@ const partners = [
   <!-- ===== STATEMENT ===== -->
   <div class="statement-scroll-wrap">
     <section class="section-statement" id="statement">
-      <div class="container">
-        <span class="pill-label">Our Mission</span>
-        <p class="statement-text" id="statementText">Providing safe, reliable transportation to help survivors escape domestic violence and begin their path to freedom.</p>
+      <!-- Act 1: mission statement (char-blur reveal, then fades out) -->
+      <div class="statement-act statement-act--mission" id="statementActMission">
+        <div class="container">
+          <span class="pill-label">Our Mission</span>
+          <p class="statement-text" id="statementText">Providing safe, reliable transportation to help survivors escape domestic violence and begin their path to freedom.</p>
+        </div>
       </div>
     </section>
   </div>
+
+  <!-- ===== WHO WE ARE / STATS (pinned text left, stat cells right) ===== -->
+  <section class="stats-section" aria-label="Army Pink at a glance">
+    <div class="stats-grid">
+      <div class="stats-text">
+        <p>
+          Army Pink is a survivor-led nonprofit providing safe, discreet
+          transportation for people escaping domestic violence. Working
+          alongside crisis organizations and referral partners, our
+          volunteer-powered team is building Freedom Rides — launching
+          Fall 2026 with a 200-ride pilot in Los Angeles.
+        </p>
+      </div>
+      <div class="stats-cells">
+        {statsCols.map((col, ci) => (
+          <div class={`stats-col${ci === 1 ? ' stats-col--offset' : ''}`}>
+            {col.map((s) => (
+              <div class="stat-cell reveal-item">
+                <span class="stat-value">{s.value}</span>
+                <span class="stat-label">{s.label}</span>
+              </div>
+            ))}
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== FOUNDER QUOTE (char-blur reveal like Our Mission) ===== -->
+  <section class="quote-section" id="founder-quote">
+    <figure class="tp-quote">
+      <svg class="tp-quote-squiggle" viewBox="0 0 90 80" fill="none" aria-hidden="true">
+        <path d="M8 52 C 4 26, 40 14, 52 34 C 60 48, 44 60, 38 46 C 33 34, 52 28, 66 36 C 78 43, 80 22, 70 14" stroke="var(--pink)" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      <span class="tp-quote-mark" aria-hidden="true">“</span>
+      <blockquote class="tp-quote-text">
+        <span class="q-reveal">What stayed with me most was realizing that survivors are not lacking courage</span>
+        <span class="tp-quote-dot" aria-hidden="true"></span>
+        <span class="q-reveal">— they are lacking the support needed to leave and rebuild their lives.</span>
+      </blockquote>
+      <figcaption class="tp-quote-chip">
+        <img src="/img/people/robin-bement.jpg" alt="Robin Bement" loading="lazy" />
+        <span class="tp-quote-chip-meta">
+          <span class="tp-quote-chip-name">Robin Bement</span>
+          <span class="tp-quote-chip-role">Founder of Army Pink</span>
+        </span>
+      </figcaption>
+    </figure>
+  </section>
+
+  <!-- ===== SURVIVOR STORIES ===== -->
+  <section class="section section-stories" id="stories">
+    <div class="container">
+      <div class="stories-grid">
+        <div class="stories-text">
+          <span class="pill-label reveal-item">Survivor Stories</span>
+          <h2 class="reveal-item">Reflections From<br>Our <em>Community</em></h2>
+          <p class="reveal-item">
+            Every journey is different. These are the voices of survivors who found
+            their way forward - in their own time, on their own terms.
+          </p>
+          <a href="#" class="btn btn-primary reveal-item">Share your story</a>
+        </div>
+        <div class="stories-deck-area">
+          <div class="stories-deck" id="stories-deck">
+            <div class="story-card story-card-active" data-index="0">
+              <img src="/img/story-1.png" alt="Survivor portrait" />
+            </div>
+            <div class="story-card" data-index="1">
+              <img src="/img/story-2.png" alt="Survivor portrait" />
+            </div>
+            <div class="story-card" data-index="2">
+              <img src="/img/story-3.png" alt="Survivor portrait" />
+            </div>
+            <div class="story-card" data-index="3">
+              <img src="/img/story-4.png" alt="Survivor portrait" />
+            </div>
+          </div>
+          <div class="story-quote-row">
+            <button class="stories-btn stories-prev" aria-label="Previous story">
+              <i data-lucide="chevron-left" aria-hidden="true"></i>
+            </button>
+            <div class="story-quote-box" id="story-quote-box">
+              <div class="story-quote story-quote-active" data-index="0">
+                <p>"A dream is a wish your heart makes. Army Pink has such an amazing cause
+                  helping domestic violence victims such as myself. Every survivor deserves
+                  a safe ride."</p>
+                <div class="story-author">
+                  <strong>Anonymous Survivor</strong>
+                </div>
+              </div>
+              <div class="story-quote" data-index="1">
+                <p>"Army Pink represents something every survivor deserves: hope and a safe
+                  path forward. Knowing this support exists means more than words can express."</p>
+                <div class="story-author">
+                  <strong>Anonymous Survivor</strong>
+                </div>
+              </div>
+              <div class="story-quote" data-index="2">
+                <p>"Army Pink is a lifeline for survivors, showing them they're never alone
+                  in their fight for freedom."</p>
+                <div class="story-author">
+                  <strong>Anonymous Survivor</strong>
+                </div>
+              </div>
+              <div class="story-quote" data-index="3">
+                <p>"Together, we're not just supporting survivors; we're empowering them to
+                  reclaim their lives and their futures."</p>
+                <div class="story-author">
+                  <strong>Anonymous Survivor</strong>
+                </div>
+              </div>
+            </div>
+            <button class="stories-btn stories-next" aria-label="Next story">
+              <i data-lucide="chevron-right" aria-hidden="true"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
 
   <!-- ===== WELLNESS PORTAL TEASER ===== -->
   <section class="feature-carousel feature-carousel--pink" data-feature-carousel>
@@ -154,78 +293,6 @@ const partners = [
         <div class="fc-controls">
           <button class="fc-arrow fc-arrow--prev" aria-label="Previous">&lsaquo;</button>
           <button class="fc-arrow fc-arrow--next" aria-label="Next">&rsaquo;</button>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ===== SURVIVOR STORIES ===== -->
-  <section class="section section-stories" id="stories">
-    <div class="container">
-      <div class="stories-grid">
-        <div class="stories-text">
-          <span class="pill-label reveal-item">Survivor Stories</span>
-          <h2 class="reveal-item">Reflections From<br>Our <em>Community</em></h2>
-          <p class="reveal-item">
-            Every journey is different. These are the voices of survivors who found
-            their way forward - in their own time, on their own terms.
-          </p>
-          <a href="#" class="btn btn-primary reveal-item">Share your story</a>
-        </div>
-        <div class="stories-deck-area">
-          <div class="stories-deck" id="stories-deck">
-            <div class="story-card story-card-active" data-index="0">
-              <img src="/img/story-1.png" alt="Survivor portrait" />
-            </div>
-            <div class="story-card" data-index="1">
-              <img src="/img/story-2.png" alt="Survivor portrait" />
-            </div>
-            <div class="story-card" data-index="2">
-              <img src="/img/story-3.png" alt="Survivor portrait" />
-            </div>
-            <div class="story-card" data-index="3">
-              <img src="/img/story-4.png" alt="Survivor portrait" />
-            </div>
-          </div>
-          <div class="story-quote-row">
-            <button class="stories-btn stories-prev" aria-label="Previous story">
-              <i data-lucide="chevron-left" aria-hidden="true"></i>
-            </button>
-            <div class="story-quote-box" id="story-quote-box">
-              <div class="story-quote story-quote-active" data-index="0">
-                <p>"A dream is a wish your heart makes. Army Pink has such an amazing cause
-                  helping domestic violence victims such as myself. Every survivor deserves
-                  a safe ride."</p>
-                <div class="story-author">
-                  <strong>Anonymous Survivor</strong>
-                </div>
-              </div>
-              <div class="story-quote" data-index="1">
-                <p>"Army Pink represents something every survivor deserves: hope and a safe
-                  path forward. Knowing this support exists means more than words can express."</p>
-                <div class="story-author">
-                  <strong>Anonymous Survivor</strong>
-                </div>
-              </div>
-              <div class="story-quote" data-index="2">
-                <p>"Army Pink is a lifeline for survivors, showing them they're never alone
-                  in their fight for freedom."</p>
-                <div class="story-author">
-                  <strong>Anonymous Survivor</strong>
-                </div>
-              </div>
-              <div class="story-quote" data-index="3">
-                <p>"Together, we're not just supporting survivors; we're empowering them to
-                  reclaim their lives and their futures."</p>
-                <div class="story-author">
-                  <strong>Anonymous Survivor</strong>
-                </div>
-              </div>
-            </div>
-            <button class="stories-btn stories-next" aria-label="Next story">
-              <i data-lucide="chevron-right" aria-hidden="true"></i>
-            </button>
-          </div>
         </div>
       </div>
     </div>
