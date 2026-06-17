@@ -55,23 +55,12 @@
     var REVEAL_WINDOW = 0.12;
     var MAX_BLUR = 8;
 
-    var mainNav = document.querySelector('.main-nav');
-    var actMission = document.getElementById('statementActMission');
-    var actQuote = document.getElementById('statementActQuote');
-    // Reveal runs while the section scrolls through (no pin): progress 0 when
-    // the section top enters the viewport bottom, 1 a little after it passes
-    // the nav — TAIL is that overshoot, as a fraction of viewport height.
-    var TAIL = 0.35;
-    // Crossfade windows for the dormant act-2 quote (fractions of a pinned
-    // phase; only used if the quote markup + pin return).
-    var FADE_OUT = [0.30, 0.50];
-    var FADE_IN = [0.52, 0.76];
-
     function updateStatement() {
-      var rect = statementScrollWrap.getBoundingClientRect();
-      var navBottom = mainNav ? mainNav.getBoundingClientRect().bottom : 0;
-      var scrollSpace = statementScrollWrap.offsetHeight - window.innerHeight;
-      var span = Math.max(1, (window.innerHeight - navBottom) + window.innerHeight * TAIL);
+      // Progress 0 as the section top enters the viewport bottom; 1 exactly
+      // when the section's center reaches the viewport's center — so the text
+      // is fully clear and readable at mid-viewport.
+      var rect = statementSection.getBoundingClientRect();
+      var span = Math.max(1, (window.innerHeight + rect.height) / 2);
       var progress = Math.max(0, Math.min(1, (window.innerHeight - rect.top) / span));
 
       for (var i = 0; i < total; i++) {
@@ -79,18 +68,6 @@
         var p = Math.max(0, Math.min(1, (progress - start) / REVEAL_WINDOW));
         var blur = MAX_BLUR * (1 - p);
         chars[i].style.setProperty('--blur', blur.toFixed(2) + 'px');
-      }
-
-      // Act 1 → Act 2 crossfade, driven by pinned-phase progress
-      if (actMission && actQuote && scrollSpace > 0) {
-        var pinP = Math.max(0, Math.min(1, -rect.top / scrollSpace));
-        var out = Math.max(0, Math.min(1, (pinP - FADE_OUT[0]) / (FADE_OUT[1] - FADE_OUT[0])));
-        var fin = Math.max(0, Math.min(1, (pinP - FADE_IN[0]) / (FADE_IN[1] - FADE_IN[0])));
-        actMission.style.opacity = String(1 - out);
-        actMission.style.transform = 'translateY(' + (-40 * out).toFixed(1) + 'px)';
-        actQuote.style.opacity = String(fin);
-        actQuote.style.transform = 'translateY(' + (36 * (1 - fin)).toFixed(1) + 'px)';
-        actQuote.setAttribute('aria-hidden', fin <= 0 ? 'true' : 'false');
       }
     }
 

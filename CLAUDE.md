@@ -13,6 +13,7 @@ A wellness portal for domestic-violence survivors, built with Army Pink in partn
 - `npm run dev` — dev server at `localhost:4324` (NOT 3003 — that's an old `npx serve` instruction for the html.to.design Figma plugin)
 - `npm run build` — outputs to `dist/`
 - `netlify deploy --prod` — reads `netlify.toml`, deploys `dist/`. Netlify also auto-builds on push to `main`.
+- `netlify deploy --dir=dist --alias review` — updates the **stable stakeholder review URL** https://review--zingy-sherbet-559514.netlify.app (shared with the team via Pastel). Plain draft deploys mint immutable one-off URLs — don't share those.
 
 ---
 
@@ -31,14 +32,18 @@ A wellness portal for domestic-violence survivors, built with Army Pink in partn
 
 | Route | File | Notes |
 |---|---|---|
-| `/` | `index.astro` | Espacio-style sticky video hero + char-blur statement |
+| `/` | `index.astro` | Framed 16:9 hero video over blurred full-bleed backdrop + char-blur statement |
 | `/mission` | `mission.astro` | Story, values, link to /team |
-| `/team` | `team.astro` | Flip-card grid, all 66 people from `team.js` |
-| `/escape-club` | `escape-club.astro` | Community + tier cards |
-| `/wellness-portal` | `wellness-portal.astro` | Coverflow doors hero (3 arches in a perspective carousel); legacy yoga sections below the hero pending redesign |
+| `/team` | `team.astro` | Leadership only — editorial rows + fullscreen founder quote (7 people via `leadershipSlugs`) |
+| `/volunteers` | `volunteers.astro` | Blush hero card w/ blended butterfly loop; category chips; 3-col hover-flip cards (everyone not in `leadershipSlugs`) |
+| `/donate` | `donate.astro` | Figma rebuild: "Safe exit is a right" hero vid (fullscreen→70svh), sticky Freedom Rides vids, rides-funded tracker. `/escape-club` + `/give` 301 here |
+| `/community` | `community.astro` | "Activate Your Community" placeholder |
+| `/wellness-portal` | `wellness-portal.astro` | Calm Room — tabbed Netflix-style video shelves (nav label "Calm Room") |
 | `/wellness-portal/calm-room`, `/library`, `/wellness-experiences` | nested under `src/pages/wellness-portal/` | Sub-pages; each is 12 lines importing `WellnessSubpageShared.astro` with per-room props |
-| `/partners` | `partners.astro` | Vedanta featured, partnership models |
-| `/privacy`, `/sms-terms`, `/disclaimer`, `/contact` | legal pages | |
+| `/partners` | `partners.astro` | Still Mountain (Vedanta) featured; reachable only via Get Involved dropdown |
+| `/privacy`, `/sms-terms`, `/disclaimer`, `/contact`, `/faq` | legal pages | |
+
+Top nav: Home · Mission · Calm Room · Get Involved (dropdown: Donate / Partner / Volunteer / Activate your community) · Leadership.
 
 ## Adding a new page
 
@@ -80,6 +85,11 @@ Nav, footer, crisis banner, safe exit appear automatically.
 
 ## Open threads
 
+- **⚠️ Branch state (2026-06-11).** Current work lives on **`reconcile-local-main`** (pushed), NOT `main`. Histories diverged: `origin/main` is ~24 commits ahead with separate Calm Room work; local `main` is stale. Do NOT push/merge to `main` without Wei deciding the reconcile strategy (PR vs rebase). Several `claude/*` branches + worktrees also exist.
+- **Donate page followups.** (1) Rides-funded tracker shows hardcoded 102/200 — wire the Givebutter API via a Netlify Function (`GIVEBUTTER_API_KEY` env var, `rides = floor(raised/50)`, hook is `tracker.setRides(n)` in `donate.astro`; refresh on load + donate-popup close). (2) Both CTAs open the donate popup — confirm destinations/preset amounts. (3) Flow-diagram label positions are hand-placed percentages — may need nudging.
+- **"Bring Army Pink to your community" section** (under Fund 200 Rides) scoped but NOT built: 4 cards — Fundraise for us / Start a campus chapter / Host an event / Golden Ticket — Calm Room card styling, interactive carousel, `#` links, titles only.
+- **Volunteers page.** "Become a Volunteer" CTA is `href="#"` — needs a destination. Unused: `public/img/volunteer-hero-sun.png` (sun.ai concept, replaced by blush card) is untracked.
+- **Home `story-4.png` missing.** 4th survivor-stories card references `/img/story-4.png` which doesn't exist yet — broken image until Wei provides it.
 - **Givebutter popup verification.** Needs a real-browser check. Diagnostic snippet:
   ```js
   var g = document.getElementById('gb-trigger');
