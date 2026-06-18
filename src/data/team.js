@@ -214,7 +214,7 @@ export const team = [
   {
     slug: "wei-yan",
     name: "Wei Yan",
-    title: "Senior Designer",
+    title: "Lead Product Designer",
     bio: "Wei Yan brings extensive experience in product design, creating engaging, user-focused digital experiences that bridge creativity and functionality. She is dedicated to building intuitive platforms that serve both users and organizational goals, using thoughtful design to streamline workflows and enhance accessibility. Her focus is on shaping the wellness portal with clarity and innovation, ensuring it provides maximum impact and ease of use for all stakeholders.",
     photo: "/img/people/wei-yan.jpg",
     sourcePhoto: "https://images.squarespace-cdn.com/content/v1/67b1835d7acc0b372c824b90/0abdd9bb-92e2-4428-944e-c6ba0c94e384/1746702692146.jpg",
@@ -538,5 +538,12 @@ export const team = [
     bio: "Sammy Houston supports Army Pink's social media efforts by creating infographics, graphics, and visual content designed to raise awareness and build community around the initiative. Her work helps translate key messages into engaging visuals that increase reach, education, and connection across digital platforms.",
     photo: "/img/people/sammy-houston.jpg",
     sourcePhoto: "https://images.squarespace-cdn.com/content/v1/67b1835d7acc0b372c824b90/fd3c6622-9c8e-45b7-bbae-5089f0f14eee/sammy.jpg",
+  },
+  {
+    slug: "beverly-taridona",
+    name: "Beverly Taridona",
+    title: "Partnerships Director",
+    bio: "Beverly Taridona leads Army Pink's fundraising and partnership efforts with a strong focus on building meaningful collaborations that expand the organization's reach and impact. She is responsible for developing strategic relationships with donors, corporate partners, and community supporters to secure the resources needed to sustain and grow the mission. Her work is centered on creating long-term funding pathways that ensure survivors have consistent access to safety, support, and life-changing resources.",
+    photo: "/img/people/beverly-taridona.png",
   },
 ];
