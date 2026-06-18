@@ -20,7 +20,7 @@ A wellness portal for domestic-violence survivors, built with Army Pink in partn
 ## File layout
 
 - `src/pages/*.astro` — one file per route
-- `src/layouts/Layout.astro` — shared shell: crisis banner, nav, footer, safe-exit, Givebutter trigger, Lenis init
+- `src/layouts/Layout.astro` — shared shell: **sticky `.site-header` (crisis banner + nav, stays visible all the time, every page)**, footer, safe-exit, Givebutter trigger, Lenis init. `--header-h` (~7.5rem) approximates the banner+nav height used by other pages' heroes.
 - `src/data/team.js` — single source of truth for 66 team members
 - `src/_archive/` — files prefixed `_` aren't built by Astro (used for archived components like the old donate panel)
 - `public/styles.css` — all site styles. The legacy root `styles.css` is dead, kept for reference only.
@@ -32,7 +32,7 @@ A wellness portal for domestic-violence survivors, built with Army Pink in partn
 
 | Route | File | Notes |
 |---|---|---|
-| `/` | `index.astro` | Framed 16:9 hero video over blurred full-bleed backdrop + char-blur statement |
+| `/` | `index.astro` | Pinned hero stage (fullscreen video → shrinks into upper area while mission statement rises + de-blurs) → stats section (sticky text + parallax stat columns) → founder quote (char-blur) → survivor stories → two-row partner marquee → about |
 | `/mission` | `mission.astro` | Story, values, link to /team |
 | `/team` | `team.astro` | Leadership only — editorial rows + fullscreen founder quote (7 people via `leadershipSlugs`) |
 | `/volunteers` | `volunteers.astro` | Blush hero card w/ blended butterfly loop; category chips; 3-col hover-flip cards (everyone not in `leadershipSlugs`) |
@@ -69,6 +69,9 @@ Nav, footer, crisis banner, safe exit appear automatically.
 - **Global grain z-index.** `body::before` at `z-index: 50` — over content, under nav (1100+), donate (1100+), safe-exit (9000), crisis banner (1000). Don't stack two grain layers via multiply (goes too dark).
 - **Lenis + `scroll-behavior`.** Lenis (`lerp: 0.1`) is initialized in `Layout.astro`. `html { scroll-behavior: smooth }` was removed from `public/styles.css` because the combo caused stutter. Per-row `scroll-behavior: smooth` on `.thumb-row` / `.carousel-track` are kept intentionally (horizontal scroll containers).
 - **Statement char blur requires word wrappers.** Per-char `display: inline-block` spans can break mid-word — wrap chars in `.statement-word { display: inline-block; white-space: nowrap }`. Spaces use `.statement-space` with `width: 0.28em`.
+- **Home hero is a pinned "stage" (`.hero-stage`, 200svh).** Inside, `.hero-stage__pin` is `position: sticky` and the whole transition is one scroll-progress `p` (0→1 over the extra 100svh), driven by `updateHero()` in `script.js`. As `p` rises: the `.hero-scrub` video shrinks from fullscreen to a 16:9 thumbnail anchored ~15% below the header (`dockTop = hH + 0.15*vh`); `.hero-stage__mission` translates up from the bottom and its chars de-blur (reveal keyed to the statement's live top vs the viewport, fully clear by ~50%/dock). Tuning levers: `dockTop`, docked width `Wf = min(vw*0.4, 520)`, reveal mapping. The video element is one node (no double-decode); clicking it opens the `#heroVideoModal` popup (full video + sound). **Earlier dead-ends to avoid:** a fixed-overlay + empty "runway" spacer left big white space and made the video chase a far slot — the pinned stage is what makes video+statement converge in place.
+- **Crisis banner must always be visible.** It lives in the sticky `.site-header` and must never be covered (it's a DV-safety feature). The fullscreen hero video sits *below* the header (z-index). If you add fixed/overlay heroes elsewhere, keep them under the header.
+- **Partner section is two marquees.** Row 1 (`partners`) = org partners + Safe Nest, scrolls right→left. Row 2 (`techPartners`) = full-color tool logos (Salesforce/Slack/Google/Microsoft/YouTube/Lyft/Monday.com/Canva), scrolls left→right via `.partner-track--reverse` (`animation-direction: reverse`). Logo tiles use `.partner-tile--logo` (contain, not cover); `--multiply` for white-bg JPGs, `--color` keeps tool logos in color. Color logos were sourced from **Wikimedia/Wikipedia `Special:FilePath`** (Clearbit logo API is network-blocked in this env; simple-icons CDN is monochrome only).
 - **Wellness portal sub-page navigation** uses a sessionStorage handoff (`wpArchEntry` / `wpArchExit` keys) to bridge a single arch animation across page navigation. Source page renders overlay arch at fullscreen → navigate → destination renders the same arch fullscreen → fades out. Fade-in flicker on destination is killed by forcing `transitionDuration='0s'` before adding `is-arch-shown`, then restoring. See `src/components/WellnessSubpageShared.astro` entry script.
 - **Sub-page → hub navigation is intentionally simple** (no arch animation), while hub → sub-page uses the full arch expansion. Wei's feedback was that the arch-contract-on-hub from the switcher read as a "flash" — keep the ceremonial expansion for entry only.
 - **`astro dev` / `astro build` silently hangs** = `node_modules` corruption (typically a missing transitive dep). Recovery: `pkill -9 -f astro && rm -rf node_modules package-lock.json .astro && npm install`. The error is on stderr but terminal-buffered, so dev/build appears to hang at "astro dev" / "Building static entrypoints..." with no output. Saw `http-cache-semantics` missing once — likely caused by aborted `npm run dev` cycles.
