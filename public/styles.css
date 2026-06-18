@@ -121,11 +121,17 @@ img {
   font-weight: 600;
 }
 
-/* --- Navigation --- */
-.main-nav {
+/* Sticky header keeps the crisis banner + nav visible the whole time */
+.site-header {
   position: sticky;
   top: 0;
-  z-index: 1000;
+  z-index: 1100;
+}
+
+/* --- Navigation --- */
+.main-nav {
+  position: relative;
+  z-index: 1;
   background: rgba(254, 252, 250, 0.95);
   backdrop-filter: blur(10px);
   border-bottom: 1px solid var(--beige-dark);
@@ -511,15 +517,141 @@ img {
 
 /* --- Statement Section (curtain that rises over the hero) --- */
 .statement-scroll-wrap {
-  /* No pin — the statement scrolls through normally; the wrap only provides
-     the rounded curtain edge that rises over the sticky hero. */
+  /* Now the top-of-page hero: video thumbnail + mission statement, in normal
+     flow (no sticky hero / curtain behind it). */
   position: relative;
   z-index: 1;
-  margin-top: -2.4rem;
   background: var(--cream);
-  border-top-left-radius: 2.4rem;
-  border-top-right-radius: 2.4rem;
-  overflow: clip;
+}
+
+/* Hero stage: a tall section that pins for ~1 viewport. Inside the pin, JS
+   shrinks the video into the upper area while the mission rises to meet it. */
+.hero-stage {
+  position: relative;
+  height: 200svh; /* the extra 100svh is the scroll budget for the transition */
+  background: var(--cream);
+  z-index: 1;
+}
+.hero-stage__pin {
+  position: sticky;
+  top: 0;
+  height: 100svh;
+  overflow: hidden;
+}
+
+/* The video: starts fullscreen inside the pin; JS scrubs its geometry down to
+   a 16:9 thumbnail anchored in the upper area. */
+.hero-scrub {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100svh; /* JS overrides geometry on scroll */
+  z-index: 2;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  overflow: hidden;
+  cursor: pointer;
+  background: #000;
+}
+.hero-scrub__vid {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+.hero-scrub__play {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.42);
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0; /* JS fades it in as the video docks */
+  pointer-events: none;
+}
+.hero-scrub__play svg {
+  width: 26px;
+  height: 26px;
+  margin-left: 4px;
+}
+
+/* Mission block rises up beneath the docked video; JS sets top/opacity/transform */
+.hero-stage__mission {
+  position: absolute;
+  left: 0;
+  right: 0;
+  z-index: 1;
+  text-align: center;
+  padding: 0 var(--space-md);
+  opacity: 0;
+}
+.hero-stage__mission .statement-text { margin: 0 auto; }
+
+/* Reduced motion: skip the transition — show the docked composition statically */
+@media (prefers-reduced-motion: reduce) {
+  .hero-stage { height: 100svh; }
+}
+
+/* Full-video popup */
+.video-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 9500;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-md);
+}
+.video-modal[hidden] { display: none; }
+.video-modal__backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.82);
+}
+.video-modal__inner {
+  position: relative;
+  z-index: 1;
+  width: min(960px, 92vw);
+  aspect-ratio: 16 / 9;
+}
+.video-modal__vid {
+  width: 100%;
+  height: 100%;
+  border-radius: 12px;
+  background: #000;
+  display: block;
+}
+.video-modal__close {
+  position: absolute;
+  top: -16px;
+  right: -16px;
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  border: 0;
+  background: #fff;
+  color: #111;
+  font-size: 1.5rem;
+  line-height: 1;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.3);
+}
+@media (max-width: 600px) {
+  .video-modal__close { top: -52px; right: 0; }
 }
 
 .section-statement {

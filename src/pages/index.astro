@@ -90,40 +90,35 @@ const techPartners = [
 
 <Layout title="Army Pink — Pathway to Freedom">
 
-  <!-- ===== HERO (fullscreen sticky video — click anywhere to toggle) ===== -->
-  <section id="home" class="home-hero" aria-label="Hero video — click or press space to play and pause">
-    <video
-      class="home-hero-video-bg"
-      src="/vid/Home_Hero_Vid.mp4"
-      autoplay muted loop playsinline preload="auto"
-      aria-hidden="true"
-    ></video>
-    <div class="home-hero-frame">
-      <video
-        class="home-hero-video"
-        src="/vid/Home_Hero_Vid.mp4"
-        autoplay muted loop playsinline preload="auto"
-        aria-hidden="true"
-      ></video>
-    </div>
-    <div class="home-hero-play-overlay" aria-hidden="true">
-      <svg class="overlay-icon-play" viewBox="0 0 24 24" fill="currentColor"><polygon points="7 4 20 12 7 20 7 4"/></svg>
-      <svg class="overlay-icon-mute" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" fill="currentColor"/><line x1="23" y1="9" x2="17" y2="15"/><line x1="17" y1="9" x2="23" y2="15"/></svg>
-      <span class="overlay-hint">Click for sound</span>
+  <!-- ===== HERO STAGE: fullscreen video shrinks into the upper area while the
+       mission statement rises up to meet it (both pinned, scroll-driven) ===== -->
+  <section class="hero-stage" id="home" aria-label="Army Pink intro">
+    <div class="hero-stage__pin">
+      <button class="hero-scrub" id="heroScrub" type="button" data-hero-thumb aria-label="Play the Army Pink intro video">
+        <video
+          class="hero-scrub__vid"
+          src="/vid/Home_Hero_Vid.mp4"
+          autoplay muted loop playsinline preload="auto"
+          aria-hidden="true"
+        ></video>
+        <span class="hero-scrub__play" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="currentColor"><polygon points="7 4 20 12 7 20 7 4"/></svg>
+        </span>
+      </button>
+      <div class="hero-stage__mission" id="heroMission">
+        <span class="pill-label">Our Mission</span>
+        <p class="statement-text" id="statementText">Providing safe, reliable transportation to help survivors escape domestic violence and begin their path to freedom.</p>
+      </div>
     </div>
   </section>
 
-  <!-- ===== STATEMENT ===== -->
-  <div class="statement-scroll-wrap">
-    <section class="section-statement" id="statement">
-      <!-- Act 1: mission statement (char-blur reveal, then fades out) -->
-      <div class="statement-act statement-act--mission" id="statementActMission">
-        <div class="container">
-          <span class="pill-label">Our Mission</span>
-          <p class="statement-text" id="statementText">Providing safe, reliable transportation to help survivors escape domestic violence and begin their path to freedom.</p>
-        </div>
-      </div>
-    </section>
+  <!-- Intro video popup (full video with sound) -->
+  <div class="video-modal" id="heroVideoModal" role="dialog" aria-modal="true" aria-label="Army Pink intro video" hidden>
+    <div class="video-modal__backdrop" data-close></div>
+    <div class="video-modal__inner">
+      <button class="video-modal__close" type="button" data-close aria-label="Close video">&times;</button>
+      <video class="video-modal__vid" src="/vid/Home_Hero_Vid.mp4" controls playsinline preload="none"></video>
+    </div>
   </div>
 
   <!-- ===== WHO WE ARE / STATS (pinned text left, stat cells right) ===== -->
