@@ -736,50 +736,6 @@ img {
   }
 }
 
-/* --- "Army Pink Powered by" logo strip --- */
-.powered-by {
-  position: relative; /* z-shield against the sticky home hero video */
-  z-index: 1;
-  background: var(--cream);
-  padding: var(--space-2xl) var(--space-md);
-}
-
-.powered-by__inner {
-  max-width: 1120px;
-  margin: 0 auto;
-  text-align: center;
-}
-
-.powered-by__title {
-  font-family: var(--font-display);
-  font-size: clamp(1.5rem, 3.5vw, 2.5rem);
-  color: var(--text);
-  margin: 0 0 var(--space-lg);
-}
-
-.powered-by__logos {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: center;
-  gap: clamp(1.75rem, 4.5vw, 3.75rem);
-}
-
-.powered-by__logo img {
-  display: block;
-  height: 34px;
-  width: auto;
-  max-width: 150px;
-  object-fit: contain;
-  /* uniform muted treatment; multiply hides the Safe Nest JPG's white box */
-  filter: grayscale(1);
-  opacity: 0.62;
-  mix-blend-mode: multiply;
-  transition: opacity 0.25s var(--ease);
-}
-
-.powered-by__logo:hover img { opacity: 1; }
-
 /* --- Wellness Portal Hero --- */
 .hero {
   padding: var(--space-2xl) 0 calc(var(--space-xl) + 60px);
@@ -4197,6 +4153,10 @@ body.overlay-open {
   from { transform: translateX(0); }
   to   { transform: translateX(calc(-50% - 0.5rem)); }
 }
+/* Second row scrolls the opposite way (left → right) */
+.partner-track--reverse {
+  animation-direction: reverse;
+}
 .partner-tile {
   flex: 0 0 240px;
   aspect-ratio: 1 / 1;
@@ -4256,6 +4216,24 @@ body.overlay-open {
   object-fit: cover;
   display: block;
 }
+/* Logo tiles: show the whole logo, centered, not cover-cropped. */
+.partner-tile--logo .partner-photo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--cream);
+}
+.partner-tile--logo .partner-photo img {
+  width: auto;
+  height: auto;
+  max-width: 74%;
+  max-height: 54%;
+  object-fit: contain;
+}
+/* White-bg raster logos (e.g. Safe Nest JPG): multiply drops the white box. */
+.partner-tile--multiply .partner-photo img { mix-blend-mode: multiply; }
+/* Full-color tool logos (row 2): transparent assets — keep them in color. */
+.partner-tile--color .partner-photo img { mix-blend-mode: normal; }
 .partner-name {
   margin: 0;
   padding: 0.6rem 1rem 0.8rem;
