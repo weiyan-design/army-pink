@@ -24,79 +24,89 @@
     if (!hasActivePanel) safeExit();
   });
 
-  // --- Statement char-blur reveal (sticky scroll-driven) ---
+  // --- Hero stage: pinned scroll transition. The fullscreen video shrinks into
+  //     the upper area while the mission statement rises up to meet it; the
+  //     statement's char-blur reveal is driven by the same progress. ---
+  var heroStage = document.getElementById('home');
   var statementTextEl = document.getElementById('statementText');
-  var statementScrollWrap = document.querySelector('.statement-scroll-wrap');
-  if (statementTextEl && statementScrollWrap) {
+  if (heroStage && heroStage.classList.contains('hero-stage') && statementTextEl) {
+    var heroScrub = document.getElementById('heroScrub');
+    var heroMission = document.getElementById('heroMission');
+    var scrubPlay = heroScrub && heroScrub.querySelector('.hero-scrub__play');
+    var siteHeader = document.querySelector('.site-header');
+    var reduceMo = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
     function splitToChars(el) {
-      var raw = el.textContent.trim();
-      var words = raw.split(/\s+/);
+      var words = el.textContent.trim().split(/\s+/);
       var html = '';
       for (var w = 0; w < words.length; w++) {
         html += '<span class="statement-word">';
-        var word = words[w];
-        for (var c = 0; c < word.length; c++) {
-          html += '<span class="statement-char">' + word[c] + '</span>';
-        }
+        for (var c = 0; c < words[w].length; c++) html += '<span class="statement-char">' + words[w][c] + '</span>';
         html += '</span>';
         if (w < words.length - 1) html += '<span class="statement-space"> </span>';
       }
       el.innerHTML = html;
     }
-
-    var statementSection = statementTextEl.closest('.section-statement');
-    var statementPillEl = statementSection && statementSection.querySelector('.pill-label');
-    if (statementPillEl) splitToChars(statementPillEl);
+    var pillEl = heroMission && heroMission.querySelector('.pill-label');
+    if (pillEl) splitToChars(pillEl);
     splitToChars(statementTextEl);
+    var chars = heroMission ? heroMission.querySelectorAll('.statement-char') : [];
+    var REVEAL_WINDOW = 0.14, MAX_BLUR = 8;
 
-    // Chars from pill first (DOM order), then statement text — sharpens top-to-bottom.
-    var chars = statementSection.querySelectorAll('.statement-char');
-    var total = chars.length;
-    var REVEAL_WINDOW = 0.12;
-    var MAX_BLUR = 8;
+    function clamp01(v) { return v < 0 ? 0 : v > 1 ? 1 : v; }
 
-    var mainNav = document.querySelector('.main-nav');
-    var actMission = document.getElementById('statementActMission');
-    var actQuote = document.getElementById('statementActQuote');
-    // Reveal runs while the section scrolls through (no pin): progress 0 when
-    // the section top enters the viewport bottom, 1 a little after it passes
-    // the nav — TAIL is that overshoot, as a fraction of viewport height.
-    var TAIL = 0.35;
-    // Crossfade windows for the dormant act-2 quote (fractions of a pinned
-    // phase; only used if the quote markup + pin return).
-    var FADE_OUT = [0.30, 0.50];
-    var FADE_IN = [0.52, 0.76];
+    function updateHero() {
+      var vw = window.innerWidth, vh = window.innerHeight;
+      var stageRect = heroStage.getBoundingClientRect();
+      var scrollable = heroStage.offsetHeight - vh; // ~1 viewport of scrub
+      var p = (reduceMo || scrollable <= 0) ? 1 : clamp01(-stageRect.top / scrollable);
+      var e = 1 - Math.pow(1 - p, 3); // easeOutCubic
 
-    function updateStatement() {
-      var rect = statementScrollWrap.getBoundingClientRect();
-      var navBottom = mainNav ? mainNav.getBoundingClientRect().bottom : 0;
-      var scrollSpace = statementScrollWrap.offsetHeight - window.innerHeight;
-      var span = Math.max(1, (window.innerHeight - navBottom) + window.innerHeight * TAIL);
-      var progress = Math.max(0, Math.min(1, (window.innerHeight - rect.top) / span));
+      var hH = siteHeader ? siteHeader.offsetHeight : 0;
+      var Wf = Math.max(280, Math.min(vw * 0.4, 520)); // docked thumb width
+      var Hf = Wf * 9 / 16;
+      var dockTop = hH + 0.15 * vh;                     // sits ~15% viewport below the header
 
-      for (var i = 0; i < total; i++) {
-        var start = (i / total) * (1 - REVEAL_WINDOW);
-        var p = Math.max(0, Math.min(1, (progress - start) / REVEAL_WINDOW));
-        var blur = MAX_BLUR * (1 - p);
-        chars[i].style.setProperty('--blur', blur.toFixed(2) + 'px');
+      if (heroScrub) {
+        var W = vw + (Wf - vw) * e;
+        var H = vh + (Hf - vh) * e;
+        heroScrub.style.width = W + 'px';
+        heroScrub.style.height = H + 'px';
+        heroScrub.style.left = ((vw - W) / 2) + 'px';
+        heroScrub.style.top = (dockTop * e) + 'px';
+        heroScrub.style.borderRadius = (20 * e) + 'px';
       }
+      if (scrubPlay) scrubPlay.style.opacity = String(e);
 
-      // Act 1 → Act 2 crossfade, driven by pinned-phase progress
-      if (actMission && actQuote && scrollSpace > 0) {
-        var pinP = Math.max(0, Math.min(1, -rect.top / scrollSpace));
-        var out = Math.max(0, Math.min(1, (pinP - FADE_OUT[0]) / (FADE_OUT[1] - FADE_OUT[0])));
-        var fin = Math.max(0, Math.min(1, (pinP - FADE_IN[0]) / (FADE_IN[1] - FADE_IN[0])));
-        actMission.style.opacity = String(1 - out);
-        actMission.style.transform = 'translateY(' + (-40 * out).toFixed(1) + 'px)';
-        actQuote.style.opacity = String(fin);
-        actQuote.style.transform = 'translateY(' + (36 * (1 - fin)).toFixed(1) + 'px)';
-        actQuote.setAttribute('aria-hidden', fin <= 0 ? 'true' : 'false');
+      if (heroMission) {
+        // Statement rises from the bottom of the viewport up to its docked spot
+        var restingTop = dockTop + Hf + Math.max(0.03 * vh, 24);
+        var startTop = vh; // off the bottom edge
+        var curTop = startTop + (restingTop - startTop) * e;
+        heroMission.style.top = restingTop + 'px';
+        heroMission.style.transform = 'translateY(' + (curTop - restingTop) + 'px)';
+        heroMission.style.opacity = '1';
+        // Blur clears as it rises — fully clear when it reaches 50% viewport
+        // (or by the time it docks, if it settles below the midpoint).
+        var revealDoneTop = Math.max(0.5 * vh, restingTop);
+        var reveal = clamp01((startTop - curTop) / Math.max(1, startTop - revealDoneTop));
+        for (var i = 0; i < chars.length; i++) {
+          var start = (i / chars.length) * (1 - REVEAL_WINDOW);
+          var cp = clamp01((reveal - start) / REVEAL_WINDOW);
+          chars[i].style.setProperty('--blur', (MAX_BLUR * (1 - cp)).toFixed(2) + 'px');
+        }
       }
     }
 
-    window.addEventListener('scroll', updateStatement, { passive: true });
-    window.addEventListener('resize', updateStatement);
-    updateStatement();
+    var heroTicking = false;
+    function onHeroScroll() {
+      if (heroTicking) return;
+      heroTicking = true;
+      requestAnimationFrame(function () { updateHero(); heroTicking = false; });
+    }
+    window.addEventListener('scroll', onHeroScroll, { passive: true });
+    window.addEventListener('resize', updateHero);
+    updateHero();
   }
 
   // --- Founder quote: same char-blur reveal as the mission statement ---
@@ -858,6 +868,46 @@
       });
     });
   });
+
+  // --- Hero video thumbnail → full-video popup ---
+  var heroThumb = document.querySelector('[data-hero-thumb]');
+  var videoModal = document.getElementById('heroVideoModal');
+  if (heroThumb && videoModal) {
+    var modalVid = videoModal.querySelector('.video-modal__vid');
+    var thumbVid = heroThumb.querySelector('video');
+    var closeBtn = videoModal.querySelector('.video-modal__close');
+
+    function openVideoModal() {
+      videoModal.hidden = false;
+      videoModal.setAttribute('aria-hidden', 'false');
+      document.body.style.overflow = 'hidden';
+      if (thumbVid) thumbVid.pause();
+      if (modalVid) {
+        try { modalVid.currentTime = 0; } catch (e) {}
+        modalVid.muted = false;
+        var p = modalVid.play();
+        if (p && p.catch) p.catch(function () {});
+      }
+      if (closeBtn) closeBtn.focus();
+    }
+
+    function closeVideoModal() {
+      if (modalVid) modalVid.pause();
+      videoModal.hidden = true;
+      videoModal.setAttribute('aria-hidden', 'true');
+      document.body.style.overflow = '';
+      if (thumbVid) thumbVid.play().catch(function () {});
+      heroThumb.focus();
+    }
+
+    heroThumb.addEventListener('click', openVideoModal);
+    videoModal.querySelectorAll('[data-close]').forEach(function (el) {
+      el.addEventListener('click', closeVideoModal);
+    });
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape' && !videoModal.hidden) closeVideoModal();
+    });
+  }
 
   // --- Hero Flower Scroll Rotation (escape-club wavy hero) ---
   var flower = document.querySelector('.hero-flower');

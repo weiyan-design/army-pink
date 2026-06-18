@@ -62,45 +62,63 @@ const partners = [
       'Featured items show up in monthly Escape Club care packages for members.',
     ],
   },
+  {
+    name: 'The Safe Nest Project',
+    img: '/img/partner-logo/safe-nest.jpg',
+    href: '#',
+    mark: true,
+    whiteBg: true,
+    paras: [
+      'A domestic-violence support partner we work alongside to reach survivors who need a safe way out.',
+    ],
+  },
+];
+
+// Second marquee row — the tools that power Army Pink. Full-color logos,
+// contained (not cropped), scrolling the opposite direction.
+const techPartners = [
+  { name: 'Salesforce', img: '/img/partner-logo/color-salesforce.svg', href: 'https://www.salesforce.com', mark: true, paras: ['Powers our case and donor management, keeping survivor coordination secure and organized.'] },
+  { name: 'Slack', img: '/img/partner-logo/color-slack.svg', href: 'https://slack.com', mark: true, paras: ['Where our volunteer team coordinates rides and support in real time.'] },
+  { name: 'Google', img: '/img/partner-logo/color-google.svg', href: 'https://www.google.com', mark: true, paras: ['Workspace and cloud tools that run Army Pink day to day.'] },
+  { name: 'Microsoft', img: '/img/partner-logo/color-microsoft.svg', href: 'https://www.microsoft.com', mark: true, paras: ['Productivity and cloud tools supporting the team behind the mission.'] },
+  { name: 'YouTube', img: '/img/partner-logo/color-youtube.svg', href: 'https://www.youtube.com/@armypink', mark: true, paras: ['Home for our wellness practices and survivor storytelling.'] },
+  { name: 'Lyft', img: '/img/partner-logo/color-lyft.png', href: 'https://www.lyft.com', mark: true, paras: ['Our transportation backbone — Freedom Rides dispatch through Lyft Concierge.'] },
+  { name: 'Monday.com', img: '/img/partner-logo/color-monday.png', href: 'https://monday.com', mark: true, paras: ['Keeps our projects, campaigns, and launch plans on track.'] },
+  { name: 'Canva', img: '/img/partner-logo/color-canva.svg', href: 'https://www.canva.com', mark: true, paras: ['Powers our brand, campaign, and outreach design.'] },
 ];
 ---
 
 <Layout title="Army Pink — Pathway to Freedom">
 
-  <!-- ===== HERO (fullscreen sticky video — click anywhere to toggle) ===== -->
-  <section id="home" class="home-hero" aria-label="Hero video — click or press space to play and pause">
-    <video
-      class="home-hero-video-bg"
-      src="/vid/Home_Hero_Vid.mp4"
-      autoplay muted loop playsinline preload="auto"
-      aria-hidden="true"
-    ></video>
-    <div class="home-hero-frame">
-      <video
-        class="home-hero-video"
-        src="/vid/Home_Hero_Vid.mp4"
-        autoplay muted loop playsinline preload="auto"
-        aria-hidden="true"
-      ></video>
-    </div>
-    <div class="home-hero-play-overlay" aria-hidden="true">
-      <svg class="overlay-icon-play" viewBox="0 0 24 24" fill="currentColor"><polygon points="7 4 20 12 7 20 7 4"/></svg>
-      <svg class="overlay-icon-mute" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" fill="currentColor"/><line x1="23" y1="9" x2="17" y2="15"/><line x1="17" y1="9" x2="23" y2="15"/></svg>
-      <span class="overlay-hint">Click for sound</span>
+  <!-- ===== HERO STAGE: fullscreen video shrinks into the upper area while the
+       mission statement rises up to meet it (both pinned, scroll-driven) ===== -->
+  <section class="hero-stage" id="home" aria-label="Army Pink intro">
+    <div class="hero-stage__pin">
+      <button class="hero-scrub" id="heroScrub" type="button" data-hero-thumb aria-label="Play the Army Pink intro video">
+        <video
+          class="hero-scrub__vid"
+          src="/vid/Home_Hero_Vid.mp4"
+          autoplay muted loop playsinline preload="auto"
+          aria-hidden="true"
+        ></video>
+        <span class="hero-scrub__play" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="currentColor"><polygon points="7 4 20 12 7 20 7 4"/></svg>
+        </span>
+      </button>
+      <div class="hero-stage__mission" id="heroMission">
+        <span class="pill-label">Our Mission</span>
+        <p class="statement-text" id="statementText">Providing safe, reliable transportation to help survivors escape domestic violence and begin their path to freedom.</p>
+      </div>
     </div>
   </section>
 
-  <!-- ===== STATEMENT ===== -->
-  <div class="statement-scroll-wrap">
-    <section class="section-statement" id="statement">
-      <!-- Act 1: mission statement (char-blur reveal, then fades out) -->
-      <div class="statement-act statement-act--mission" id="statementActMission">
-        <div class="container">
-          <span class="pill-label">Our Mission</span>
-          <p class="statement-text" id="statementText">Providing safe, reliable transportation to help survivors escape domestic violence and begin their path to freedom.</p>
-        </div>
-      </div>
-    </section>
+  <!-- Intro video popup (full video with sound) -->
+  <div class="video-modal" id="heroVideoModal" role="dialog" aria-modal="true" aria-label="Army Pink intro video" hidden>
+    <div class="video-modal__backdrop" data-close></div>
+    <div class="video-modal__inner">
+      <button class="video-modal__close" type="button" data-close aria-label="Close video">&times;</button>
+      <video class="video-modal__vid" src="/vid/Home_Hero_Vid.mp4" controls playsinline preload="none"></video>
+    </div>
   </div>
 
   <!-- ===== WHO WE ARE / STATS (pinned text left, stat cells right) ===== -->
@@ -307,11 +325,36 @@ const partners = [
     <div class="partner-track-wrap">
       <div class="partner-track" data-partner-track>
         {[0, 1].map((setIdx) => partners.map((p) => (
-          <article class="partner-tile" data-partner aria-hidden={setIdx === 1 ? 'true' : undefined}>
+          <article class={`partner-tile${p.mark ? ' partner-tile--logo' : ''}${p.whiteBg ? ' partner-tile--multiply' : ''}`} data-partner aria-hidden={setIdx === 1 ? 'true' : undefined}>
             <div class="partner-tile-inner">
               <div class="partner-face partner-face--front">
                 <div class="partner-photo">
                   <img src={p.img} alt="" loading="lazy" />
+                </div>
+                <h3 class="partner-name">{p.name}</h3>
+              </div>
+              <div class="partner-face partner-face--back">
+                <h3 class="partner-back-name">{p.name}</h3>
+                <div class="partner-back-body">
+                  {p.paras.map((para) => <p>{para}</p>)}
+                </div>
+                <a href={p.href} class="partner-link" target={p.href.startsWith('http') ? '_blank' : undefined} rel={p.href.startsWith('http') ? 'noopener' : undefined}>Visit Them</a>
+              </div>
+            </div>
+          </article>
+        )))}
+      </div>
+    </div>
+
+    <!-- Row 2: tools that power Army Pink — full-color logos, reverse scroll -->
+    <div class="partner-track-wrap">
+      <div class="partner-track partner-track--reverse" data-partner-track>
+        {[0, 1].map((setIdx) => techPartners.map((p) => (
+          <article class="partner-tile partner-tile--logo partner-tile--color" data-partner aria-hidden={setIdx === 1 ? 'true' : undefined}>
+            <div class="partner-tile-inner">
+              <div class="partner-face partner-face--front">
+                <div class="partner-photo">
+                  <img src={p.img} alt={p.name} loading="lazy" />
                 </div>
                 <h3 class="partner-name">{p.name}</h3>
               </div>
@@ -335,7 +378,7 @@ const partners = [
       <div class="mission-grid">
         <div class="mission-text">
           <span class="overline">Our Mission</span>
-          <h2>We don't sell healing.<br>We connect you to it.</h2>
+          <h2>We don't provide rides.<br>We provide access to safety.<br><br>We don't sell healing.<br>We connect you to it.</h2>
           <p>
             Army Pink is a 501(c)(3) nonprofit supporting domestic violence survivors
             through safety-centered transportation, concierge support, and wellness resources.

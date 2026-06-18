@@ -144,3 +144,17 @@ The coverflow doors hero, real sub-page routes, and switcher navigation are all 
 - [ ] **Mobile gesture layer.** Carousel hero on `/wellness-portal` currently uses the same vertical-scroll rotation on mobile as desktop. Discussed adding horizontal swipe to advance/retreat through doors. Not built.
 - [ ] **`prefers-reduced-motion: reduce` fallback.** Should disable the carousel rotation, breathing wave, and arch expand/contract animations. Show all 3 doors statically. Not built.
 - [ ] **Astro View Transitions consideration.** Manual sessionStorage handoff works but is ~200 lines of JS across two files. If the rest of the site eventually adds cross-page fades, evaluate consolidating with `<ClientRouter />` from `astro:transitions`. Skipped this time because the carousel's scroll-driven JS might conflict.
+
+---
+
+## Donate + Nav + Volunteers — Followups (2026-06-11)
+
+- [ ] **⚠️ Reconcile `reconcile-local-main` → `main`.** All session work (13c6bad → ad0922c) is on the branch; `origin/main` has ~24 diverged commits (Calm Room rebrand). Wei to choose: PR, rebase, or replace. Don't auto-merge.
+- [ ] **Wire the rides-funded tracker to Givebutter.** Netlify Function proxy holding `GIVEBUTTER_API_KEY` (set in dashboard), return `{ raised, goal }`, page calls `tracker.setRides(Math.floor(raised / 50))` on load + after donate-popup close. Need campaign ID (popup uses `GHP0EF`). Hook + commented snippet already in `donate.astro`.
+- [ ] **Build "Bring Army Pink to your community" section** under Fund 200 Rides. Scoped with Wei: 4 cards (Fundraise for us / Start a campus chapter / Host an event / Golden Ticket), Calm Room card styling, interactive carousel, `#` links, titles only. Find image placeholders online.
+- [ ] **Donate CTAs**: "Power Safe Exits" + "Fund 200 rides" both open the Givebutter popup — confirm whether they should carry preset amounts/frequency.
+- [ ] **Volunteers "Become a Volunteer" CTA** is `href="#"` — needs a real destination (form? contact? Discord?).
+- [ ] **`/img/story-4.png` missing** — 4th home survivor-stories card shows a broken image until Wei drops the asset into `public/img/`.
+- [ ] **Flow-diagram label positions** on /donate are hand-placed percentages — verify against Figma at a few widths, nudge as needed.
+- [ ] **Unused asset**: `public/img/volunteer-hero-sun.png` (sun.ai concept, superseded) — commit or delete.
+- [ ] **Netlify env**: tracker function will need `GIVEBUTTER_API_KEY`; remember Forms recipient setting is also still pending (see Legal Pages section).

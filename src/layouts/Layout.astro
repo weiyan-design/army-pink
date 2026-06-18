@@ -44,16 +44,46 @@ function isActive(href: string) {
 </head>
 <body>
 
-  <!-- ===== CRISIS BANNER ===== -->
-  <div class="crisis-banner" role="complementary" aria-label="Crisis resources">
-    <p>
-      If you are in immediate danger, call <strong>911</strong>. &nbsp;
-      National DV Hotline: <a href="tel:18007997233"><strong>1-800-799-7233</strong></a> &nbsp;|&nbsp;
-      Text <strong>START</strong> to <strong>88788</strong> &nbsp;|&nbsp;
-      <a href="https://www.thehotline.org" target="_blank" rel="noopener">thehotline.org</a> &nbsp;|&nbsp;
-      Remember to <strong>clear your browser history</strong> when finished.
-    </p>
-  </div>
+  <!-- ===== STICKY HEADER (crisis banner + nav, always visible) ===== -->
+  <header class="site-header">
+    <!-- ===== CRISIS BANNER ===== -->
+    <div class="crisis-banner" role="complementary" aria-label="Crisis resources">
+      <p>
+        If you are in immediate danger, call <strong>911</strong>. &nbsp;
+        National DV Hotline: <a href="tel:18007997233"><strong>1-800-799-7233</strong></a> &nbsp;|&nbsp;
+        Text <strong>START</strong> to <strong>88788</strong> &nbsp;|&nbsp;
+        <a href="https://www.thehotline.org" target="_blank" rel="noopener">thehotline.org</a> &nbsp;|&nbsp;
+        Remember to <strong>clear your browser history</strong> when finished.
+      </p>
+    </div>
+
+    <!-- ===== NAVIGATION ===== -->
+    <nav class="main-nav" aria-label="Main navigation">
+      <div class="nav-inner">
+        <a href="/" class="logo" aria-label="Army Pink home">
+          <img src="/img/AP_Logo.png" alt="Army Pink" class="logo-img" />
+        </a>
+        <button class="mobile-menu-toggle" aria-label="Toggle menu" aria-expanded="false">
+          <span></span><span></span><span></span>
+        </button>
+        <ul class="nav-links">
+          {navLinks.map(link => (
+            <li class={link.children ? 'has-dropdown' : undefined}>
+              <a href={link.href} aria-current={isActive(link.href) ? 'page' : undefined} aria-haspopup={link.children ? 'true' : undefined}>{link.label}</a>
+              {link.children && (
+                <ul class="nav-dropdown">
+                  {link.children.map(child => (
+                    <li><a href={child.href}>{child.label}</a></li>
+                  ))}
+                </ul>
+              )}
+            </li>
+          ))}
+        </ul>
+        <a href="#" class="btn btn-primary nav-donate" data-donate-panel>Donate</a>
+      </div>
+    </nav>
+  </header>
 
   <!-- ===== SAFE EXIT ===== -->
   <div class="safe-exit-wrap" role="complementary" aria-label="Safe exit">
@@ -67,33 +97,6 @@ function isActive(href: string) {
       <span>Quick Exit</span>
     </button>
   </div>
-
-  <!-- ===== NAVIGATION ===== -->
-  <nav class="main-nav" aria-label="Main navigation">
-    <div class="nav-inner">
-      <a href="/" class="logo" aria-label="Army Pink home">
-        <img src="/img/AP_Logo.png" alt="Army Pink" class="logo-img" />
-      </a>
-      <button class="mobile-menu-toggle" aria-label="Toggle menu" aria-expanded="false">
-        <span></span><span></span><span></span>
-      </button>
-      <ul class="nav-links">
-        {navLinks.map(link => (
-          <li class={link.children ? 'has-dropdown' : undefined}>
-            <a href={link.href} aria-current={isActive(link.href) ? 'page' : undefined} aria-haspopup={link.children ? 'true' : undefined}>{link.label}</a>
-            {link.children && (
-              <ul class="nav-dropdown">
-                {link.children.map(child => (
-                  <li><a href={child.href}>{child.label}</a></li>
-                ))}
-              </ul>
-            )}
-          </li>
-        ))}
-      </ul>
-      <a href="#" class="btn btn-primary nav-donate" data-donate-panel>Donate</a>
-    </div>
-  </nav>
 
   <!-- PAGE CONTENT -->
   <slot />

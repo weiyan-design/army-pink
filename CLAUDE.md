@@ -13,13 +13,14 @@ A wellness portal for domestic-violence survivors, built with Army Pink in partn
 - `npm run dev` — dev server at `localhost:4324` (NOT 3003 — that's an old `npx serve` instruction for the html.to.design Figma plugin)
 - `npm run build` — outputs to `dist/`
 - `netlify deploy --prod` — reads `netlify.toml`, deploys `dist/`. Netlify also auto-builds on push to `main`.
+- `netlify deploy --dir=dist --alias review` — updates the **stable stakeholder review URL** https://review--zingy-sherbet-559514.netlify.app (shared with the team via Pastel). Plain draft deploys mint immutable one-off URLs — don't share those.
 
 ---
 
 ## File layout
 
 - `src/pages/*.astro` — one file per route
-- `src/layouts/Layout.astro` — shared shell: crisis banner, nav, footer, safe-exit, Givebutter trigger, Lenis init
+- `src/layouts/Layout.astro` — shared shell: **sticky `.site-header` (crisis banner + nav, stays visible all the time, every page)**, footer, safe-exit, Givebutter trigger, Lenis init. `--header-h` (~7.5rem) approximates the banner+nav height used by other pages' heroes.
 - `src/data/team.js` — single source of truth for 66 team members
 - `src/_archive/` — files prefixed `_` aren't built by Astro (used for archived components like the old donate panel)
 - `public/styles.css` — all site styles. The legacy root `styles.css` is dead, kept for reference only.
@@ -31,14 +32,18 @@ A wellness portal for domestic-violence survivors, built with Army Pink in partn
 
 | Route | File | Notes |
 |---|---|---|
-| `/` | `index.astro` | Espacio-style sticky video hero + char-blur statement |
+| `/` | `index.astro` | Pinned hero stage (fullscreen video → shrinks into upper area while mission statement rises + de-blurs) → stats section (sticky text + parallax stat columns) → founder quote (char-blur) → survivor stories → two-row partner marquee → about |
 | `/mission` | `mission.astro` | Story, values, link to /team |
-| `/team` | `team.astro` | Flip-card grid, all 66 people from `team.js` |
-| `/escape-club` | `escape-club.astro` | Community + tier cards |
-| `/wellness-portal` | `wellness-portal.astro` | Coverflow doors hero (3 arches in a perspective carousel); legacy yoga sections below the hero pending redesign |
+| `/team` | `team.astro` | Leadership only — editorial rows + fullscreen founder quote (7 people via `leadershipSlugs`) |
+| `/volunteers` | `volunteers.astro` | Blush hero card w/ blended butterfly loop; category chips; 3-col hover-flip cards (everyone not in `leadershipSlugs`) |
+| `/donate` | `donate.astro` | Figma rebuild: "Safe exit is a right" hero vid (fullscreen→70svh), sticky Freedom Rides vids, rides-funded tracker. `/escape-club` + `/give` 301 here |
+| `/community` | `community.astro` | "Activate Your Community" placeholder |
+| `/wellness-portal` | `wellness-portal.astro` | Calm Room — tabbed Netflix-style video shelves (nav label "Calm Room") |
 | `/wellness-portal/calm-room`, `/library`, `/wellness-experiences` | nested under `src/pages/wellness-portal/` | Sub-pages; each is 12 lines importing `WellnessSubpageShared.astro` with per-room props |
-| `/partners` | `partners.astro` | Vedanta featured, partnership models |
-| `/privacy`, `/sms-terms`, `/disclaimer`, `/contact` | legal pages | |
+| `/partners` | `partners.astro` | Still Mountain (Vedanta) featured; reachable only via Get Involved dropdown |
+| `/privacy`, `/sms-terms`, `/disclaimer`, `/contact`, `/faq` | legal pages | |
+
+Top nav: Home · Mission · Calm Room · Get Involved (dropdown: Donate / Partner / Volunteer / Activate your community) · Leadership.
 
 ## Adding a new page
 
@@ -64,6 +69,9 @@ Nav, footer, crisis banner, safe exit appear automatically.
 - **Global grain z-index.** `body::before` at `z-index: 50` — over content, under nav (1100+), donate (1100+), safe-exit (9000), crisis banner (1000). Don't stack two grain layers via multiply (goes too dark).
 - **Lenis + `scroll-behavior`.** Lenis (`lerp: 0.1`) is initialized in `Layout.astro`. `html { scroll-behavior: smooth }` was removed from `public/styles.css` because the combo caused stutter. Per-row `scroll-behavior: smooth` on `.thumb-row` / `.carousel-track` are kept intentionally (horizontal scroll containers).
 - **Statement char blur requires word wrappers.** Per-char `display: inline-block` spans can break mid-word — wrap chars in `.statement-word { display: inline-block; white-space: nowrap }`. Spaces use `.statement-space` with `width: 0.28em`.
+- **Home hero is a pinned "stage" (`.hero-stage`, 200svh).** Inside, `.hero-stage__pin` is `position: sticky` and the whole transition is one scroll-progress `p` (0→1 over the extra 100svh), driven by `updateHero()` in `script.js`. As `p` rises: the `.hero-scrub` video shrinks from fullscreen to a 16:9 thumbnail anchored ~15% below the header (`dockTop = hH + 0.15*vh`); `.hero-stage__mission` translates up from the bottom and its chars de-blur (reveal keyed to the statement's live top vs the viewport, fully clear by ~50%/dock). Tuning levers: `dockTop`, docked width `Wf = min(vw*0.4, 520)`, reveal mapping. The video element is one node (no double-decode); clicking it opens the `#heroVideoModal` popup (full video + sound). **Earlier dead-ends to avoid:** a fixed-overlay + empty "runway" spacer left big white space and made the video chase a far slot — the pinned stage is what makes video+statement converge in place.
+- **Crisis banner must always be visible.** It lives in the sticky `.site-header` and must never be covered (it's a DV-safety feature). The fullscreen hero video sits *below* the header (z-index). If you add fixed/overlay heroes elsewhere, keep them under the header.
+- **Partner section is two marquees.** Row 1 (`partners`) = org partners + Safe Nest, scrolls right→left. Row 2 (`techPartners`) = full-color tool logos (Salesforce/Slack/Google/Microsoft/YouTube/Lyft/Monday.com/Canva), scrolls left→right via `.partner-track--reverse` (`animation-direction: reverse`). Logo tiles use `.partner-tile--logo` (contain, not cover); `--multiply` for white-bg JPGs, `--color` keeps tool logos in color. Color logos were sourced from **Wikimedia/Wikipedia `Special:FilePath`** (Clearbit logo API is network-blocked in this env; simple-icons CDN is monochrome only).
 - **Wellness portal sub-page navigation** uses a sessionStorage handoff (`wpArchEntry` / `wpArchExit` keys) to bridge a single arch animation across page navigation. Source page renders overlay arch at fullscreen → navigate → destination renders the same arch fullscreen → fades out. Fade-in flicker on destination is killed by forcing `transitionDuration='0s'` before adding `is-arch-shown`, then restoring. See `src/components/WellnessSubpageShared.astro` entry script.
 - **Sub-page → hub navigation is intentionally simple** (no arch animation), while hub → sub-page uses the full arch expansion. Wei's feedback was that the arch-contract-on-hub from the switcher read as a "flash" — keep the ceremonial expansion for entry only.
 - **`astro dev` / `astro build` silently hangs** = `node_modules` corruption (typically a missing transitive dep). Recovery: `pkill -9 -f astro && rm -rf node_modules package-lock.json .astro && npm install`. The error is on stderr but terminal-buffered, so dev/build appears to hang at "astro dev" / "Building static entrypoints..." with no output. Saw `http-cache-semantics` missing once — likely caused by aborted `npm run dev` cycles.
@@ -80,6 +88,11 @@ Nav, footer, crisis banner, safe exit appear automatically.
 
 ## Open threads
 
+- **⚠️ Branch state (2026-06-11).** Current work lives on **`reconcile-local-main`** (pushed), NOT `main`. Histories diverged: `origin/main` is ~24 commits ahead with separate Calm Room work; local `main` is stale. Do NOT push/merge to `main` without Wei deciding the reconcile strategy (PR vs rebase). Several `claude/*` branches + worktrees also exist.
+- **Donate page followups.** (1) Rides-funded tracker shows hardcoded 102/200 — wire the Givebutter API via a Netlify Function (`GIVEBUTTER_API_KEY` env var, `rides = floor(raised/50)`, hook is `tracker.setRides(n)` in `donate.astro`; refresh on load + donate-popup close). (2) Both CTAs open the donate popup — confirm destinations/preset amounts. (3) Flow-diagram label positions are hand-placed percentages — may need nudging.
+- **"Bring Army Pink to your community" section** (under Fund 200 Rides) scoped but NOT built: 4 cards — Fundraise for us / Start a campus chapter / Host an event / Golden Ticket — Calm Room card styling, interactive carousel, `#` links, titles only.
+- **Volunteers page.** "Become a Volunteer" CTA is `href="#"` — needs a destination. Unused: `public/img/volunteer-hero-sun.png` (sun.ai concept, replaced by blush card) is untracked.
+- **Home `story-4.png` missing.** 4th survivor-stories card references `/img/story-4.png` which doesn't exist yet — broken image until Wei provides it.
 - **Givebutter popup verification.** Needs a real-browser check. Diagnostic snippet:
   ```js
   var g = document.getElementById('gb-trigger');
