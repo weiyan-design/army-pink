@@ -736,6 +736,50 @@ img {
   }
 }
 
+/* --- "Army Pink Powered by" logo strip --- */
+.powered-by {
+  position: relative; /* z-shield against the sticky home hero video */
+  z-index: 1;
+  background: var(--cream);
+  padding: var(--space-2xl) var(--space-md);
+}
+
+.powered-by__inner {
+  max-width: 1120px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.powered-by__title {
+  font-family: var(--font-display);
+  font-size: clamp(1.5rem, 3.5vw, 2.5rem);
+  color: var(--text);
+  margin: 0 0 var(--space-lg);
+}
+
+.powered-by__logos {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(1.75rem, 4.5vw, 3.75rem);
+}
+
+.powered-by__logo img {
+  display: block;
+  height: 34px;
+  width: auto;
+  max-width: 150px;
+  object-fit: contain;
+  /* uniform muted treatment; multiply hides the Safe Nest JPG's white box */
+  filter: grayscale(1);
+  opacity: 0.62;
+  mix-blend-mode: multiply;
+  transition: opacity 0.25s var(--ease);
+}
+
+.powered-by__logo:hover img { opacity: 1; }
+
 /* --- Wellness Portal Hero --- */
 .hero {
   padding: var(--space-2xl) 0 calc(var(--space-xl) + 60px);

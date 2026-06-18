@@ -16,52 +16,18 @@ const statsCols = [
   ],
 ];
 
-const partners = [
-  {
-    name: 'Still Mountain Wellness Retreat',
-    img: '/img/partner-logo/still-mountain.png',
-    href: '#',
-    paras: [
-      'Spiritual & Holistic Retreats partner dedicated to healing, mindfulness, and transformation.',
-      'Together we promote inner peace, empowerment, and renewal for survivors rebuilding their lives.',
-    ],
-  },
-  {
-    name: 'Do Yoga With Me',
-    img: '/img/partner-logo/do-yoga-with-me.png',
-    href: 'https://www.doyogawithme.com',
-    paras: [
-      'An online yoga and meditation platform offering free and premium classes accessible from anywhere.',
-      'Their library curates the Calm Room’s empowering series for survivors at every phase of recovery.',
-    ],
-  },
-  {
-    name: 'Charity On Top',
-    img: '/img/partner-logo/charity-on-top.png',
-    href: '#',
-    paras: [
-      'A charity gifting platform that lets supporters turn any occasion into impact.',
-      'Donations route directly to Army Pink’s Pathway to Freedom program.',
-    ],
-  },
-  {
-    name: 'Peace Over Violence',
-    img: '/img/partner-logo/peace-over-violence.png',
-    href: '#',
-    paras: [
-      'A Los Angeles nonprofit fighting sexual, domestic, and interpersonal violence since 1971.',
-      'A trusted referral partner for survivors seeking advocacy, counseling, and crisis response.',
-    ],
-  },
-  {
-    name: 'TheraBox',
-    img: '/img/partner-logo/therabox.png',
-    href: '#',
-    paras: [
-      'A therapist-curated subscription box delivering self-care tools and mental wellness practices.',
-      'Featured items show up in monthly Escape Club care packages for members.',
-    ],
-  },
+// "Powered by" logo strip — Safe Nest project + the tools that run Army Pink.
+// (Monday.com pending: no library logo found — drop a file in /img/partner-logo
+//  and add the entry.)
+const poweredBy = [
+  { name: 'The Safe Nest Project', img: '/img/partner-logo/safe-nest.jpg' },
+  { name: 'Salesforce', img: '/img/partner-logo/tech-salesforce.svg' },
+  { name: 'Slack', img: '/img/partner-logo/tech-slack.svg' },
+  { name: 'Google', img: '/img/partner-logo/tech-google.svg' },
+  { name: 'Microsoft', img: '/img/partner-logo/tech-microsoft.svg' },
+  { name: 'YouTube', img: '/img/partner-logo/tech-youtube.svg' },
+  { name: 'Lyft', img: '/img/partner-logo/tech-lyft.svg' },
+  { name: 'Canva', img: '/img/partner-logo/tech-canva.svg' },
 ];
 ---
 
@@ -298,33 +264,16 @@ const partners = [
     </div>
   </section>
 
-  <!-- ===== PARTNERS ===== -->
-  <section class="partner-section">
-    <div class="partner-header">
-      <h2>We're proud to partner with</h2>
-      <a href="/partners" class="btn btn-ghost">Become A Partner</a>
-    </div>
-    <div class="partner-track-wrap">
-      <div class="partner-track" data-partner-track>
-        {[0, 1].map((setIdx) => partners.map((p) => (
-          <article class="partner-tile" data-partner aria-hidden={setIdx === 1 ? 'true' : undefined}>
-            <div class="partner-tile-inner">
-              <div class="partner-face partner-face--front">
-                <div class="partner-photo">
-                  <img src={p.img} alt="" loading="lazy" />
-                </div>
-                <h3 class="partner-name">{p.name}</h3>
-              </div>
-              <div class="partner-face partner-face--back">
-                <h3 class="partner-back-name">{p.name}</h3>
-                <div class="partner-back-body">
-                  {p.paras.map((para) => <p>{para}</p>)}
-                </div>
-                <a href={p.href} class="partner-link" target={p.href.startsWith('http') ? '_blank' : undefined} rel={p.href.startsWith('http') ? 'noopener' : undefined}>Visit Them</a>
-              </div>
-            </div>
-          </article>
-        )))}
+  <!-- ===== POWERED BY ===== -->
+  <section class="powered-by">
+    <div class="powered-by__inner">
+      <h2 class="powered-by__title reveal-item">Army Pink Powered by</h2>
+      <div class="powered-by__logos">
+        {poweredBy.map((p) => (
+          <div class="powered-by__logo reveal-item">
+            <img src={p.img} alt={p.name} loading="lazy" />
+          </div>
+        ))}
       </div>
     </div>
   </section>
@@ -335,7 +284,7 @@ const partners = [
       <div class="mission-grid">
         <div class="mission-text">
           <span class="overline">Our Mission</span>
-          <h2>We don't sell healing.<br>We connect you to it.</h2>
+          <h2>We don't provide rides.<br>We provide access to safety.<br><br>We don't sell healing.<br>We connect you to it.</h2>
           <p>
             Army Pink is a 501(c)(3) nonprofit supporting domestic violence survivors
             through safety-centered transportation, concierge support, and wellness resources.
