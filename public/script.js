@@ -24,130 +24,92 @@
     if (!hasActivePanel) safeExit();
   });
 
-  // --- Hero stage: pinned scroll transition. The fullscreen video shrinks into
-  //     the upper area while the mission statement rises up to meet it; the
-  //     statement's char-blur reveal is driven by the same progress. ---
-  var heroStage = document.getElementById('home');
-  var statementTextEl = document.getElementById('statementText');
-  if (heroStage && heroStage.classList.contains('hero-stage') && statementTextEl) {
-    var heroScrub = document.getElementById('heroScrub');
-    var heroMission = document.getElementById('heroMission');
-    var scrubPlay = heroScrub && heroScrub.querySelector('.hero-scrub__play');
-    var siteHeader = document.querySelector('.site-header');
-    var reduceMo = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-
-    function splitToChars(el) {
-      var words = el.textContent.trim().split(/\s+/);
-      var html = '';
-      for (var w = 0; w < words.length; w++) {
-        html += '<span class="statement-word">';
-        for (var c = 0; c < words[w].length; c++) html += '<span class="statement-char">' + words[w][c] + '</span>';
-        html += '</span>';
-        if (w < words.length - 1) html += '<span class="statement-space"> </span>';
-      }
-      el.innerHTML = html;
+  // --- Header height → --app-header-h, kept in sync for every page so any
+  //     full-bleed hero (.hero-bleed / .sky-hero) underlaps the nav flush. ---
+  var appHeaderEl = document.querySelector('.site-header');
+  function syncAppHeaderH() {
+    if (appHeaderEl) {
+      document.documentElement.style.setProperty('--app-header-h', appHeaderEl.offsetHeight + 'px');
     }
-    var pillEl = heroMission && heroMission.querySelector('.pill-label');
-    if (pillEl) splitToChars(pillEl);
-    splitToChars(statementTextEl);
-    var chars = heroMission ? heroMission.querySelectorAll('.statement-char') : [];
-    var REVEAL_WINDOW = 0.14, MAX_BLUR = 8;
-
-    function clamp01(v) { return v < 0 ? 0 : v > 1 ? 1 : v; }
-
-    function updateHero() {
-      var vw = window.innerWidth, vh = window.innerHeight;
-      var stageRect = heroStage.getBoundingClientRect();
-      var scrollable = heroStage.offsetHeight - vh; // ~1 viewport of scrub
-      var p = (reduceMo || scrollable <= 0) ? 1 : clamp01(-stageRect.top / scrollable);
-      var e = 1 - Math.pow(1 - p, 3); // easeOutCubic
-
-      var hH = siteHeader ? siteHeader.offsetHeight : 0;
-      var Wf = Math.max(280, Math.min(vw * 0.4, 520)); // docked thumb width
-      var Hf = Wf * 9 / 16;
-      var dockTop = hH + 0.15 * vh;                     // sits ~15% viewport below the header
-
-      if (heroScrub) {
-        var W = vw + (Wf - vw) * e;
-        var H = vh + (Hf - vh) * e;
-        heroScrub.style.width = W + 'px';
-        heroScrub.style.height = H + 'px';
-        heroScrub.style.left = ((vw - W) / 2) + 'px';
-        heroScrub.style.top = (dockTop * e) + 'px';
-        heroScrub.style.borderRadius = (20 * e) + 'px';
-      }
-      if (scrubPlay) scrubPlay.style.opacity = String(e);
-
-      if (heroMission) {
-        // Statement rises from the bottom of the viewport up to its docked spot
-        var restingTop = dockTop + Hf + Math.max(0.03 * vh, 24);
-        var startTop = vh; // off the bottom edge
-        var curTop = startTop + (restingTop - startTop) * e;
-        heroMission.style.top = restingTop + 'px';
-        heroMission.style.transform = 'translateY(' + (curTop - restingTop) + 'px)';
-        heroMission.style.opacity = '1';
-        // Blur clears as it rises — fully clear when it reaches 50% viewport
-        // (or by the time it docks, if it settles below the midpoint).
-        var revealDoneTop = Math.max(0.5 * vh, restingTop);
-        var reveal = clamp01((startTop - curTop) / Math.max(1, startTop - revealDoneTop));
-        for (var i = 0; i < chars.length; i++) {
-          var start = (i / chars.length) * (1 - REVEAL_WINDOW);
-          var cp = clamp01((reveal - start) / REVEAL_WINDOW);
-          chars[i].style.setProperty('--blur', (MAX_BLUR * (1 - cp)).toFixed(2) + 'px');
-        }
-      }
-    }
-
-    var heroTicking = false;
-    function onHeroScroll() {
-      if (heroTicking) return;
-      heroTicking = true;
-      requestAnimationFrame(function () { updateHero(); heroTicking = false; });
-    }
-    window.addEventListener('scroll', onHeroScroll, { passive: true });
-    window.addEventListener('resize', updateHero);
-    updateHero();
   }
+  syncAppHeaderH();
+  window.addEventListener('resize', syncAppHeaderH);
 
-  // --- Founder quote: same char-blur reveal as the mission statement ---
-  var quoteSection = document.querySelector('.quote-section');
-  if (quoteSection) {
-    // Same splitter as the statement section (scoped copy). Only the plain
-    // .q-reveal text runs are split, so the chip + dot markup survive.
-    quoteSection.querySelectorAll('.q-reveal').forEach(function (seg) {
-      var words = seg.textContent.trim().split(/\s+/);
-      var html = '';
-      for (var w = 0; w < words.length; w++) {
-        html += '<span class="statement-word">';
-        for (var c = 0; c < words[w].length; c++) {
-          html += '<span class="statement-char">' + words[w][c] + '</span>';
-        }
-        html += '</span>';
-        if (w < words.length - 1) html += '<span class="statement-space"> </span>';
-      }
-      seg.innerHTML = html;
+  // --- Sky hero: keeps the sky flush behind the transparent nav, plays a
+  //     staggered landing reveal, parallaxes the clouds on scroll, and flips the
+  //     nav to solid once the hero has scrolled past. Clicking the video opens the
+  //     sound-on popup (wired below via [data-hero-thumb]). ---
+  var skyHero = document.querySelector('[data-sky-hero]');
+  if (skyHero) {
+    var clouds = Array.prototype.slice.call(skyHero.querySelectorAll('[data-cloud-speed]'));
+    var skyReduceMo = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    // Reveal on load (wait a frame so the transition runs from the start state).
+    requestAnimationFrame(function () {
+      requestAnimationFrame(function () { skyHero.classList.add('is-revealed'); });
     });
 
-    var qChars = quoteSection.querySelectorAll('.statement-char');
-    var Q_WINDOW = 0.12;
-    var Q_MAX_BLUR = 8;
+    var skyTicking = false;
+    function onSkyScroll() {
+      if (skyTicking) return;
+      skyTicking = true;
+      requestAnimationFrame(function () {
+        var y = window.pageYOffset || document.documentElement.scrollTop || 0;
+        var heroH = skyHero.offsetHeight;
+        // Clouds drift only while the hero is on screen.
+        if (!skyReduceMo && y < heroH) {
+          for (var i = 0; i < clouds.length; i++) {
+            var sp = parseFloat(clouds[i].getAttribute('data-cloud-speed')) || 0;
+            clouds[i].style.setProperty('--cloud-y', (y * sp).toFixed(1) + 'px');
+          }
+        }
+        skyTicking = false;
+      });
+    }
+    window.addEventListener('scroll', onSkyScroll, { passive: true });
+    onSkyScroll();
+  }
 
-    function updateQuoteReveal() {
-      var rect = quoteSection.getBoundingClientRect();
-      // Progress 0 as the section top enters the viewport bottom; 1 exactly
-      // when the section's center reaches the viewport's center.
-      var span = Math.max(1, (window.innerHeight + rect.height) / 2);
-      var progress = Math.max(0, Math.min(1, (window.innerHeight - rect.top) / span));
-      for (var i = 0; i < qChars.length; i++) {
-        var start = (i / qChars.length) * (1 - Q_WINDOW);
-        var p = Math.max(0, Math.min(1, (progress - start) / Q_WINDOW));
-        qChars[i].style.setProperty('--blur', (Q_MAX_BLUR * (1 - p)).toFixed(2) + 'px');
+  // --- Adaptive nav: the floating pill swaps light / dark / transparent based on
+  //     the [data-nav-theme] section currently behind it. Untagged pages/sections
+  //     default to light glass; a section tagged "dark" forces the dark variant,
+  //     "hero" makes it fully transparent. ---
+  var navEl = document.querySelector('.main-nav');
+  var navPill = navEl && navEl.querySelector('.nav-inner');
+  if (navEl && navPill) {
+    var navThemed = Array.prototype.slice.call(document.querySelectorAll('[data-nav-theme]'));
+    var NAV_TOP = 24; // px of scroll before the contained pill appears
+    function navApply(cls) {
+      if (navEl.classList.contains(cls)) return;
+      navEl.classList.remove('is-transparent', 'is-light', 'is-dark');
+      navEl.classList.add(cls);
+    }
+    function navUpdate() {
+      var y = window.pageYOffset || document.documentElement.scrollTop || 0;
+      var probe = navPill.getBoundingClientRect().bottom;
+      var theme = null;
+      for (var i = 0; i < navThemed.length; i++) {
+        var r = navThemed[i].getBoundingClientRect();
+        if (r.top <= probe && r.bottom > probe) { theme = navThemed[i].getAttribute('data-nav-theme'); break; }
+      }
+      var media = (theme === 'hero' || theme === 'dark');
+      // Transparent only at the very top over a media hero; otherwise the
+      // contained pill shows (dark glass over media, light glass over light).
+      if (y < NAV_TOP && media) {
+        navApply('is-transparent');
+      } else {
+        navApply(media ? 'is-dark' : 'is-light');
       }
     }
-
-    window.addEventListener('scroll', updateQuoteReveal, { passive: true });
-    window.addEventListener('resize', updateQuoteReveal);
-    updateQuoteReveal();
+    var navTicking = false;
+    function onNavScroll() {
+      if (navTicking) return;
+      navTicking = true;
+      requestAnimationFrame(function () { navUpdate(); navTicking = false; });
+    }
+    window.addEventListener('scroll', onNavScroll, { passive: true });
+    window.addEventListener('resize', onNavScroll);
+    navUpdate();
   }
 
   // --- Hero click-to-toggle + spacebar (while hero in view) ---
@@ -774,11 +736,27 @@
     var track   = root.querySelector('.fc-track');
     var cards   = Array.prototype.slice.call(root.querySelectorAll('.fc-card'));
     var caption = root.querySelector('.fc-caption');
+    var cta     = root.querySelector('.fc-cta');
+    var ctaLbl  = root.querySelector('.fc-cta__label');
     var prev    = root.querySelector('.fc-arrow--prev');
     var next    = root.querySelector('.fc-arrow--next');
     if (!track || cards.length === 0) return;
 
-    var captions = cards.map(function (c) { return c.getAttribute('data-caption') || ''; });
+    var captions  = cards.map(function (c) { return c.getAttribute('data-caption') || ''; });
+    var ctaHrefs  = cards.map(function (c) { return c.getAttribute('data-cta-href'); });
+    var ctaLabels = cards.map(function (c) { return c.getAttribute('data-cta-label') || ''; });
+
+    function syncCta() {
+      if (!cta) return;
+      var href = ctaHrefs[active];
+      if (href) {
+        cta.setAttribute('href', href);
+        if (ctaLbl) ctaLbl.textContent = ctaLabels[active];
+        cta.style.display = '';
+      } else {
+        cta.style.display = 'none';
+      }
+    }
     var active = 0;
     var N = cards.length;
 
@@ -835,10 +813,15 @@
       layout();
       if (caption) {
         caption.classList.add('is-fading');
+        if (cta) cta.classList.add('is-fading');
         setTimeout(function () {
           caption.textContent = captions[active];
+          syncCta();
           caption.classList.remove('is-fading');
+          if (cta) cta.classList.remove('is-fading');
         }, 180);
+      } else {
+        syncCta();
       }
     }
 
@@ -852,6 +835,7 @@
 
     // Initial layout, then enable transitions and fade cards in
     layout();
+    syncCta();
     requestAnimationFrame(function () { track.classList.add('fc-track--ready'); });
 
     window.addEventListener('resize', layout);

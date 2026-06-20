@@ -13,10 +13,10 @@ const wordmarkWords = WORDMARK.split(' ').map(word => ({
 }));
 ---
 
-<Layout title="The Calm Room — Army Pink">
+<Layout title="The Calm Room — Army Pink" navStart="transparent">
 
   <!-- ===== HERO: full-screen sanctuary video, fades into the black collection ===== -->
-  <header class="hero" id="home">
+  <header class="hero hero-bleed" id="home" data-nav-theme="dark">
     <div class="hero-video-bg" aria-hidden="true">
       <iframe
         src="https://www.youtube.com/embed/hms0chui1NM?autoplay=1&mute=1&controls=0&loop=1&playlist=hms0chui1NM&playsinline=1&modestbranding=1&rel=0&showinfo=0&disablekb=1&iv_load_policy=3&fs=0"
@@ -62,7 +62,8 @@ const wordmarkWords = WORDMARK.split(' ').map(word => ({
       <div class="calm-grid" id="calmGrid">
         {calmRoomShelves.flatMap((shelf, i) =>
           shelf.videos.filter(v => v.youtubeId).map(v => (
-            <button class="calm-card" type="button" data-cat={String(i)} data-youtube-id={v.youtubeId} data-title={v.title}>
+            <button class={`calm-card${v.featured ? ' is-featured' : ''}`} type="button" data-cat={String(i)} data-youtube-id={v.youtubeId} data-title={v.title}>
+              {v.featured && <span class="calm-card-badge">Featured</span>}
               {v.cover ? (
                 <img class="calm-card-img" src={v.cover} alt="" loading="lazy" />
               ) : (
@@ -131,7 +132,10 @@ const wordmarkWords = WORDMARK.split(' ').map(word => ({
     }
 
     /* ───────── Hero dark fade — melts the video into the black collection ───────── */
-    .hero { position: relative; min-height: 100vh; }
+    /* Sized so the chip row peeks at the bottom on landing: viewport minus the
+       crisis banner (~40px) + nav (80px) above, and the collection top padding +
+       chip row (~100px) below. svh keeps it stable on mobile. */
+    .hero { position: relative; min-height: calc(100svh - 220px); }
     .hero::after {
       content: '';
       position: absolute;
@@ -269,6 +273,42 @@ const wordmarkWords = WORDMARK.split(' ').map(word => ({
       will-change: transform, opacity;
     }
     .calm-card.is-hidden { display: none; }
+
+    /* Featured spotlight — spans a 2×2 block, fills the grid area (drops the 2:3
+       ratio), with a badge + larger title. */
+    .calm-card.is-featured {
+      grid-column: span 2;
+      grid-row: span 2;
+      aspect-ratio: auto;
+    }
+    .calm-card-badge {
+      position: absolute;
+      top: 0.9rem;
+      left: 0.9rem;
+      z-index: 2;
+      background: var(--pink);
+      color: #fff;
+      font-size: 0.62rem;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      padding: 0.32rem 0.7rem;
+      border-radius: 999px;
+    }
+    .calm-card.is-featured .calm-card-eyebrow { font-size: 0.72rem; }
+    .calm-card.is-featured .calm-card-title {
+      font-size: clamp(1.2rem, 2.4vw, 1.7rem);
+      -webkit-line-clamp: 3;
+    }
+    /* Mobile: a full-width featured banner instead of a tall 2×2 */
+    @media (max-width: 620px) {
+      .calm-card.is-featured {
+        grid-column: 1 / -1;
+        grid-row: auto;
+        aspect-ratio: 3 / 2;
+      }
+    }
+
     .calm-card:hover,
     .calm-card:focus-visible {
       transform: translateY(-4px);

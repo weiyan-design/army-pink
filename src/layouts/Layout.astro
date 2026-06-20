@@ -2,18 +2,22 @@
 interface Props {
   title?: string;
   description?: string;
+  /** Initial nav variant before JS adaptivity kicks in (avoids a flash on pages
+   *  whose first section sits behind the nav). 'transparent' | 'light' | 'dark'. */
+  navStart?: 'transparent' | 'light' | 'dark';
 }
 
 const {
   title = 'Army Pink — Pathway to Freedom',
   description = 'Army Pink is a survivor-led initiative addressing the #1 unmet need for survivors: safe, immediate transportation out of dangerous situations. We turn compassion into action by providing urgent rides and structured wellness support, helping survivors of domestic abuse leave danger and begin again with dignity, guidance, and connection.',
+  navStart,
 } = Astro.props;
 
 const navLinks = [
   { href: '/', label: 'Home' },
   { href: '/mission', label: 'Mission' },
   { href: '/wellness-portal', label: 'Calm Room' },
-  { href: '/donate', label: 'Get Involved', children: [
+  { href: '/get-involved', label: 'Get Involved', children: [
     { href: '/donate', label: 'Donate' },
     { href: '/partners', label: 'Partner' },
     { href: '/volunteers', label: 'Volunteer' },
@@ -22,6 +26,7 @@ const navLinks = [
   { href: '/team', label: 'Leadership' },
 ];
 const path = Astro.url.pathname.replace(/\/$/, '') || '/';
+const navInitial = navStart ? `is-${navStart}` : (path === '/' ? 'is-transparent' : 'is-light');
 function isActive(href: string) {
   if (href === '/') return path === '/';
   return path === href || path.startsWith(href + '/');
@@ -42,7 +47,7 @@ function isActive(href: string) {
   <script src="https://unpkg.com/lucide@latest" is:inline></script>
   <script async src="https://widgets.givebutter.com/latest.umd.cjs?acct=yLfulzFp7eIMG8jn" is:inline></script>
 </head>
-<body>
+<body class={path === '/' ? 'has-sky-hero' : undefined}>
 
   <!-- ===== STICKY HEADER (crisis banner + nav, always visible) ===== -->
   <header class="site-header">
@@ -57,8 +62,8 @@ function isActive(href: string) {
       </p>
     </div>
 
-    <!-- ===== NAVIGATION ===== -->
-    <nav class="main-nav" aria-label="Main navigation">
+    <!-- ===== NAVIGATION (floating glassy pill; JS swaps light/dark/transparent) ===== -->
+    <nav class={`main-nav ${navInitial}`} aria-label="Main navigation">
       <div class="nav-inner">
         <a href="/" class="logo" aria-label="Army Pink home">
           <img src="/img/AP_Logo.png" alt="Army Pink" class="logo-img" />
@@ -142,7 +147,7 @@ function isActive(href: string) {
           <ul>
             <li><a href="/">Home</a></li>
             <li><a href="/mission">Mission</a></li>
-            <li><a href="/donate">Get Involved</a></li>
+            <li><a href="/get-involved">Get Involved</a></li>
             <li><a href="/wellness-portal">Calm Room</a></li>
             <li><a href="/partners">Partners</a></li>
             <li><a href="/team">Leadership</a></li>

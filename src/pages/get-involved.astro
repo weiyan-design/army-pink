@@ -1,0 +1,145 @@
+---
+import Layout from '../layouts/Layout.astro';
+
+// Four ways to give. The right-side card is an SVG slot — Wei drops the
+// per-way SVG into `.wg-card__art`; the IntersectionObserver below adds
+// `is-played` when the card scrolls in so the SVG can animate.
+const ways = [
+  {
+    title: 'Fund a ride to', accent: 'safety',
+    desc: "Every $50 funds one Freedom Ride. Give once or monthly through the Escape Club to help survivors leave the moment they're ready.",
+    link: 'About Donate', href: '/donate', art: 'ride',
+  },
+  {
+    title: 'Partner with', accent: 'purpose',
+    desc: "Organizations and sponsors help power rides through funding, services, and in-kind support — strengthening the survivor-support network, not replacing it.",
+    link: 'About Partner', href: '/partners', art: 'partner',
+  },
+  {
+    title: 'Give your', accent: 'time',
+    desc: "From tech to design to outreach, volunteers are the engine behind every escape. Bring what you're good at — we'll put it to work.",
+    link: 'About Volunteer', href: '/volunteers', art: 'time',
+  },
+  {
+    title: 'Rally your', accent: 'community',
+    desc: "Host a fundraiser, start a campus chapter, or join an Army Pink event — and turn the people around you into someone's way out.",
+    link: 'Activate Your Community', href: '/community', art: 'community',
+  },
+];
+---
+
+<Layout title="Get Involved — Army Pink" description="Be the reason someone gets out. Four ways to help Army Pink: fund a ride, partner with purpose, give your time, or rally your community." navStart="transparent">
+
+  <!-- HERO — fullscreen video on load, shrinks + slides up on video-end / first scroll -->
+  <section class="dn-hero hero-bleed" id="dn-hero" data-nav-theme="dark">
+    <video
+      class="dn-hero__vid"
+      src="/vid/safe-exit-hero.mp4"
+      poster="/img/donate/hero-poster.jpg"
+      autoplay muted playsinline preload="auto"
+      aria-label="Safe exit is a right."
+    ></video>
+    <div class="dn-wave" aria-hidden="true"></div>
+  </section>
+
+  <script is:inline>
+    (function () {
+      var hero = document.getElementById('dn-hero');
+      if (!hero) return;
+      var vid = hero.querySelector('.dn-hero__vid');
+      var done = false;
+      function shrink() {
+        if (done) return;
+        done = true;
+        hero.classList.add('is-shrunk');
+        window.removeEventListener('scroll', shrink);
+        window.removeEventListener('wheel', shrink);
+        window.removeEventListener('touchmove', shrink);
+        if (vid) vid.removeEventListener('ended', shrink);
+      }
+      if (vid) {
+        // Play once on landing — never loop. Freeze on the last frame at end.
+        vid.loop = false;
+        vid.removeAttribute('loop');
+        vid.addEventListener('ended', function () {
+          try { vid.pause(); } catch (e) {}
+          shrink();
+        });
+        // Fallback: shrink just after the clip's duration, in case 'ended' is missed
+        function scheduleFallback() {
+          if (isFinite(vid.duration) && vid.duration > 0) {
+            setTimeout(shrink, vid.duration * 1000 + 300);
+          }
+        }
+        if (vid.readyState >= 1) scheduleFallback();
+        else vid.addEventListener('loadedmetadata', scheduleFallback);
+        var p = vid.play();
+        if (p && p.catch) p.catch(function () {});
+      }
+      window.addEventListener('scroll', shrink, { passive: true });
+      window.addEventListener('wheel', shrink, { passive: true });
+      window.addEventListener('touchmove', shrink, { passive: true });
+    })();
+  </script>
+
+  <!-- STATEMENT — revealed as the hero scrubs down -->
+  <section class="dn-statement" aria-label="Be the reason someone gets out">
+    <div class="dn-statement__inner">
+      <h2 class="dn-title dn-statement__title"><span class="dn-statement__lead">Be the reason someone</span> <em>gets out</em></h2>
+      <a href="#ways" class="dn-btn dn-statement__btn">Ways to Help</a>
+    </div>
+  </section>
+  <noscript>
+    <style>.dn-statement__inner { opacity: 1 !important; transform: none !important; }</style>
+  </noscript>
+
+  <!-- WAYS TO GIVE — copy scrolls on the left; ONE fixed bordered frame on the
+       right whose artwork swaps (slides up 0→1) as each way enters view. -->
+  <section class="wg" id="ways" aria-label="Ways to give">
+    <div class="wg-grid">
+      <div class="wg-copy">
+        {ways.map((w, i) => (
+          <article class="wg-step" data-step={i}>
+            <h2 class="wg-title">{w.title} <span class="wg-accent">{w.accent}</span></h2>
+            <p class="wg-desc">{w.desc}</p>
+            <a class="wg-link" href={w.href}>{w.link} <span aria-hidden="true">→</span></a>
+          </article>
+        ))}
+      </div>
+      <div class="wg-visual-col">
+        <div class="wg-visual">
+          {ways.map((w, i) => (
+            <div class={`wg-art${i === 0 ? ' is-active' : ''}`} data-art={i} aria-hidden="true">
+              <!-- SVG slot for this way (replaces the placeholder) -->
+              <span class="wg-art__placeholder">{w.accent}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+    <div class="dn-wave dn-wave--footer" aria-hidden="true"></div>
+  </section>
+
+  <script is:inline>
+    (function () {
+      var steps = document.querySelectorAll('.wg-step');
+      var arts = document.querySelectorAll('.wg-art');
+      if (!steps.length || !arts.length) return;
+      function setActive(i) {
+        for (var j = 0; j < arts.length; j++) {
+          arts[j].classList.toggle('is-active', j === i);
+        }
+      }
+      if (!('IntersectionObserver' in window)) { setActive(0); return; }
+      // The step whose centre sits in the middle band of the viewport becomes
+      // active — its artwork slides up (0→1) in the fixed frame, replacing the prior.
+      var io = new IntersectionObserver(function (entries) {
+        entries.forEach(function (e) {
+          if (e.isIntersecting) setActive(parseInt(e.target.getAttribute('data-step'), 10));
+        });
+      }, { rootMargin: '-45% 0px -45% 0px', threshold: 0 });
+      steps.forEach(function (s) { io.observe(s); });
+    })();
+  </script>
+
+</Layout>
