@@ -103,6 +103,25 @@ function isActive(href: string) {
     </button>
   </div>
 
+  <!-- ===== SHARED "BECOME A VOLUNTEER" SLIDE-UP FORM (any [data-volunteer-form] opens it) ===== -->
+  <div class="vform" data-volunteer-overlay hidden>
+    <div class="vform__backdrop" data-vform-close></div>
+    <div class="vform__sheet" role="dialog" aria-modal="true" aria-labelledby="vform-title">
+      <button class="vform__close" type="button" data-vform-close aria-label="Close">&times;</button>
+      <h2 class="vform__title" id="vform-title">Become a volunteer</h2>
+      <p class="vform__intro">Tell us a little about you and how you'd like to help — we'll be in touch.</p>
+      <form class="vform__form" name="volunteer" method="POST" data-netlify="true" netlify-honeypot="bot-field" data-vform-form>
+        <input type="hidden" name="form-name" value="volunteer" />
+        <p class="vform__hp" hidden><label>Don't fill this out: <input name="bot-field" /></label></p>
+        <label class="vform__field"><span>Name</span><input type="text" name="name" autocomplete="name" required /></label>
+        <label class="vform__field"><span>Email</span><input type="email" name="email" autocomplete="email" required /></label>
+        <label class="vform__field"><span>Your message</span><textarea name="message" rows="4" required></textarea></label>
+        <button class="btn btn-primary vform__submit" type="submit">Send</button>
+        <p class="vform__status" data-vform-status role="status" aria-live="polite"></p>
+      </form>
+    </div>
+  </div>
+
   <!-- PAGE CONTENT -->
   <slot />
 

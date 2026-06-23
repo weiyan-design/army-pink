@@ -853,6 +853,131 @@
     });
   });
 
+  // --- Programs toggle (Survivors / Supporters): cross-fade the two card sets,
+  //     slide the pill indicator. ---
+  document.querySelectorAll('[data-programs-toggle]').forEach(function (toggle) {
+    var section = toggle.closest('.programs');
+    if (!section) return;
+    var tabs = Array.prototype.slice.call(toggle.querySelectorAll('.programs__tab'));
+    // Hide the inactive state's cards from AT + tab order (and links non-focusable).
+    function syncState() {
+      var isSup = section.classList.contains('is-supporters');
+      section.querySelectorAll('.programs__set').forEach(function (set) {
+        var on = (set.getAttribute('data-prog') === 'supporters') === isSup;
+        set.setAttribute('aria-hidden', on ? 'false' : 'true');
+        set.querySelectorAll('a.program-card').forEach(function (a) { a.tabIndex = on ? 0 : -1; });
+      });
+    }
+    syncState();
+    tabs.forEach(function (tab) {
+      tab.addEventListener('click', function () {
+        var group = tab.getAttribute('data-prog');
+        tabs.forEach(function (t) {
+          var on = t === tab;
+          t.classList.toggle('is-active', on);
+          t.setAttribute('aria-selected', on ? 'true' : 'false');
+        });
+        section.classList.toggle('is-supporters', group === 'supporters');
+        syncState();
+      });
+    });
+  });
+
+  // --- Launch section: fresh random volunteer avatars each load, scroll reveal,
+  //     and a subtle cursor parallax on the floating images. ---
+  var launchEl = document.querySelector('[data-launch]');
+  if (launchEl) {
+    var lReduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    try {
+      var lphotos = JSON.parse(launchEl.getAttribute('data-volunteer-photos') || '[]');
+      for (var li = lphotos.length - 1; li > 0; li--) {
+        var lj = Math.floor(Math.random() * (li + 1));
+        var lt = lphotos[li]; lphotos[li] = lphotos[lj]; lphotos[lj] = lt;
+      }
+      var lk = 0;
+      Array.prototype.slice.call(launchEl.querySelectorAll('.launch__avatar-img, .launch__joined-av')).forEach(function (el) {
+        var src = lphotos[lk++ % (lphotos.length || 1)];
+        if (src) el.style.backgroundImage = "url('" + src + "')";
+      });
+    } catch (e) {}
+
+    var revealLaunch = function () { launchEl.classList.add('is-revealed'); };
+    if ('IntersectionObserver' in window) {
+      var lio = new IntersectionObserver(function (entries) {
+        entries.forEach(function (en) { if (en.isIntersecting) { revealLaunch(); lio.disconnect(); } });
+      }, { threshold: 0.18 });
+      lio.observe(launchEl);
+    } else { revealLaunch(); }
+
+    // Cursor parallax (mouse only) — each avatar drifts by its data-depth.
+    if (!lReduce && window.matchMedia('(pointer: fine)').matches) {
+      var lAvatars = Array.prototype.slice.call(launchEl.querySelectorAll('.launch__avatar'));
+      var lpx = 0, lpy = 0, lpTicking = false;
+      launchEl.addEventListener('mousemove', function (e) {
+        var r = launchEl.getBoundingClientRect();
+        lpx = (e.clientX - (r.left + r.width / 2)) / (r.width / 2);
+        lpy = (e.clientY - (r.top + r.height / 2)) / (r.height / 2);
+        if (lpTicking) return;
+        lpTicking = true;
+        requestAnimationFrame(function () {
+          for (var i = 0; i < lAvatars.length; i++) {
+            var d = parseFloat(lAvatars[i].getAttribute('data-depth')) || 16;
+            lAvatars[i].style.transform = 'translate(' + (lpx * d).toFixed(1) + 'px,' + (lpy * d).toFixed(1) + 'px)';
+          }
+          lpTicking = false;
+        });
+      });
+      launchEl.addEventListener('mouseleave', function () {
+        for (var i = 0; i < lAvatars.length; i++) lAvatars[i].style.transform = '';
+      });
+    }
+  }
+
+  // --- Shared "Become a volunteer" slide-up form (any [data-volunteer-form] opens it) ---
+  var vform = document.querySelector('[data-volunteer-overlay]');
+  if (vform) {
+    var vformSheet = vform.querySelector('.vform__sheet');
+    var vformForm = vform.querySelector('[data-vform-form]');
+    var vformStatus = vform.querySelector('[data-vform-status]');
+    function openVform(e) {
+      if (e) e.preventDefault();
+      vform.hidden = false;
+      requestAnimationFrame(function () { vform.classList.add('is-open'); });
+      document.body.style.overflow = 'hidden';
+      var first = vform.querySelector('input, textarea');
+      if (first) setTimeout(function () { first.focus(); }, 420);
+    }
+    function closeVform() {
+      vform.classList.remove('is-open');
+      document.body.style.overflow = '';
+      setTimeout(function () { vform.hidden = true; }, 400);
+    }
+    document.querySelectorAll('[data-volunteer-form]').forEach(function (btn) {
+      btn.addEventListener('click', openVform);
+    });
+    vform.querySelectorAll('[data-vform-close]').forEach(function (el) {
+      el.addEventListener('click', closeVform);
+    });
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape' && !vform.hidden) closeVform();
+    });
+    if (vformForm) {
+      vformForm.addEventListener('submit', function (e) {
+        e.preventDefault();
+        var body = new URLSearchParams(new FormData(vformForm)).toString();
+        if (vformStatus) vformStatus.textContent = 'Sending…';
+        fetch('/', { method: 'POST', headers: { 'Content-Type': 'application/x-www-form-urlencoded' }, body: body })
+          .then(function () {
+            if (vformStatus) vformStatus.textContent = "Thank you — we'll be in touch soon.";
+            vformForm.reset();
+          })
+          .catch(function () {
+            if (vformStatus) vformStatus.textContent = 'Something went wrong — please email support@armypink.com.';
+          });
+      });
+    }
+  }
+
   // --- Hero video thumbnail → full-video popup ---
   var heroThumb = document.querySelector('[data-hero-thumb]');
   var videoModal = document.getElementById('heroVideoModal');

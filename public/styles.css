@@ -1730,7 +1730,7 @@ button.featured-card {
 .section-stories {
   background: var(--peach);
   margin-top: -1px;
-  padding: var(--space-xl) 0 var(--space-2xl);
+  padding: 12rem 0 12rem;
 }
 
 /* Greyscale partner marquee atop the (peach) stories section. Self-contained so
@@ -1875,15 +1875,52 @@ button.featured-card {
   transform: translateY(0);
 }
 
+/* Taped paper note — warm off-white, soft drop shadow, a little tilt, with a
+   strip of masking tape across the top. */
 .story-quote {
   display: none;
-  background: rgba(255, 255, 255, 0.85);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid var(--beige-dark);
-  border-radius: 1rem;
-  padding: var(--space-md);
+  position: relative;
+  padding: calc(var(--space-md) + 0.4rem) calc(var(--space-md) + 0.7rem);
   animation: quoteFadeIn 0.4s ease both;
+}
+/* Text sits above the paper layer */
+.story-quote > * { position: relative; z-index: 1; }
+/* Paper sheet: warm stock + subtle fibre texture + organic torn edges. Kept on a
+   background layer (no text) so the tear-displacement never warps the quote. */
+.story-quote::after {
+  content: '';
+  position: absolute;
+  inset: -6px;
+  z-index: 0;
+  background-color: #f7f1e2;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='220' height='220'><filter id='pf'><feTurbulence type='fractalNoise' baseFrequency='0.05' numOctaves='4' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.80  0 0 0 0 0.75  0 0 0 0 0.63  0 0 0 0.5 0'/></filter><rect width='100%' height='100%' filter='url(%23pf)'/></svg>");
+  background-size: 200px 200px;
+  filter: url(#paperTear);
+}
+/* Masking tape strip — torn (jagged) left/right ends via clip-path. */
+.story-quote::before {
+  content: '';
+  position: absolute;
+  top: -15px;
+  left: 50%;
+  width: 124px;
+  height: 34px;
+  transform: translateX(-50%) rotate(-3.5deg);
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.28), rgba(255, 255, 255, 0) 45%),
+    linear-gradient(135deg, rgba(214, 198, 140, 0.72), rgba(197, 179, 118, 0.6));
+  -webkit-clip-path: polygon(
+    3% 5%, 97% 1%,
+    99% 16%, 93% 30%, 98% 45%, 92% 59%, 99% 73%, 94% 87%, 97% 99%,
+    4% 97%,
+    1% 85%, 6% 70%, 2% 55%, 7% 41%, 1% 27%, 5% 14%);
+  clip-path: polygon(
+    3% 5%, 97% 1%,
+    99% 16%, 93% 30%, 98% 45%, 92% 59%, 99% 73%, 94% 87%, 97% 99%,
+    4% 97%,
+    1% 85%, 6% 70%, 2% 55%, 7% 41%, 1% 27%, 5% 14%);
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.14));
+  z-index: 2;
 }
 
 .story-quote-active {
@@ -1891,8 +1928,8 @@ button.featured-card {
 }
 
 @keyframes quoteFadeIn {
-  from { opacity: 0; transform: translateY(8px); }
-  to { opacity: 1; transform: translateY(0); }
+  from { opacity: 0; transform: translateY(8px) rotate(-1.5deg); }
+  to { opacity: 1; transform: translateY(0) rotate(-1.5deg); }
 }
 
 .story-quote p {
@@ -4293,6 +4330,478 @@ body.overlay-open {
     transition: none !important;
   }
 }
+
+/* ===== Programs — "We're here for every step" (Survivors / Supporters toggle).
+   A 5-card collage (a/b left · c featured center · d/e right) toggled between two
+   audiences; cards cross-fade in place with a centre-out stagger. ===== */
+.programs {
+  position: relative;
+  background: #fcf9ed;
+  padding: clamp(3.5rem, 7vw, 6rem) 0 clamp(4rem, 8vw, 7rem);
+}
+.programs__head {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.85rem;
+  margin-bottom: clamp(2.5rem, 5vw, 3.75rem);
+}
+.programs__eyebrow {
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: 0.8rem;
+  letter-spacing: 0.02em;
+  color: var(--pink-dark);
+}
+.programs__title {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: clamp(2rem, 4.5vw, 2.6rem);
+  line-height: 1.1;
+  letter-spacing: -0.01em;
+  color: var(--dark-grey);
+  margin: 0;
+}
+.programs__title em { font-style: italic; color: var(--pink-dark); }
+
+/* Toggle pill with a sliding active indicator */
+.programs__toggle {
+  position: relative;
+  display: inline-flex;
+  margin-top: 0.4rem;
+  padding: 4px;
+  border: 1px solid var(--pink);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.5);
+  -webkit-backdrop-filter: blur(4px);
+  backdrop-filter: blur(4px);
+}
+.programs__tab {
+  position: relative;
+  z-index: 1;
+  flex: 1 0 auto;
+  min-width: 132px;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: 0.95rem;
+  color: var(--pink-dark);
+  padding: 0.45rem 1.5rem;
+  border-radius: 999px;
+  transition: color 0.3s ease;
+}
+.programs__tab.is-active { color: #fff; }
+.programs__tab-ind {
+  position: absolute;
+  z-index: 0;
+  top: 4px;
+  bottom: 4px;
+  left: 4px;
+  width: calc(50% - 4px);
+  background: var(--pink);
+  border-radius: 999px;
+  transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.programs.is-supporters .programs__tab-ind { transform: translateX(100%); }
+
+/* Stage: a fixed-aspect canvas (the 1120×489 Figma frame). The two sets overlay
+   each other; each card is positioned absolutely (inline % left/top/width/height)
+   so every set keeps its own asymmetric layout. Toggling simply cross-fades the
+   two sets (opacity) — no morph. */
+.programs__stage {
+  position: relative;
+  width: 100%;
+  max-width: 1120px;
+  margin: 0 auto;
+  aspect-ratio: 1120 / 489;
+}
+.programs__set {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.45s ease;
+}
+.programs:not(.is-supporters) .programs__set[data-prog="survivors"],
+.programs.is-supporters .programs__set[data-prog="supporters"] {
+  opacity: 1;
+  pointer-events: auto;
+}
+.program-card {
+  position: absolute;
+  border-radius: 16px;
+  overflow: hidden;
+  background: var(--beige-dark);
+  display: block;
+  text-decoration: none;
+}
+.program-card__img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.5s ease;
+}
+.program-card[href]:hover .program-card__img { transform: scale(1.04); }
+.program-card__tag {
+  position: absolute;
+  top: 14px;
+  left: 14px;
+  z-index: 2;
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: 0.72rem;
+  color: #fff;
+  background: rgba(255, 255, 255, 0.2);
+  -webkit-backdrop-filter: blur(4px);
+  backdrop-filter: blur(4px);
+  padding: 3px 11px;
+  border-radius: 999px;
+}
+.program-card__body {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  padding: 16px;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.78), rgba(0, 0, 0, 0));
+}
+.program-card--featured .program-card__body { padding: 24px; }
+.program-card__title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1.05rem;
+  line-height: 1.2;
+  color: #fff;
+}
+.program-card--featured .program-card__title { font-size: clamp(1.25rem, 2vw, 1.5rem); }
+.program-card__meta {
+  margin: 0;
+  font-family: var(--font-body);
+  font-size: 0.8rem;
+  line-height: 1.4;
+  color: rgba(255, 255, 255, 0.85);
+}
+
+/* Mobile: the active set becomes a horizontal snap carousel (featured first);
+   the inactive set is hidden, and the active one fades in on toggle. */
+@media (max-width: 768px) {
+  .programs__stage { position: static; aspect-ratio: auto; max-width: none; }
+  .programs__set {
+    position: static;
+    opacity: 1;
+    display: flex;
+    gap: 14px;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    padding: 0 var(--space-md) 1rem;
+    scrollbar-width: none;
+  }
+  .programs__set::-webkit-scrollbar { display: none; }
+  .programs:not(.is-supporters) .programs__set[data-prog="supporters"],
+  .programs.is-supporters .programs__set[data-prog="survivors"] { display: none; }
+  .programs:not(.is-supporters) .programs__set[data-prog="survivors"],
+  .programs.is-supporters .programs__set[data-prog="supporters"] { animation: progFade 0.4s ease; }
+  .program-card {
+    position: relative;
+    left: auto !important;
+    top: auto !important;
+    width: auto !important;
+    height: auto !important;
+    flex: 0 0 78%;
+    aspect-ratio: 3 / 4;
+    scroll-snap-align: center;
+  }
+  .program-card--featured { order: -1; }
+}
+@keyframes progFade { from { opacity: 0; } to { opacity: 1; } }
+
+@media (prefers-reduced-motion: reduce) {
+  .programs__set,
+  .program-card__img,
+  .programs__tab-ind { transition: none; }
+}
+
+/* ===== Help launch the movement — volunteer callout + donate form. One landscape
+   image backs the whole section (its top third is the paper area for the callout).
+   Decorations (sun / car / love) reveal in on scroll; car + love slide from the
+   sides toward centre with a delay. ===== */
+.launch {
+  position: relative;
+  overflow: hidden;
+  background: var(--cream) url('/img/launch-movement-bg.jpg') top center / cover no-repeat;
+  padding: clamp(2.5rem, 6vw, 5rem) var(--space-md) clamp(4rem, 9vw, 8rem);
+}
+
+/* --- Callout (top third, over the paper) --- */
+.launch__callout {
+  position: relative;
+  min-height: clamp(420px, 46vw, 640px);
+}
+.launch__intro {
+  position: relative;
+  z-index: 2;
+  max-width: 540px;
+  margin: 0 auto;
+  padding-top: clamp(1.5rem, 4vw, 3.5rem);
+  text-align: center;
+}
+/* "X volunteers already joined" counter */
+.launch__joined {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  margin-top: 1.5rem;
+}
+.launch__joined-avatars { display: inline-flex; }
+.launch__joined-av {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  margin-left: -10px;
+  background: var(--beige-dark) center / cover no-repeat;
+  border: 2px solid #fff;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.18);
+}
+.launch__joined-av:first-child { margin-left: 0; }
+.launch__joined-text { margin: 0; font-size: 0.9rem; color: var(--text-light); }
+.launch__joined-text strong { color: var(--text); font-weight: 700; }
+.launch__title {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: clamp(2rem, 4.5vw, 2.6rem);
+  line-height: 1.1;
+  color: var(--dark-grey);
+  margin: 0 0 1rem;
+}
+.launch__title em { font-style: italic; color: var(--pink-dark); }
+.launch__lead {
+  color: var(--text);
+  font-size: clamp(0.95rem, 1.4vw, 1.05rem);
+  line-height: 1.6;
+  margin: 0 0 1.6rem;
+}
+.launch__cta {
+  display: flex;
+  gap: 1.25rem;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+.launch__link { color: var(--pink-dark); font-weight: 600; }
+
+/* Floating volunteer avatars — hug the left/right edges, clear of the centred
+   text. Outer span carries the cursor-parallax transform; inner carries the
+   image + scroll-reveal. (photos set by JS, fresh random set each load) */
+.launch__avatars { position: absolute; inset: 0; z-index: 1; pointer-events: none; }
+.launch__avatar {
+  position: absolute;
+  will-change: transform;
+  transition: transform 0.3s ease-out;
+}
+.launch__avatar-img {
+  position: absolute;
+  inset: 0;
+  border-radius: 32px;
+  background: var(--beige-dark) center / cover no-repeat;
+  box-shadow: 0 16px 36px -16px rgba(40, 30, 30, 0.38);
+}
+/* Left edge: top, middle, bottom */
+.launch__avatar--1 { left: 4%;  top: 10%; width: clamp(104px, 12vw, 172px); aspect-ratio: 0.92; }
+.launch__avatar--2 { left: 12%; top: 46%; width: clamp(80px, 9vw, 124px);  aspect-ratio: 0.93; }
+.launch__avatar--3 { left: 1%;  top: 74%; width: clamp(112px, 13vw, 184px); aspect-ratio: 0.92; }
+/* Right edge: top, middle, bottom */
+.launch__avatar--4 { left: auto; right: 4%;  top: 8%;  width: clamp(104px, 12vw, 172px); aspect-ratio: 0.92; }
+.launch__avatar--5 { left: auto; right: 12%; top: 46%; width: clamp(80px, 9vw, 124px);  aspect-ratio: 0.93; }
+.launch__avatar--6 { left: auto; right: 1%;  top: 73%; width: clamp(112px, 13vw, 184px); aspect-ratio: 0.92; }
+
+/* --- Donate form + decorations --- */
+.launch__form-wrap {
+  position: relative;
+  max-width: 1080px;
+  margin: clamp(1rem, 3vw, 2.5rem) auto 0;
+}
+.launch__sun {
+  position: absolute;
+  left: 50%;
+  top: -14%;
+  width: 116%;
+  max-width: none;
+  transform: translateX(-50%);
+  z-index: 0;
+  pointer-events: none;
+}
+.launch__car {
+  position: absolute;
+  right: -3%;
+  top: -10%;
+  width: clamp(130px, 18vw, 240px);
+  height: auto;
+  z-index: 3;
+  pointer-events: none;
+}
+.launch__love {
+  position: absolute;
+  left: -2%;
+  bottom: -7%;
+  width: clamp(130px, 17vw, 230px);
+  height: auto;
+  z-index: 3;
+  pointer-events: none;
+}
+.launch__form {
+  position: relative;
+  z-index: 2;
+  display: grid;
+  grid-template-columns: 1fr 1.08fr;
+  background: #fff;
+  border-radius: 24px;
+  overflow: hidden;
+  box-shadow: 0 34px 80px -34px rgba(30, 30, 50, 0.45);
+}
+.launch__form-photo { position: relative; min-height: 340px; }
+.launch__form-photo img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.launch__form-widget { padding: clamp(1rem, 2vw, 1.75rem); background: #fff; min-width: 0; }
+.launch__form-widget givebutter-widget { display: block; width: 100%; }
+
+/* Scroll reveal + side-entrances (avatar reveal lives on the inner so the outer
+   span is free for cursor parallax) */
+.launch__avatar-img,
+.launch__sun,
+.launch__car,
+.launch__love,
+.launch__form { opacity: 0; }
+.launch__avatar-img { transform: translateY(18px) scale(0.9); transition: opacity 0.6s ease, transform 0.7s cubic-bezier(0.22, 1, 0.36, 1); }
+.launch__sun { transform: translateX(-50%) translateY(46px); transition: opacity 0.8s ease, transform 0.9s cubic-bezier(0.22, 1, 0.36, 1); }
+.launch__form { transform: translateY(44px); transition: opacity 0.7s ease 0.15s, transform 0.8s cubic-bezier(0.22, 1, 0.36, 1) 0.15s; }
+.launch__car { transform: translateX(130px); transition: opacity 0.7s ease 0.5s, transform 0.9s cubic-bezier(0.22, 1, 0.36, 1) 0.5s; }
+.launch__love { transform: translateX(-130px); transition: opacity 0.7s ease 0.6s, transform 0.9s cubic-bezier(0.22, 1, 0.36, 1) 0.6s; }
+.launch.is-revealed .launch__avatar-img { opacity: 1; transform: none; }
+.launch.is-revealed .launch__sun { opacity: 1; transform: translateX(-50%); }
+.launch.is-revealed .launch__form { opacity: 1; transform: none; }
+.launch.is-revealed .launch__car,
+.launch.is-revealed .launch__love { opacity: 1; transform: none; }
+.launch.is-revealed .launch__avatar--1 .launch__avatar-img { transition-delay: 0.05s; }
+.launch.is-revealed .launch__avatar--2 .launch__avatar-img { transition-delay: 0.12s; }
+.launch.is-revealed .launch__avatar--3 .launch__avatar-img { transition-delay: 0.19s; }
+.launch.is-revealed .launch__avatar--4 .launch__avatar-img { transition-delay: 0.26s; }
+.launch.is-revealed .launch__avatar--5 .launch__avatar-img { transition-delay: 0.33s; }
+.launch.is-revealed .launch__avatar--6 .launch__avatar-img { transition-delay: 0.40s; }
+
+@media (max-width: 768px) {
+  .launch__callout { min-height: clamp(440px, 92vw, 560px); padding-bottom: 1rem; }
+  .launch__intro { padding-top: clamp(3rem, 16vw, 5rem); }
+  /* Avatars hug + bleed off the edges, around the centred text (text sits above) */
+  .launch__avatar--1 { left: -5%;  top: 2%;  width: 88px; }
+  .launch__avatar--2 { left: -7%;  top: 38%; width: 72px; }
+  .launch__avatar--3 { left: -4%;  top: 70%; width: 92px; }
+  .launch__avatar--4 { left: auto; right: -5%; top: 1%;  width: 88px; }
+  .launch__avatar--5 { left: auto; right: -7%; top: 40%; width: 72px; }
+  .launch__avatar--6 { left: auto; right: -4%; top: 70%; width: 92px; }
+  .launch__form { grid-template-columns: 1fr; }
+  .launch__form-photo { min-height: 220px; }
+  .launch__car { width: 120px; top: -7%; right: 0; }
+  .launch__love { width: 120px; bottom: -4%; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .launch__avatar { transition: none !important; }
+  .launch__avatar-img, .launch__sun, .launch__car, .launch__love, .launch__form {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+  }
+  .launch.is-revealed .launch__sun { transform: translateX(-50%); }
+}
+
+/* ===== Shared "Become a volunteer" slide-up sheet ===== */
+.vform[hidden] { display: none; }
+.vform {
+  position: fixed;
+  inset: 0;
+  z-index: 9400;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+}
+.vform__backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(20, 15, 15, 0.5);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+.vform.is-open .vform__backdrop { opacity: 1; }
+.vform__sheet {
+  position: relative;
+  z-index: 1;
+  width: min(560px, 100%);
+  max-height: 92vh;
+  overflow-y: auto;
+  background: var(--offwhite);
+  border-radius: 24px 24px 0 0;
+  padding: clamp(1.5rem, 4vw, 2.5rem);
+  transform: translateY(100%);
+  transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+  box-shadow: 0 -20px 60px -20px rgba(0, 0, 0, 0.3);
+}
+.vform.is-open .vform__sheet { transform: translateY(0); }
+.vform__close {
+  position: absolute;
+  top: 14px;
+  right: 16px;
+  width: 38px;
+  height: 38px;
+  border: 0;
+  border-radius: 50%;
+  background: var(--cream);
+  color: var(--text);
+  font-size: 1.4rem;
+  line-height: 1;
+  cursor: pointer;
+}
+.vform__title {
+  font-family: var(--font-display);
+  font-size: clamp(1.4rem, 3vw, 1.9rem);
+  color: var(--dark-grey);
+  margin: 0 0 0.4rem;
+}
+.vform__intro { color: var(--text-light); margin: 0 0 1.4rem; font-size: 0.95rem; }
+.vform__field { display: block; margin-bottom: 1rem; }
+.vform__field span {
+  display: block;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 0.35rem;
+}
+.vform__field input,
+.vform__field textarea {
+  width: 100%;
+  padding: 0.7rem 0.9rem;
+  border: 1px solid var(--beige-dark);
+  border-radius: 10px;
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  background: #fff;
+  color: var(--text);
+}
+.vform__field input:focus,
+.vform__field textarea:focus { outline: 2px solid var(--pink-light); border-color: var(--pink); }
+.vform__field textarea { resize: vertical; }
+.vform__submit { width: 100%; margin-top: 0.25rem; }
+.vform__status { margin: 0.75rem 0 0; font-size: 0.9rem; color: var(--pink-dark); min-height: 1.2em; }
 
 /* --- Feature Carousel (Stripe-style "What's happening" tiles) --- */
 .feature-carousel {

@@ -1,5 +1,11 @@
 ---
 import Layout from '../layouts/Layout.astro';
+import { team } from '../data/team.js';
+
+// Non-leadership volunteers with photos — the floating avatars pick a fresh
+// random set from these on every page load (client-side, see script.js).
+const launchLeadership = ['robin-bement', 'bill-hensley', 'cecelia-machuca', 'debra-prince', 'diana-drews', 'cynthia-modders', 'kathy-hallen', 'liliana-pettenkofer', 'beverly-taridona', 'wei-yan'];
+const volunteerPhotos = team.filter((p) => !launchLeadership.includes(p.slug) && p.photo).map((p) => p.photo);
 
 // Stats section — two independent column stacks (right one offset down).
 // Reading order pairs across: 1in3/$50, 200/100+, Fall 2026/Survivor-led.
@@ -89,9 +95,37 @@ const techPartners = [
 
 // All partners (org + tech) for the greyscale marquee atop the stories section.
 const allPartners = [...partners, ...techPartners];
+
+// Programs collage — toggled between Survivors and Supporters. Each set keeps its
+// own asymmetric layout (pos = left/top/width/height as % of the 1120×489 frame);
+// the two sets overlay and cross-fade. Only the live (featured) card is clickable.
+const programs = {
+  survivors: [
+    { title: 'Wellness Portal', meta: 'Trauma-informed yoga & meditation', img: '/img/program-wellness-portal.jpg', tag: "Coming Fall '26", pos: { l: 0, t: 0, w: 32.74, h: 43.16 } },
+    { title: 'Survivor Toolkit', meta: '12 downloadable tools', img: '/img/program-survivor-toolkit.png', tag: "Coming Fall '26", pos: { l: 7.65, t: 45.21, w: 25.09, h: 43.16 } },
+    { title: 'Calm Room', meta: 'Guided meditation, calming audio. No login.', img: '/img/program-calm-room.jpg', href: '/wellness-portal', featured: true, pos: { l: 33.63, t: 0, w: 32.74, h: 100 } },
+    { title: '30-Day Healing Journey', meta: 'A guided month of gentle practice', img: '/img/program-healing-journey.jpg', tag: "Coming Fall '26", pos: { l: 67.26, t: 11.63, w: 25.09, h: 43.16 } },
+    { title: 'Freedom Journal', meta: 'Prompts to reflect, process, and rebuild', img: '/img/program-freedom-journal.jpg', tag: "Coming Fall '26", pos: { l: 67.26, t: 56.84, w: 32.74, h: 43.16 } },
+  ],
+  supporters: [
+    { title: 'Pathway to Freedom', meta: 'Flagship program providing safe transportation', img: '/img/program-pathway.png', tag: "Coming Fall '26", pos: { l: 7.65, t: 0, w: 25.09, h: 43.16 } },
+    { title: 'The Escape Club', meta: 'Monthly giving community keeping Freedom Rides available', img: '/img/program-escape-club.png', tag: "Coming Fall '26", pos: { l: 0, t: 45.21, w: 32.74, h: 43.16 } },
+    { title: '200 Rides to Freedom', meta: 'Raise $10,000 to fund 200 Freedom Rides', img: '/img/program-200-rides.png', href: '/donate', featured: true, pos: { l: 33.63, t: 0, w: 32.74, h: 100 } },
+    { title: 'Freedom Rides', meta: 'Coordinate through partners for safe transportation', img: '/img/program-freedom-rides.png', tag: "Coming Fall '26", pos: { l: 67.26, t: 11.63, w: 32.74, h: 43.16 } },
+    { title: 'Campus Impact', meta: 'Student-led events and awareness campaigns', img: '/img/program-campus-impact.jpg', tag: "Coming Fall '26", pos: { l: 67.26, t: 56.84, w: 25.09, h: 43.16 } },
+  ],
+};
 ---
 
 <Layout title="Army Pink — Pathway to Freedom">
+
+  <!-- SVG filter: organic torn-paper edges for the survivor-quote note -->
+  <svg width="0" height="0" aria-hidden="true" focusable="false" style="position:absolute">
+    <filter id="paperTear" x="-12%" y="-12%" width="124%" height="124%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.014 0.024" numOctaves="3" seed="7" result="n"/>
+      <feDisplacementMap in="SourceGraphic" in2="n" scale="11" xChannelSelector="R" yChannelSelector="G"/>
+    </filter>
+  </svg>
 
   <!-- ===== HERO: full-bleed sky, mission statement + video card, parallax clouds.
        Sky sits behind the (transparent) nav via a negative-margin underlap. ===== -->
@@ -203,56 +237,83 @@ const allPartners = [...partners, ...techPartners];
     </div>
   </div>
 
-  <!-- ===== WE'RE HERE FOR EVERY STEP — survivor support resources ===== -->
-  <section class="feature-carousel feature-carousel--pink" data-feature-carousel id="support">
-    <svg class="fc-wave" viewBox="0 0 1440 80" preserveAspectRatio="none" aria-hidden="true">
-      <path d="M0,36 C360,0 720,76 1080,36 C1260,16 1380,46 1440,36 L1440,80 L0,80 Z"/>
-    </svg>
+  <!-- ===== PROGRAMS — "We're here for every step" (Survivors / Supporters toggle) ===== -->
+  <section class="programs" id="support" aria-label="Our programs">
     <div class="container">
-      <div class="fc-header">
-        <span class="pill-label">How we support you</span>
-        <h2>We're here for every step.</h2>
-      </div>
-      <div class="fc-track">
-        <article class="fc-card is-active"
-                 data-caption="Grounding exercises, slow breathing, and calming audio to help your nervous system settle — right now, no sign-up needed."
-                 data-cta-label="Open the Calm Room" data-cta-href="/wellness-portal">
-          <span class="fc-card__tag">&ldquo;I need to calm down&rdquo;</span>
-          <img src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=600&h=1000&fit=crop&q=80" alt="" loading="lazy" />
-        </article>
-        <article class="fc-card"
-                 data-caption="Soft sleep practices, yoga nidra, and quiet sounds for the nights your body won't switch off."
-                 data-cta-label="Open the Calm Room" data-cta-href="/wellness-portal">
-          <span class="fc-card__tag">&ldquo;I can't sleep&rdquo;</span>
-          <img src="https://images.unsplash.com/photo-1476041800959-2f6bb412c8ce?w=600&h=1000&fit=crop&q=80" alt="" loading="lazy" />
-        </article>
-        <article class="fc-card"
-                 data-caption="You're not. Find survivor stories and a community of people who've walked this path and meet you in the in-between."
-                 data-cta-label="Read survivor stories" data-cta-href="#stories">
-          <span class="fc-card__tag">&ldquo;I feel alone&rdquo;</span>
-          <img src="https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=600&h=1000&fit=crop&q=80" alt="" loading="lazy" />
-        </article>
-        <article class="fc-card"
-                 data-caption="Quick, in-the-moment support to ride out a panic attack — simple steps to come back to your body when everything feels like too much."
-                 data-cta-label="Open the Calm Room" data-cta-href="/wellness-portal">
-          <span class="fc-card__tag">&ldquo;I'm panicking&rdquo;</span>
-          <img src="https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?w=600&h=1000&fit=crop&q=80" alt="" loading="lazy" />
-        </article>
-        <article class="fc-card"
-                 data-caption="Safety-planning tools and trusted resources for when you're getting ready to leave, or figuring out what comes after."
-                 data-cta-label="Safety planning resources" data-cta-href="#">
-          <span class="fc-card__tag">&ldquo;I need to plan my next step&rdquo;</span>
-          <img src="https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=600&h=1000&fit=crop&q=80" alt="" loading="lazy" />
-        </article>
-      </div>
-      <div class="fc-footer">
-        <div class="fc-footer__text">
-          <p class="fc-caption">Grounding exercises, slow breathing, and calming audio to help your nervous system settle — right now, no sign-up needed.</p>
-          <a class="fc-cta" href="/wellness-portal"><span class="fc-cta__label">Open the Calm Room</span><span class="fc-cta__arrow" aria-hidden="true">&rarr;</span></a>
+      <div class="programs__head">
+        <span class="programs__eyebrow">Current &amp; Upcoming Programs</span>
+        <h2 class="programs__title">We're here for <em>every step</em></h2>
+        <div class="programs__toggle" role="tablist" aria-label="Choose audience" data-programs-toggle>
+          <button class="programs__tab is-active" type="button" role="tab" aria-selected="true" data-prog="survivors">Survivors</button>
+          <button class="programs__tab" type="button" role="tab" aria-selected="false" data-prog="supporters">Supporters</button>
+          <span class="programs__tab-ind" aria-hidden="true"></span>
         </div>
-        <div class="fc-controls">
-          <button class="fc-arrow fc-arrow--prev" aria-label="Previous">&lsaquo;</button>
-          <button class="fc-arrow fc-arrow--next" aria-label="Next">&rsaquo;</button>
+      </div>
+      <div class="programs__stage" data-programs-stage>
+        {Object.entries(programs).map(([group, cards]) => (
+          <div class="programs__set" data-prog={group} aria-hidden={group === 'survivors' ? 'false' : 'true'}>
+            {cards.map((c) => {
+              const Tag = c.href ? 'a' : 'div';
+              return (
+                <Tag
+                  class={`program-card${c.featured ? ' program-card--featured' : ''}`}
+                  href={c.href || undefined}
+                  style={`left:${c.pos.l}%;top:${c.pos.t}%;width:${c.pos.w}%;height:${c.pos.h}%`}
+                >
+                  <img class="program-card__img" src={c.img} alt={c.title} loading="lazy" />
+                  {c.tag && <span class="program-card__tag">{c.tag}</span>}
+                  <div class="program-card__body">
+                    <h3 class="program-card__title">{c.title}</h3>
+                    <p class="program-card__meta">{c.meta}</p>
+                  </div>
+                </Tag>
+              );
+            })}
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== HELP LAUNCH THE MOVEMENT — volunteer callout + donate form ===== -->
+  <section class="launch" id="launch" aria-label="Help launch the movement" data-launch data-volunteer-photos={JSON.stringify(volunteerPhotos)}>
+    <div class="launch__callout">
+      <div class="launch__avatars" aria-hidden="true">
+        <span class="launch__avatar launch__avatar--1" data-depth="22"><span class="launch__avatar-img"></span></span>
+        <span class="launch__avatar launch__avatar--2" data-depth="14"><span class="launch__avatar-img"></span></span>
+        <span class="launch__avatar launch__avatar--3" data-depth="26"><span class="launch__avatar-img"></span></span>
+        <span class="launch__avatar launch__avatar--4" data-depth="20"><span class="launch__avatar-img"></span></span>
+        <span class="launch__avatar launch__avatar--5" data-depth="14"><span class="launch__avatar-img"></span></span>
+        <span class="launch__avatar launch__avatar--6" data-depth="24"><span class="launch__avatar-img"></span></span>
+      </div>
+      <div class="launch__intro">
+        <h2 class="launch__title">Help launch <em>the movement</em></h2>
+        <p class="launch__lead">From tech to design to outreach, everyday people give their skills to help survivors reach safety. Find your place on the team.</p>
+        <div class="launch__cta">
+          <button class="btn btn-primary" type="button" data-volunteer-form>Become A Volunteer</button>
+          <a class="launch__link" href="/volunteers">Meet Our Volunteers</a>
+        </div>
+        <div class="launch__joined">
+          <span class="launch__joined-avatars" aria-hidden="true">
+            <span class="launch__joined-av"></span>
+            <span class="launch__joined-av"></span>
+            <span class="launch__joined-av"></span>
+          </span>
+          <p class="launch__joined-text"><strong>100+ volunteers</strong> already joined the movement</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="launch__form-wrap">
+      <img class="launch__sun" src="/img/sun.png" alt="" aria-hidden="true" />
+      <img class="launch__car" src="/img/freedom-rides-car.gif" alt="" aria-hidden="true" data-launch-car />
+      <img class="launch__love" src="/img/love.svg" alt="" aria-hidden="true" data-launch-love />
+      <div class="launch__form">
+        <div class="launch__form-photo">
+          <img src="/img/donate-form-img.jpg" alt="A survivor leaping freely through a sunlit field" loading="lazy" />
+        </div>
+        <div class="launch__form-widget">
+          <givebutter-widget id="jb2b4P"></givebutter-widget>
         </div>
       </div>
     </div>
