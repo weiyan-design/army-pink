@@ -276,34 +276,36 @@ const programs = {
   </section>
 
   <!-- ===== HELP LAUNCH THE MOVEMENT — volunteer callout + donate form ===== -->
-  <section class="launch" id="launch" aria-label="Help launch the movement" data-launch data-volunteer-photos={JSON.stringify(volunteerPhotos)}>
+  <section class="launch launch--volunteers" id="launch" aria-label="Help launch the movement" data-launch data-volunteer-photos={JSON.stringify(volunteerPhotos)}>
     <div class="launch__callout">
       <div class="launch__avatars" aria-hidden="true">
-        <span class="launch__avatar launch__avatar--1" data-depth="22"><span class="launch__avatar-img"></span></span>
-        <span class="launch__avatar launch__avatar--2" data-depth="14"><span class="launch__avatar-img"></span></span>
-        <span class="launch__avatar launch__avatar--3" data-depth="26"><span class="launch__avatar-img"></span></span>
-        <span class="launch__avatar launch__avatar--4" data-depth="20"><span class="launch__avatar-img"></span></span>
-        <span class="launch__avatar launch__avatar--5" data-depth="14"><span class="launch__avatar-img"></span></span>
-        <span class="launch__avatar launch__avatar--6" data-depth="24"><span class="launch__avatar-img"></span></span>
+        <span class="launch__avatar launch__avatar--1" data-depth="22"><img class="launch__avatar-img" alt="" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" /></span>
+        <span class="launch__avatar launch__avatar--2" data-depth="14"><img class="launch__avatar-img" alt="" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" /></span>
+        <span class="launch__avatar launch__avatar--3" data-depth="26"><img class="launch__avatar-img" alt="" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" /></span>
+        <span class="launch__avatar launch__avatar--4" data-depth="20"><img class="launch__avatar-img" alt="" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" /></span>
+        <span class="launch__avatar launch__avatar--5" data-depth="14"><img class="launch__avatar-img" alt="" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" /></span>
+        <span class="launch__avatar launch__avatar--6" data-depth="24"><img class="launch__avatar-img" alt="" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" /></span>
       </div>
       <div class="launch__intro">
         <h2 class="launch__title">Help launch <em>the movement</em></h2>
         <p class="launch__lead">From tech to design to outreach, everyday people give their skills to help survivors reach safety. Find your place on the team.</p>
         <div class="launch__cta">
           <button class="btn btn-primary" type="button" data-volunteer-form>Become A Volunteer</button>
-          <a class="launch__link" href="/volunteers">Meet Our Volunteers</a>
         </div>
-        <div class="launch__joined">
+        <a class="launch__joined" href="/volunteers">
           <span class="launch__joined-avatars" aria-hidden="true">
             <span class="launch__joined-av"></span>
             <span class="launch__joined-av"></span>
             <span class="launch__joined-av"></span>
           </span>
-          <p class="launch__joined-text"><strong>100+ volunteers</strong> already joined the movement</p>
-        </div>
+          <span class="launch__joined-text"><strong>100+ volunteers</strong> already joined the movement</span>
+        </a>
       </div>
     </div>
+  </section>
 
+  <!-- ===== DONATE — sun + landscape + Givebutter form ===== -->
+  <section class="launch launch--donate" aria-label="Support survivors" data-launch>
     <div class="launch__form-wrap">
       <img class="launch__sun" src="/img/sun.png" alt="" aria-hidden="true" />
       <img class="launch__car" src="/img/freedom-rides-car.gif" alt="" aria-hidden="true" data-launch-car />

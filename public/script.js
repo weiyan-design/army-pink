@@ -885,9 +885,9 @@
 
   // --- Launch section: fresh random volunteer avatars each load, scroll reveal,
   //     and a subtle cursor parallax on the floating images. ---
-  var launchEl = document.querySelector('[data-launch]');
-  if (launchEl) {
-    var lReduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var lReduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  Array.prototype.slice.call(document.querySelectorAll('[data-launch]')).forEach(function (launchEl) {
+    // Fresh random volunteer photos where avatars / mini-avatars exist.
     try {
       var lphotos = JSON.parse(launchEl.getAttribute('data-volunteer-photos') || '[]');
       for (var li = lphotos.length - 1; li > 0; li--) {
@@ -897,10 +897,13 @@
       var lk = 0;
       Array.prototype.slice.call(launchEl.querySelectorAll('.launch__avatar-img, .launch__joined-av')).forEach(function (el) {
         var src = lphotos[lk++ % (lphotos.length || 1)];
-        if (src) el.style.backgroundImage = "url('" + src + "')";
+        if (!src) return;
+        if (el.tagName === 'IMG') el.src = src;
+        else el.style.backgroundImage = "url('" + src + "')";
       });
     } catch (e) {}
 
+    // Scroll reveal (per section).
     var revealLaunch = function () { launchEl.classList.add('is-revealed'); };
     if ('IntersectionObserver' in window) {
       var lio = new IntersectionObserver(function (entries) {
@@ -909,9 +912,9 @@
       lio.observe(launchEl);
     } else { revealLaunch(); }
 
-    // Cursor parallax (mouse only) — each avatar drifts by its data-depth.
-    if (!lReduce && window.matchMedia('(pointer: fine)').matches) {
-      var lAvatars = Array.prototype.slice.call(launchEl.querySelectorAll('.launch__avatar'));
+    // Cursor parallax — only where avatars exist, mouse only.
+    var lAvatars = Array.prototype.slice.call(launchEl.querySelectorAll('.launch__avatar'));
+    if (lAvatars.length && !lReduce && window.matchMedia('(pointer: fine)').matches) {
       var lpx = 0, lpy = 0, lpTicking = false;
       launchEl.addEventListener('mousemove', function (e) {
         var r = launchEl.getBoundingClientRect();
@@ -931,7 +934,7 @@
         for (var i = 0; i < lAvatars.length; i++) lAvatars[i].style.transform = '';
       });
     }
-  }
+  });
 
   // --- Shared "Become a volunteer" slide-up form (any [data-volunteer-form] opens it) ---
   var vform = document.querySelector('[data-volunteer-overlay]');

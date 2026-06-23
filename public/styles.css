@@ -4539,31 +4539,44 @@ body.overlay-open {
 .launch {
   position: relative;
   overflow: hidden;
-  background: var(--cream) url('/img/launch-movement-bg.jpg') top center / cover no-repeat;
   padding: clamp(2.5rem, 6vw, 5rem) var(--space-md) clamp(4rem, 9vw, 8rem);
+}
+/* Volunteer callout — light paper background (readable) */
+.launch--volunteers { background: #fcf9ed; }
+/* Donate form — landscape photo background (carries the sun + form) */
+.launch--donate {
+  background: var(--cream) url('/img/launch-movement-bg.jpg') center / cover no-repeat;
+  padding-top: clamp(5rem, 11vw, 9rem);
 }
 
 /* --- Callout (top third, over the paper) --- */
 .launch__callout {
   position: relative;
   min-height: clamp(420px, 46vw, 640px);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 .launch__intro {
   position: relative;
   z-index: 2;
   max-width: 540px;
-  margin: 0 auto;
-  padding-top: clamp(1.5rem, 4vw, 3.5rem);
+  margin-inline: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   text-align: center;
 }
-/* "X volunteers already joined" counter */
+/* "X volunteers already joined" counter — links to the volunteers page */
 .launch__joined {
-  display: flex;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 0.6rem;
   margin-top: 1.5rem;
+  text-decoration: none;
 }
+.launch__joined:hover .launch__joined-text { text-decoration: underline; }
 .launch__joined-avatars { display: inline-flex; }
 .launch__joined-av {
   width: 30px;
@@ -4604,33 +4617,47 @@ body.overlay-open {
 /* Floating volunteer avatars — hug the left/right edges, clear of the centred
    text. Outer span carries the cursor-parallax transform; inner carries the
    image + scroll-reveal. (photos set by JS, fresh random set each load) */
-.launch__avatars { position: absolute; inset: 0; z-index: 1; pointer-events: none; }
+.launch__avatars {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  max-width: 1440px;
+  z-index: 1;
+  pointer-events: none;
+}
 .launch__avatar {
   position: absolute;
   will-change: transform;
   transition: transform 0.3s ease-out;
 }
 .launch__avatar-img {
-  position: absolute;
-  inset: 0;
-  border-radius: 32px;
-  background: var(--beige-dark) center / cover no-repeat;
-  box-shadow: 0 16px 36px -16px rgba(40, 30, 30, 0.38);
+  display: block;
+  border-radius: 0.75rem;
+  box-shadow: 4px 12px 12px #00000017, 1px 3px 7px #0000001a;
 }
-/* Left edge: top, middle, bottom */
-.launch__avatar--1 { left: 4%;  top: 10%; width: clamp(104px, 12vw, 172px); aspect-ratio: 0.92; }
-.launch__avatar--2 { left: 12%; top: 46%; width: clamp(80px, 9vw, 124px);  aspect-ratio: 0.93; }
-.launch__avatar--3 { left: 1%;  top: 74%; width: clamp(112px, 13vw, 184px); aspect-ratio: 0.92; }
-/* Right edge: top, middle, bottom */
-.launch__avatar--4 { left: auto; right: 4%;  top: 8%;  width: clamp(104px, 12vw, 172px); aspect-ratio: 0.92; }
-.launch__avatar--5 { left: auto; right: 12%; top: 46%; width: clamp(80px, 9vw, 124px);  aspect-ratio: 0.93; }
-.launch__avatar--6 { left: auto; right: 1%;  top: 73%; width: clamp(112px, 13vw, 184px); aspect-ratio: 0.92; }
+/* positions — left edge & right edge, top·middle·bottom */
+.launch__avatar--1 { left: 4%;  top: 10%; }
+.launch__avatar--2 { left: 12%; top: 46%; }
+.launch__avatar--3 { left: 1%;  top: 74%; }
+.launch__avatar--4 { left: auto; right: 4%;  top: 8%; }
+.launch__avatar--5 { left: auto; right: 12%; top: 46%; }
+.launch__avatar--6 { left: auto; right: 1%;  top: 73%; }
+/* sizes — top corners fixed; middle & bottom keep their natural height */
+.launch__avatar--1 .launch__avatar-img,
+.launch__avatar--4 .launch__avatar-img { width: 6.25rem; height: 6.875rem; object-fit: cover; }
+.launch__avatar--2 .launch__avatar-img,
+.launch__avatar--5 .launch__avatar-img { width: 5rem; height: auto; }
+.launch__avatar--3 .launch__avatar-img,
+.launch__avatar--6 .launch__avatar-img { width: 7.75rem; height: auto; }
 
 /* --- Donate form + decorations --- */
 .launch__form-wrap {
   position: relative;
   max-width: 1080px;
-  margin: clamp(1rem, 3vw, 2.5rem) auto 0;
+  margin: 0 auto;
 }
 .launch__sun {
   position: absolute;
@@ -4700,15 +4727,20 @@ body.overlay-open {
 .launch.is-revealed .launch__avatar--6 .launch__avatar-img { transition-delay: 0.40s; }
 
 @media (max-width: 768px) {
-  .launch__callout { min-height: clamp(440px, 92vw, 560px); padding-bottom: 1rem; }
-  .launch__intro { padding-top: clamp(3rem, 16vw, 5rem); }
+  .launch__callout { min-height: clamp(440px, 92vw, 560px); }
   /* Avatars hug + bleed off the edges, around the centred text (text sits above) */
-  .launch__avatar--1 { left: -5%;  top: 2%;  width: 88px; }
-  .launch__avatar--2 { left: -7%;  top: 38%; width: 72px; }
-  .launch__avatar--3 { left: -4%;  top: 70%; width: 92px; }
-  .launch__avatar--4 { left: auto; right: -5%; top: 1%;  width: 88px; }
-  .launch__avatar--5 { left: auto; right: -7%; top: 40%; width: 72px; }
-  .launch__avatar--6 { left: auto; right: -4%; top: 70%; width: 92px; }
+  .launch__avatar--1 { left: -5%;  top: 2%; }
+  .launch__avatar--2 { left: -7%;  top: 38%; }
+  .launch__avatar--3 { left: -4%;  top: 70%; }
+  .launch__avatar--4 { left: auto; right: -5%; top: 1%; }
+  .launch__avatar--5 { left: auto; right: -7%; top: 40%; }
+  .launch__avatar--6 { left: auto; right: -4%; top: 70%; }
+  .launch__avatar--1 .launch__avatar-img,
+  .launch__avatar--4 .launch__avatar-img { width: 4.5rem; height: 4.95rem; }
+  .launch__avatar--2 .launch__avatar-img,
+  .launch__avatar--5 .launch__avatar-img { width: 3.4rem; }
+  .launch__avatar--3 .launch__avatar-img,
+  .launch__avatar--6 .launch__avatar-img { width: 5rem; }
   .launch__form { grid-template-columns: 1fr; }
   .launch__form-photo { min-height: 220px; }
   .launch__car { width: 120px; top: -7%; right: 0; }
