@@ -4769,10 +4769,12 @@ body.overlay-open {
   /* Faint cast onto the teal reinforces the paper sitting above it. */
   filter: drop-shadow(0 2px 2px rgba(17, 39, 46, 0.16));
 }
-/* Donate form — landscape photo background (carries the sun + form) */
+/* Donate form — cloud-meadow background (teal sky up top blends from the
+   volunteer section; focal 30% keeps the top clouds from cropping). */
 .launch--donate {
-  background: var(--cream) url('/img/launch-movement-bg.jpg') center / cover no-repeat;
-  padding-top: clamp(5rem, 11vw, 9rem);
+  position: relative;
+  background: #3c6265 url('/img/donation-form-img.jpg') center 30% / cover no-repeat;
+  padding: clamp(5rem, 11vw, 9rem) 0 clamp(4rem, 9vw, 7rem);
 }
 
 /* --- Callout (top third, over the paper) --- */
@@ -4948,69 +4950,48 @@ body.overlay-open {
 /* --- Donate form + decorations --- */
 .launch__form-wrap {
   position: relative;
-  max-width: 1080px;
+  max-width: 1141px;
   margin: 0 auto;
 }
-.launch__sun {
+/* Bougainvillea spray pinned to the top-right corner of the whole donate
+   section (not the centred card), stem bleeding off the right edge. */
+.launch__flower {
   position: absolute;
-  left: 50%;
-  top: -14%;
-  width: 116%;
-  max-width: none;
-  transform: translateX(-50%);
-  z-index: 0;
-  pointer-events: none;
-}
-.launch__car {
-  position: absolute;
-  right: -3%;
-  top: -10%;
-  width: clamp(130px, 18vw, 240px);
+  right: -1%;
+  top: -3%;
+  width: clamp(240px, 33vw, 520px);
   height: auto;
-  z-index: 3;
-  pointer-events: none;
-}
-.launch__love {
-  position: absolute;
-  left: -2%;
-  bottom: -7%;
-  width: clamp(130px, 17vw, 230px);
-  height: auto;
-  z-index: 3;
+  transform: rotate(180deg);
+  z-index: 4;
   pointer-events: none;
 }
 .launch__form {
   position: relative;
   z-index: 2;
   display: grid;
-  grid-template-columns: 1fr 1.08fr;
+  grid-template-columns: 0.92fr 1fr;
+  gap: 12px;
+  padding: 12px;
   background: #fff;
-  border-radius: 24px;
-  overflow: hidden;
+  border-radius: 36px;
   box-shadow: 0 34px 80px -34px rgba(30, 30, 50, 0.45);
 }
-.launch__form-photo { position: relative; min-height: 340px; }
+.launch__form-photo { position: relative; min-height: 340px; border-radius: 24px; overflow: hidden; }
 .launch__form-photo img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
-.launch__form-widget { padding: clamp(1rem, 2vw, 1.75rem); background: #fff; min-width: 0; }
+.launch__form-widget { padding: clamp(0.75rem, 1.6vw, 1.5rem); background: #fff; min-width: 0; align-self: center; }
 .launch__form-widget givebutter-widget { display: block; width: 100%; }
 
 /* Scroll reveal + side-entrances (avatar reveal lives on the inner so the outer
    span is free for cursor parallax) */
 .launch__avatar-img,
-.launch__sun,
-.launch__car,
-.launch__love,
+.launch__flower,
 .launch__form { opacity: 0; }
 .launch__avatar-img { transform: translateY(18px) scale(0.9); transition: opacity 0.6s ease, transform 0.7s cubic-bezier(0.22, 1, 0.36, 1); }
-.launch__sun { transform: translateX(-50%) translateY(46px); transition: opacity 0.8s ease, transform 0.9s cubic-bezier(0.22, 1, 0.36, 1); }
 .launch__form { transform: translateY(44px); transition: opacity 0.7s ease 0.15s, transform 0.8s cubic-bezier(0.22, 1, 0.36, 1) 0.15s; }
-.launch__car { transform: translateX(130px); transition: opacity 0.7s ease 0.5s, transform 0.9s cubic-bezier(0.22, 1, 0.36, 1) 0.5s; }
-.launch__love { transform: translateX(-130px); transition: opacity 0.7s ease 0.6s, transform 0.9s cubic-bezier(0.22, 1, 0.36, 1) 0.6s; }
+.launch__flower { transform: translate(54px, -54px) rotate(180deg); transition: opacity 0.8s ease 0.35s, transform 1.1s cubic-bezier(0.22, 1, 0.36, 1) 0.35s; }
 .launch.is-revealed .launch__avatar-img { opacity: 1; transform: none; }
-.launch.is-revealed .launch__sun { opacity: 1; transform: translateX(-50%); }
 .launch.is-revealed .launch__form { opacity: 1; transform: none; }
-.launch.is-revealed .launch__car,
-.launch.is-revealed .launch__love { opacity: 1; transform: none; }
+.launch.is-revealed .launch__flower { opacity: 1; transform: translate(0, 0) rotate(180deg); }
 .launch.is-revealed .launch__avatar--1 .launch__avatar-img { transition-delay: 0.05s; }
 .launch.is-revealed .launch__avatar--2 .launch__avatar-img { transition-delay: 0.12s; }
 .launch.is-revealed .launch__avatar--3 .launch__avatar-img { transition-delay: 0.19s; }
@@ -5035,18 +5016,17 @@ body.overlay-open {
   .launch__avatar--6 .launch__avatar-img { width: 5rem; }
   .launch__form { grid-template-columns: 1fr; }
   .launch__form-photo { min-height: 220px; }
-  .launch__car { width: 120px; top: -7%; right: 0; }
-  .launch__love { width: 120px; bottom: -4%; }
+  .launch__flower { width: clamp(150px, 42vw, 220px); top: -8%; right: -4%; }
 }
 
 @media (prefers-reduced-motion: reduce) {
   .launch__avatar { transition: none !important; }
-  .launch__avatar-img, .launch__sun, .launch__car, .launch__love, .launch__form {
+  .launch__avatar-img, .launch__flower, .launch__form {
     opacity: 1 !important;
-    transform: none !important;
     transition: none !important;
   }
-  .launch.is-revealed .launch__sun { transform: translateX(-50%); }
+  .launch__avatar-img, .launch__form { transform: none !important; }
+  .launch__flower { transform: rotate(180deg) !important; }
 }
 
 /* ===== Shared "Become a volunteer" slide-up sheet ===== */
