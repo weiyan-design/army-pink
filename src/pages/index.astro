@@ -7,21 +7,6 @@ import { team } from '../data/team.js';
 const launchLeadership = ['robin-bement', 'bill-hensley', 'cecelia-machuca', 'debra-prince', 'diana-drews', 'cynthia-modders', 'kathy-hallen', 'liliana-pettenkofer', 'beverly-taridona', 'wei-yan'];
 const volunteerPhotos = team.filter((p) => !launchLeadership.includes(p.slug) && p.photo).map((p) => p.photo);
 
-// Stats section — two independent column stacks (right one offset down).
-// Reading order pairs across: 1in3/$50, 200/100+, Fall 2026/Survivor-led.
-const statsCols = [
-  [
-    { value: '1 in 3', label: 'women experience intimate partner violence (CDC)' },
-    { value: '200', label: 'rides in our first LA pilot' },
-    { value: 'Fall 2026', label: 'Freedom Rides launch' },
-  ],
-  [
-    { value: '$50', label: 'funds one ride to safety' },
-    { value: '100+', label: 'volunteers building the mission' },
-    { value: 'Survivor-led', label: "built by people who've lived it" },
-  ],
-];
-
 const partners = [
   {
     name: 'Still Mountain Wellness Retreat',
@@ -321,20 +306,43 @@ const waysToGive = [
        (content left, pinned media right). Reuses the cream/yellow bands, global text
        components, and the /donate impact video + tracker. A car drives along the
        tracker as you scroll the section. ===== -->
-  <section class="ways" id="ways" aria-label="200 Rides to Freedom" data-ways>
+  <section class="ways" id="ways" aria-label="200 Rides to Freedom" data-ways style={`--car-max:${waysPct.toFixed(2)}`}>
     <!-- Cream band: eyebrow + title (left) -->
     <div class="ways__band ways__band--cream">
       <div class="container ways__grid">
-        <header class="ways__head">
-          <span class="pill-label reveal-item">Current Fundraising Campaign</span>
-          <h2 class="section-title section-title--lg reveal-item">200 Rides to <em>Freedom</em></h2>
-        </header>
+        <div class="ways__intro">
+          <header class="ways__head">
+            <span class="pill-label reveal-item">Current Fundraising Campaign</span>
+            <h2 class="section-title section-title--lg reveal-item">200 Rides to <em>Freedom</em></h2>
+          </header>
+          <!-- tracker + car, directly under the title -->
+          <div
+            class="dn-tracker ways__tracker"
+            data-tracker
+            role="progressbar"
+            aria-valuemin="0"
+            aria-valuemax={waysGoal}
+            aria-valuenow={waysRides}
+            aria-label={`${waysRides} of ${waysGoal} rides funded`}
+          >
+            <div class="dn-tracker__bar">
+              <div class="dn-tracker__bubble" style={`left:${waysPct}%`}>
+                <span class="dn-tracker__count">{waysRides}</span>
+                <span class="dn-tracker__label">Rides Funded</span>
+              </div>
+              {Array.from({ length: waysTicks }).map((_, i) => (
+                <span class={`dn-tracker__tick${i < waysFilled ? ' is-filled' : ''}`}></span>
+              ))}
+              <img class="ways__car" src="/img/freedom-rides-car.gif" alt="" aria-hidden="true" data-ways-car />
+            </div>
+          </div>
+        </div>
         <div class="ways__media" aria-hidden="true"></div>
       </div>
     </div>
 
-    <!-- Yellow band: body + "Other Ways to Give" (left); pinned impact card + tracker (right) -->
-    <div class="ways__band ways__band--yellow">
+    <!-- Body band (light grey): body + "Other Ways to Give" (left); pinned impact card + tracker (right) -->
+    <div class="ways__band ways__band--body">
       <div class="container ways__grid">
         <div class="ways__content">
           <p class="section-text reveal-item">Every gift helps provide safe, discreet transportation for survivors who need to leave unsafe environments, reach safe destinations, or access critical services. A single Freedom Ride costs $50 and can help a survivor reach shelter, medical care, legal support, a trusted support network, or another destination connected to their safety plan. A ride at the right time can save a life.</p>
@@ -344,17 +352,17 @@ const waysToGive = [
             {waysToGive.map((w) => (
               <li class="give-row reveal-item">
                 <img class="give-row__icon" src={w.icon} alt="" loading="lazy" />
-                <div class="give-row__body">
-                  <span class="give-row__cat">{w.cat}</span>
-                  <h4 class="give-row__title">{w.title}</h4>
+                <span class="give-row__cat">{w.cat}</span>
+                <h4 class="give-row__title">{w.title}</h4>
+                <div class="give-row__foot">
                   <p class="give-row__desc">{w.desc}</p>
+                  <button
+                    class="give-row__cta"
+                    type="button"
+                    data-donate-panel={w.action === 'donate' ? true : undefined}
+                    data-contact-form={w.action === 'contact' ? true : undefined}
+                  >{w.cta}</button>
                 </div>
-                <button
-                  class="give-row__cta"
-                  type="button"
-                  data-donate-panel={w.action === 'donate' ? true : undefined}
-                  data-contact-form={w.action === 'contact' ? true : undefined}
-                >{w.cta}</button>
               </li>
             ))}
           </ul>
@@ -365,27 +373,7 @@ const waysToGive = [
             <div class="ways__card">
               <video class="ways__vid" src="/vid/give-impact-loop.mp4" autoplay muted loop playsinline preload="auto" aria-label="Army Pink Freedom Rides impact loop"></video>
             </div>
-            <p class="ways__cap">Survivors transported to <em>safety</em></p>
-            <div
-              class="dn-tracker ways__tracker"
-              data-tracker
-              role="progressbar"
-              aria-valuemin="0"
-              aria-valuemax={waysGoal}
-              aria-valuenow={waysRides}
-              aria-label={`${waysRides} of ${waysGoal} rides funded`}
-            >
-              <div class="dn-tracker__bar">
-                <div class="dn-tracker__bubble" style={`left:${waysPct}%`}>
-                  <span class="dn-tracker__count">{waysRides}</span>
-                  <span class="dn-tracker__label">Rides Funded</span>
-                </div>
-                {Array.from({ length: waysTicks }).map((_, i) => (
-                  <span class={`dn-tracker__tick${i < waysFilled ? ' is-filled' : ''}`}></span>
-                ))}
-                <img class="ways__car" src="/img/freedom-rides-car.gif" alt="" aria-hidden="true" data-ways-car />
-              </div>
-            </div>
+            <button class="btn btn-primary ways__fund" type="button">Fund 200 Rides</button>
           </div>
         </div>
       </div>
@@ -528,77 +516,7 @@ const waysToGive = [
     </div>
   </section>
 
-  <!-- ===== ABOUT ARMY PINK ===== -->
-  <section class="section section-mission" id="mission">
-    <div class="container">
-      <div class="mission-grid">
-        <div class="mission-text">
-          <span class="pill-label reveal-item">Our Mission</span>
-          <h2 class="section-title reveal-item">We don't provide rides.<br>We provide access to safety.<br><br>We don't sell healing.<br>We connect you to it.</h2>
-          <p class="section-text reveal-item">
-            Army Pink is a 501(c)(3) nonprofit supporting domestic violence survivors
-            through safety-centered transportation, concierge support, and wellness resources.
-          </p>
-          <p class="section-text reveal-item">
-            Our <strong>Pathway to Freedom</strong> program provides donation-based Freedom Rides —
-            immediate safe transportation when you need it most — plus connections to
-            ongoing wellness support for the road ahead.
-          </p>
-          <p class="quiet">Based in California. Serving survivors nationwide.</p>
-        </div>
-        <div class="mission-values">
-          <div class="value">
-            <span class="value-number">01</span>
-            <div>
-              <h4>Safety First</h4>
-              <p>Every decision we make starts with your safety.</p>
-            </div>
-          </div>
-          <div class="value">
-            <span class="value-number">02</span>
-            <div>
-              <h4>Survivor-Led</h4>
-              <p>People who understand the journey shape our work.</p>
-            </div>
-          </div>
-          <div class="value">
-            <span class="value-number">03</span>
-            <div>
-              <h4>No Barriers</h4>
-              <p>Survivors never pay. Supporters make that possible.</p>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ===== WHO WE ARE / STATS (moved to bottom for now) ===== -->
-  <section class="stats-section" aria-label="Army Pink at a glance">
-    <div class="stats-grid">
-      <div class="stats-text">
-        <p>
-          Army Pink is a survivor-led nonprofit providing safe, discreet
-          transportation for people escaping domestic violence. Working
-          alongside crisis organizations and referral partners, our
-          volunteer-powered team is building Freedom Rides — launching
-          Fall 2026 with a 200-ride pilot in Los Angeles.
-        </p>
-      </div>
-      <div class="stats-cells">
-        {statsCols.map((col, ci) => (
-          <div class={`stats-col${ci === 1 ? ' stats-col--offset' : ''}`}>
-            {col.map((s) => (
-              <div class="stat-cell reveal-item">
-                <span class="stat-value">{s.value}</span>
-                <span class="stat-label">{s.label}</span>
-              </div>
-            ))}
-          </div>
-        ))}
-      </div>
-    </div>
-  </section>
+  <!-- Stats + "Our Mission" sections moved to /mission (under "What We Stand For"). -->
 
   <!-- ===== OVERLAYS (kept for future use) ===== -->
 

@@ -1,5 +1,21 @@
 ---
 import Layout from '../layouts/Layout.astro';
+
+// Stats section (moved from the home page) — two independent column stacks
+// (right one offset down). Reading order pairs across: 1in3/$50, 200/100+,
+// Fall 2026/Survivor-led.
+const statsCols = [
+  [
+    { value: '1 in 3', label: 'women experience intimate partner violence (CDC)' },
+    { value: '200', label: 'rides in our first LA pilot' },
+    { value: 'Fall 2026', label: 'Freedom Rides launch' },
+  ],
+  [
+    { value: '$50', label: 'funds one ride to safety' },
+    { value: '100+', label: 'volunteers building the mission' },
+    { value: 'Survivor-led', label: "built by people who've lived it" },
+  ],
+];
 ---
 
 <Layout title="Our Mission — Army Pink" description="Army Pink is a survivor-led initiative addressing the #1 unmet need for survivors: safe, immediate transportation out of dangerous situations.">
@@ -131,6 +147,78 @@ import Layout from '../layouts/Layout.astro';
           <div>
             <h4>Choice &amp; Control</h4>
             <p>Every survivor's journey is different. We believe people deserve the freedom to make their own decisions, choose their own path, and define what healing and independence look like for them.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== WHO WE ARE / STATS (moved from home) ===== -->
+  <section class="stats-section" aria-label="Army Pink at a glance">
+    <div class="stats-grid">
+      <div class="stats-text">
+        <p>
+          Army Pink is a survivor-led nonprofit providing safe, discreet
+          transportation for people escaping domestic violence. Working
+          alongside crisis organizations and referral partners, our
+          volunteer-powered team is building Freedom Rides — launching
+          Fall 2026 with a 200-ride pilot in Los Angeles.
+        </p>
+      </div>
+      <div class="stats-cells">
+        {statsCols.map((col, ci) => (
+          <div class={`stats-col${ci === 1 ? ' stats-col--offset' : ''}`}>
+            {col.map((s) => (
+              <div class="stat-cell reveal-item">
+                <span class="stat-value">{s.value}</span>
+                <span class="stat-label">{s.label}</span>
+              </div>
+            ))}
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== OUR MISSION (moved from home) ===== -->
+  <section class="section section-mission" id="mission">
+    <div class="container">
+      <div class="mission-grid">
+        <div class="mission-text">
+          <span class="pill-label reveal-item">Our Mission</span>
+          <h2 class="section-title reveal-item">We don't provide rides.<br>We provide access to safety.<br><br>We don't sell healing.<br>We connect you to it.</h2>
+          <p class="section-text reveal-item">
+            Army Pink is a 501(c)(3) nonprofit supporting domestic violence survivors
+            through safety-centered transportation, concierge support, and wellness resources.
+          </p>
+          <p class="section-text reveal-item">
+            Our <strong>Pathway to Freedom</strong> program provides donation-based Freedom Rides —
+            immediate safe transportation when you need it most — plus connections to
+            ongoing wellness support for the road ahead.
+          </p>
+          <p class="quiet">Based in California. Serving survivors nationwide.</p>
+        </div>
+        <div class="mission-values">
+          <div class="value">
+            <span class="value-number">01</span>
+            <div>
+              <h4>Safety First</h4>
+              <p>Every decision we make starts with your safety.</p>
+            </div>
+          </div>
+          <div class="value">
+            <span class="value-number">02</span>
+            <div>
+              <h4>Survivor-Led</h4>
+              <p>People who understand the journey shape our work.</p>
+            </div>
+          </div>
+          <div class="value">
+            <span class="value-number">03</span>
+            <div>
+              <h4>No Barriers</h4>
+              <p>Survivors never pay. Supporters make that possible.</p>
+            </div>
           </div>
         </div>
       </div>

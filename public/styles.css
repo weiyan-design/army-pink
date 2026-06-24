@@ -25,6 +25,7 @@
   --peach: #f6e0d5;
   --peach-rgb: 246, 224, 213;
   --dark-grey: #686565;
+  --light-grey: #ebe5e2;
   --orange: #f3954f;
   --sunny-yellow: #FDD36A;
   --offwhite: #fefcfa;
@@ -4615,10 +4616,12 @@ body.overlay-open {
 .ways__band--cream {
   background: var(--cream);
   padding-top: clamp(3.5rem, 7vw, 6rem);
-  padding-bottom: clamp(1.5rem, 3vw, 2.5rem);
+  padding-bottom: clamp(2.5rem, 5vw, 4rem);
 }
-.ways__band--yellow {
-  background: var(--sunny-yellow);
+/* left column of the cream band: title + tracker stacked under it */
+.ways__intro { min-width: 0; }
+.ways__band--body {
+  background: var(--light-grey);
   padding-top: clamp(2.25rem, 4vw, 3.25rem);
   padding-bottom: clamp(4rem, 8vw, 7rem);
 }
@@ -4629,14 +4632,14 @@ body.overlay-open {
   gap: clamp(2.5rem, 4vw, 4.5rem);
   align-items: start;
 }
-.ways__band--yellow .ways__grid { align-items: stretch; }
+.ways__band--body .ways__grid { align-items: stretch; }
 
 .ways__head { display: flex; flex-direction: column; gap: 0.6rem; }
 .ways__head .pill-label,
 .ways__head .section-title { margin-bottom: 0; }
 
 .ways__content { min-width: 0; }
-.ways__content .section-text { color: #574a1d; }   /* readable brown on the yellow */
+.ways__content .section-text { color: var(--text); }
 .ways__sub {
   margin: clamp(2rem, 4vw, 3rem) 0 1rem;
   font-family: var(--font-body);
@@ -4645,43 +4648,60 @@ body.overlay-open {
   color: #1a1a1a;
 }
 
-/* "Other Ways to Give" rows */
+/* "Other Ways to Give" — cards: category top-left + icon top-right, then title +
+   description, with the CTA at the bottom-right (per the Figma component). */
 .give-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 0.85rem; }
 .give-row {
-  display: grid;
-  grid-template-columns: 46px 1fr auto;
-  align-items: center;
-  gap: 1rem;
-  padding: 0.95rem 1.2rem;
-  background: rgba(255, 255, 255, 0.42);
-  border: 1px solid rgba(255, 255, 255, 0.6);
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  padding: 1.1rem 1.3rem 1rem;
+  background: rgba(255, 255, 255, 0.6);
+  border: 1px solid rgba(0, 0, 0, 0.06);
   border-radius: 16px;
 }
-.give-row__icon { width: 46px; height: 46px; border-radius: 11px; object-fit: cover; }
-.give-row__body { min-width: 0; }
-.give-row__cat {
-  display: block;
-  font-size: 0.7rem; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase;
-  color: var(--pink-dark);
+.give-row__icon {
+  position: absolute;
+  top: 1.1rem;
+  right: 1.2rem;
+  width: 46px;
+  height: 46px;
+  object-fit: contain;   /* logos, don't crop */
 }
-.give-row__title { margin: 1px 0; font-family: var(--font-display); font-weight: 700; font-size: 1.05rem; color: var(--text); }
-.give-row__desc { margin: 0; font-size: 0.85rem; line-height: 1.45; color: #5a5048; }
-.give-row__cta {
-  flex: none; white-space: nowrap; cursor: pointer;
-  background: transparent; border: 0; padding: 0;
-  font-family: var(--font-body); font-weight: 600; font-size: 0.9rem;
+.give-row__cat {
+  font-size: 0.72rem; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase;
   color: var(--pink-dark);
-  text-decoration: underline; text-underline-offset: 3px;
+  padding-right: 58px;   /* clear the top-right icon */
+}
+.give-row__title {
+  margin: 0.25rem 0 0.3rem;
+  padding-right: 58px;
+  font-family: var(--font-display); font-weight: 700; font-size: 1.2rem; color: var(--text);
+}
+/* description + CTA share the bottom row; CTA bottom-aligns with the description */
+.give-row__foot {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 1.25rem;
+}
+.give-row__desc { margin: 0; flex: 1; font-size: 0.9rem; line-height: 1.5; color: #5a5048; }
+.give-row__cta {
+  flex: none;
+  cursor: pointer;
+  background: transparent; border: 0; padding: 0;
+  font-family: var(--font-body); font-weight: 600; font-size: 0.95rem;
+  color: var(--pink-dark);
   transition: color 0.2s ease;
 }
 .give-row__cta:hover { color: var(--pink); }
 
-/* Pinned media (impact video + caption + tracker + car) */
+/* Pinned media (impact video + tracker + car + Fund button) */
 .ways__media { position: relative; min-width: 0; }
 .ways__pin {
   position: sticky;
-  top: calc(var(--header-h, 7.5rem) + 1rem);
-  margin-top: clamp(-7rem, -8vw, -4rem);   /* peek up into the cream band, like the psg arch */
+  top: 50%;
+  transform: translateY(-50%);   /* fixed in the centre of the viewport while scrolling */
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -4692,39 +4712,44 @@ body.overlay-open {
   overflow: hidden;
   box-shadow: 0 20px 50px rgba(0, 0, 0, 0.18);
 }
-.ways__vid { display: block; width: 100%; aspect-ratio: 491 / 620; object-fit: cover; }
-.ways__cap {
-  margin: 1rem 0 0;
-  font-family: var(--font-display);
-  font-weight: 700;
-  font-size: 1.15rem;
-  color: var(--text);
-  text-align: center;
-}
-.ways__cap em { font-style: italic; color: var(--pink); }
+/* respect the video's own (tall, 9:16) aspect — no crop */
+.ways__vid { display: block; width: 100%; height: auto; }
 
-/* Tracker recoloured for the yellow background (donate's white ticks were for a dark bg) */
-.ways__tracker { max-width: 100%; padding-top: 84px; margin-top: 1.25rem; }
+/* Tracker now sits under the title on cream. Car rides ABOVE the bar; the
+   "Rides Funded" bubble is flipped to sit BELOW the bar so they never overlap. */
+.ways__tracker { max-width: 460px; padding-top: 70px; padding-bottom: 84px; margin-top: 2rem; }
 .ways__tracker .dn-tracker__tick { background: rgba(0, 0, 0, 0.12); border-radius: 4px; }
 .ways__tracker .dn-tracker__tick.is-filled { background: var(--pink); }
 .ways__tracker .dn-tracker__count { color: var(--pink-dark); }
+/* bubble below the bar, arrow pointing up; bordered so it reads on the cream bg */
+.ways__tracker .dn-tracker__bubble { top: calc(100% + 16px); bottom: auto; border: 1px solid var(--beige-dark); }
+.ways__tracker .dn-tracker__bubble::after {
+  top: -9px; bottom: auto;
+  border-top: 0;
+  border-bottom: 10px solid #fdfbf7;
+}
 
-/* Car rides along the bar; --car-x (0–1) set by JS from scroll progress */
+/* Car rides along the bar; --car-x (0–1, scroll progress) × --car-max (the funded %)
+   so it starts at the very left and stops at the "Rides Funded" spot. Doubled size. */
 .ways__car {
   position: absolute;
   bottom: calc(100% - 7px);
-  left: clamp(0%, calc(var(--car-x, 0) * 100%), 100%);
-  width: 54px;
+  left: calc(var(--car-x, 0) * var(--car-max, 100) * 1%);
+  width: 108px;
   height: auto;
   transform: translateX(-50%);
   pointer-events: none;
   z-index: 2;
 }
 
+/* "Fund 200 Rides" — primary button right under the card, above the tracker */
+.ways__fund { margin-top: 3rem; align-self: center; }
+
 @media (max-width: 860px) {
   .ways__grid { grid-template-columns: 1fr; gap: 1.75rem; }
   .ways__band--cream .ways__media { display: none; }
-  .ways__pin { position: static; margin-top: 0; }
+  .ways__band--cream { padding-bottom: clamp(1.5rem, 3vw, 2.5rem); }   /* no tall cream zone when stacked */
+  .ways__pin { position: static; transform: none; margin-top: 0; }
   .ways__media { order: -1; }            /* show the impact card above the give list */
   .ways__card { max-width: 360px; margin: 0 auto; }
   .ways__tracker { margin-inline: auto; }
@@ -5060,6 +5085,19 @@ body.overlay-open {
   box-shadow: 0 -20px 60px -20px rgba(0, 0, 0, 0.3);
 }
 .vform.is-open .vform__sheet { transform: translateY(0); }
+
+/* Contact modal — centred pop-in (scale + fade) instead of the bottom slide-up.
+   Scoped to [data-contact-overlay] so the volunteer form keeps sliding up. */
+.vform[data-contact-overlay] { align-items: center; }
+.vform[data-contact-overlay] .vform__sheet {
+  width: min(540px, calc(100% - 2rem));
+  border-radius: 24px;
+  transform: scale(0.94);
+  opacity: 0;
+  box-shadow: 0 30px 80px -24px rgba(0, 0, 0, 0.4);
+  transition: transform 0.32s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.28s ease;
+}
+.vform[data-contact-overlay].is-open .vform__sheet { transform: scale(1); opacity: 1; }
 .vform__close {
   position: absolute;
   top: 14px;
