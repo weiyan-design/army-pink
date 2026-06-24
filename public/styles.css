@@ -40,6 +40,11 @@
   --space-xl: 5rem;
   --space-2xl: 8rem;
 
+  /* Shared horizontal gutter: never tighter than 24px (phones), scales with the
+     viewport, never wider than 80px. Used by .container and any full-bleed section
+     (`padding-inline: var(--gutter)`) so content edges align down the whole page. */
+  --gutter: clamp(1.5rem, 6vw, 5rem);
+
   /* Typography */
   --font-display: 'Playfair Display', Georgia, serif;
   --font-body: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
@@ -102,7 +107,7 @@ img {
 .container {
   max-width: 1120px;
   margin: 0 auto;
-  padding: 0 var(--space-md);
+  padding: 0 var(--gutter);
 }
 
 /* --- Crisis Banner --- */
@@ -4334,202 +4339,199 @@ body.overlay-open {
 /* ===== Programs — "We're here for every step" (Survivors / Supporters toggle).
    A 5-card collage (a/b left · c featured center · d/e right) toggled between two
    audiences; cards cross-fade in place with a centre-out stagger. ===== */
-.programs {
+/* ===== Programs for Survivors — TWO full-width bands so the yellow reaches the
+   viewport edges (a single off-centre grid column can't full-bleed). Band 1 is
+   cream and holds the title; band 2 is yellow and holds the pinned arch + the
+   scrolling content. The arch reuses .empowering-image: it floats up into the
+   cream band (--arch-lift) and is sticky, so it pins centred while scrolling and,
+   because its containing cell ends at the caption row, its foot lands on the
+   description when scrolled to the bottom (respecting the band's bottom padding).
+   The coverflow reuses the .fc-* feature-carousel JS + base styles. */
+.psg {
+  --psg-yellow: #fdd36a;
+  --psg-yellow-pt: clamp(2.25rem, 4vw, 3.25rem);   /* yellow band top padding */
+  --arch-lift: clamp(6rem, 10vw, 11rem);           /* how far the arch rises into the cream band (desktop) */
+  --arch-h: clamp(520px, 55vw, 680px);             /* arch height — shared so the cream band can reserve room */
   position: relative;
-  background: #fcf9ed;
-  padding: clamp(3.5rem, 7vw, 6rem) 0 clamp(4rem, 8vw, 7rem);
 }
-.programs__head {
-  text-align: center;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 0.85rem;
-  margin-bottom: clamp(2.5rem, 5vw, 3.75rem);
+.psg__band { position: relative; }
+.psg__band--cream {
+  background: var(--cream);
+  padding-top: clamp(6.5rem, 8vw, 20rem);
+  padding-bottom: clamp(1.5rem, 3vw, 2.5rem);
 }
-.programs__eyebrow {
+.psg__band--yellow {
+  background: var(--psg-yellow);
+  padding-top: var(--psg-yellow-pt);
+  padding-bottom: clamp(4rem, 8vw, 7rem);
+}
+.psg__grid {
+  display: grid;
+  grid-template-columns: minmax(340px, 540px) 1fr;
+  gap: clamp(2.5rem, 4vw, 4.5rem);
+  align-items: start;            /* cream band: title hugs the top */
+}
+/* Yellow band: the media cell must span the full row so the sticky arch can
+   travel and bottom-out at the caption row. */
+.psg__band--yellow .psg__grid { align-items: stretch; }
+@media (max-width: 880px) {
+  .psg__band--cream .psg__media { display: none; }
+}
+
+/* --- Pinned arch --- */
+.psg__media { position: relative; min-width: 0; }
+.psg__arch {
+  position: sticky;
+  top: max(1.5rem, calc(50svh - var(--arch-h) / 2));
+  height: var(--arch-h);
+  width: auto;
+  margin-top: calc(-1 * var(--arch-lift));   /* float up into the cream band */
+  margin-inline: auto;
+  z-index: 1;
+}
+.psg__arch.empowering-image {
+  aspect-ratio: 9 / 13;            /* width derives from the explicit height */
+  border-radius: 280px 280px 0 0;
+}
+/* Wavy foot blends into the yellow it sits over. */
+.psg__arch.empowering-image::after { background: var(--psg-yellow); }
+
+/* --- Title (cream band) --- */
+.psg__head { display: flex; flex-direction: column; gap: 0.6rem; }
+.psg__eyebrow {
   font-family: var(--font-body);
   font-weight: 600;
   font-size: 0.8rem;
   letter-spacing: 0.02em;
   color: var(--pink-dark);
 }
-.programs__title {
+.psg__title {
   font-family: var(--font-display);
   font-weight: 700;
-  font-size: clamp(2rem, 4.5vw, 2.6rem);
-  line-height: 1.1;
+  font-size: clamp(2.5rem, 4.5vw, 3.25rem);
+  line-height: 1.08;
   letter-spacing: -0.01em;
   color: var(--dark-grey);
   margin: 0;
 }
-.programs__title em { font-style: italic; color: var(--pink-dark); }
+.psg__title em { font-style: italic; color: var(--pink-dark); }
 
-/* Toggle pill with a sliding active indicator */
-.programs__toggle {
-  position: relative;
-  display: inline-flex;
-  margin-top: 0.4rem;
-  padding: 4px;
-  border: 1px solid var(--pink);
-  border-radius: 999px;
-  background: rgba(255, 255, 255, 0.5);
-  -webkit-backdrop-filter: blur(4px);
-  backdrop-filter: blur(4px);
-}
-.programs__tab {
-  position: relative;
-  z-index: 1;
-  flex: 1 0 auto;
-  min-width: 132px;
-  border: 0;
-  background: transparent;
-  cursor: pointer;
-  font-family: var(--font-body);
-  font-weight: 600;
-  font-size: 0.95rem;
-  color: var(--pink-dark);
-  padding: 0.45rem 1.5rem;
-  border-radius: 999px;
-  transition: color 0.3s ease;
-}
-.programs__tab.is-active { color: #fff; }
-.programs__tab-ind {
-  position: absolute;
-  z-index: 0;
-  top: 4px;
-  bottom: 4px;
-  left: 4px;
-  width: calc(50% - 4px);
-  background: var(--pink);
-  border-radius: 999px;
-  transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
-}
-.programs.is-supporters .programs__tab-ind { transform: translateX(100%); }
-
-/* Stage: a fixed-aspect canvas (the 1120×489 Figma frame). The two sets overlay
-   each other; each card is positioned absolutely (inline % left/top/width/height)
-   so every set keeps its own asymmetric layout. Toggling simply cross-fades the
-   two sets (opacity) — no morph. */
-.programs__stage {
-  position: relative;
-  width: 100%;
-  max-width: 1120px;
-  margin: 0 auto;
-  aspect-ratio: 1120 / 489;
-}
-.programs__set {
-  position: absolute;
-  inset: 0;
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 0.45s ease;
-}
-.programs:not(.is-supporters) .programs__set[data-prog="survivors"],
-.programs.is-supporters .programs__set[data-prog="supporters"] {
-  opacity: 1;
-  pointer-events: auto;
-}
-.program-card {
-  position: absolute;
-  border-radius: 16px;
-  overflow: hidden;
-  background: var(--beige-dark);
-  display: block;
-  text-decoration: none;
-}
-.program-card__img {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  transition: transform 0.5s ease;
-}
-.program-card[href]:hover .program-card__img { transform: scale(1.04); }
-.program-card__tag {
-  position: absolute;
-  top: 14px;
-  left: 14px;
-  z-index: 2;
-  font-family: var(--font-body);
-  font-weight: 600;
-  font-size: 0.72rem;
-  color: #fff;
-  background: rgba(255, 255, 255, 0.2);
-  -webkit-backdrop-filter: blur(4px);
-  backdrop-filter: blur(4px);
-  padding: 3px 11px;
-  border-radius: 999px;
-}
-.program-card__body {
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  z-index: 1;
+/* --- Content (yellow band) --- */
+.psg__content { min-width: 0; }
+.psg__intro {
   display: flex;
   flex-direction: column;
-  gap: 3px;
-  padding: 16px;
-  background: linear-gradient(to top, rgba(0, 0, 0, 0.78), rgba(0, 0, 0, 0));
+  gap: 1.1rem;
+  margin-bottom: clamp(2.5rem, 5vw, 3.5rem);
 }
-.program-card--featured .program-card__body { padding: 24px; }
-.program-card__title {
-  margin: 0;
-  font-family: var(--font-display);
-  font-weight: 700;
-  font-size: 1.05rem;
-  line-height: 1.2;
-  color: #fff;
-}
-.program-card--featured .program-card__title { font-size: clamp(1.25rem, 2vw, 1.5rem); }
-.program-card__meta {
+.psg__intro p {
   margin: 0;
   font-family: var(--font-body);
-  font-size: 0.8rem;
-  line-height: 1.4;
-  color: rgba(255, 255, 255, 0.85);
+  font-size: 1rem;
+  line-height: 1.7;
+  color: #574a1d;          /* warm dark brown, readable on yellow */
+  max-width: 42rem;
 }
 
-/* Mobile: the active set becomes a horizontal snap carousel (featured first);
-   the inactive set is hidden, and the active one fades in on toggle. */
-@media (max-width: 768px) {
-  .programs__stage { position: static; aspect-ratio: auto; max-width: none; }
-  .programs__set {
-    position: static;
-    opacity: 1;
-    display: flex;
-    gap: 14px;
-    overflow-x: auto;
-    scroll-snap-type: x mandatory;
-    -webkit-overflow-scrolling: touch;
-    padding: 0 var(--space-md) 1rem;
-    scrollbar-width: none;
-  }
-  .programs__set::-webkit-scrollbar { display: none; }
-  .programs:not(.is-supporters) .programs__set[data-prog="supporters"],
-  .programs.is-supporters .programs__set[data-prog="survivors"] { display: none; }
-  .programs:not(.is-supporters) .programs__set[data-prog="survivors"],
-  .programs.is-supporters .programs__set[data-prog="supporters"] { animation: progFade 0.4s ease; }
-  .program-card {
-    position: relative;
-    left: auto !important;
-    top: auto !important;
-    width: auto !important;
-    height: auto !important;
-    flex: 0 0 78%;
-    aspect-ratio: 3 / 4;
-    scroll-snap-align: center;
-  }
-  .program-card--featured { order: -1; }
+/* "Programs In The Making" coverflow block */
+.psg__making-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1.25rem;
 }
-@keyframes progFade { from { opacity: 0; } to { opacity: 1; } }
+/* Inter Medium 20px / black — matches the Figma label (NOT Playfair). */
+.psg__making-title {
+  margin: 0;
+  font-family: var(--font-body);
+  font-weight: 500;
+  font-size: 1.25rem;
+  line-height: 1.4;
+  letter-spacing: 0;
+  color: #1a1a1a;
+}
+/* Round, translucent-white arrows, per Figma (scoped so the other carousel keeps
+   its bordered style). */
+.psg__making .fc-arrow {
+  border: 0;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.6);
+  color: var(--dark-grey);
+}
+.psg__making .fc-arrow:hover { background: #fff; }
+
+/* Shorter than the arch: these cards must read as smaller than the left arch. */
+/* .fc-track.psg__track (two classes) outranks the later base .fc-track rule, so
+   this 360px height actually wins on wide screens. */
+.fc-track.psg__track {
+  height: clamp(360px, 48vw, 360px);
+  margin-bottom: 1.5rem;
+}
+.psg__track .fc-card { border-radius: 18px; }
+/* No labels on these cards — drop the legibility scrim so the image stays clean. */
+.psg__track .fc-card::after { display: none; }
+
+.psg__footer {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  gap: 1.5rem;
+}
+/* Inter Medium 16px, brown body with a semibold near-black program name. */
+.psg__footer .fc-caption {
+  font-family: var(--font-body);
+  font-weight: 500;
+  font-size: 1rem;
+  line-height: 1.5;
+  color: #694b00;
+  max-width: 30rem;
+  margin: 0;
+}
+.psg__prog { font-weight: 600; color: #1a1a1a; }
+
+/* "Help Us Build" — outlined pink pill, identical on every card */
+.psg__cta {
+  flex: none;
+  white-space: nowrap;
+  padding: 0.7rem 1.5rem;
+  border: 2px solid var(--pink);
+  border-radius: 999px;
+  color: var(--pink-dark);
+  font-weight: 600;
+  font-size: 0.95rem;
+  transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+}
+.psg__cta:hover { background: var(--pink); color: #fff; border-color: var(--pink); }
+
+/* Stacked, left-aligned layout below 1028px. The arch stops pinning and instead
+   rises by 1/3 of its height into the cream band, so the cream→yellow seam falls
+   one-third of the way down the arch; the cream band reserves matching room below
+   the title (+1rem) so the two never collide. */
+@media (max-width: 1027.98px) {
+  .psg {
+    --arch-h: clamp(380px, 70vw, 520px);   /* smaller arch when stacked */
+  }
+  .psg__grid { grid-template-columns: 1fr; gap: 1.5rem; }
+  .psg__band--cream .psg__media { display: none; }
+  .psg__band--cream { padding-bottom: calc(var(--arch-h) / 3 + 1rem); }
+  .psg__arch {
+    position: static;
+    top: auto;
+    height: var(--arch-h);
+    width: auto;
+    margin-top: calc(-1 * (var(--arch-h) / 3 + var(--psg-yellow-pt)));
+    margin-left: 0;            /* left-aligned */
+    margin-right: auto;
+    margin-bottom: 1.5rem;
+  }
+}
+@media (max-width: 768px) {
+  .psg__footer { grid-template-columns: 1fr; gap: 1.1rem; justify-items: start; }
+}
 
 @media (prefers-reduced-motion: reduce) {
-  .programs__set,
-  .program-card__img,
-  .programs__tab-ind { transition: none; }
+  .psg__cta { transition: none; }
 }
 
 /* ===== Help launch the movement — volunteer callout + donate form. One landscape

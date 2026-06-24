@@ -815,7 +815,7 @@
         caption.classList.add('is-fading');
         if (cta) cta.classList.add('is-fading');
         setTimeout(function () {
-          caption.textContent = captions[active];
+          caption.innerHTML = captions[active];
           syncCta();
           caption.classList.remove('is-fading');
           if (cta) cta.classList.remove('is-fading');
@@ -849,36 +849,6 @@
         var wasActive = tile.classList.contains('is-active');
         tiles.forEach(function (t) { t.classList.remove('is-active'); });
         if (!wasActive) tile.classList.add('is-active');
-      });
-    });
-  });
-
-  // --- Programs toggle (Survivors / Supporters): cross-fade the two card sets,
-  //     slide the pill indicator. ---
-  document.querySelectorAll('[data-programs-toggle]').forEach(function (toggle) {
-    var section = toggle.closest('.programs');
-    if (!section) return;
-    var tabs = Array.prototype.slice.call(toggle.querySelectorAll('.programs__tab'));
-    // Hide the inactive state's cards from AT + tab order (and links non-focusable).
-    function syncState() {
-      var isSup = section.classList.contains('is-supporters');
-      section.querySelectorAll('.programs__set').forEach(function (set) {
-        var on = (set.getAttribute('data-prog') === 'supporters') === isSup;
-        set.setAttribute('aria-hidden', on ? 'false' : 'true');
-        set.querySelectorAll('a.program-card').forEach(function (a) { a.tabIndex = on ? 0 : -1; });
-      });
-    }
-    syncState();
-    tabs.forEach(function (tab) {
-      tab.addEventListener('click', function () {
-        var group = tab.getAttribute('data-prog');
-        tabs.forEach(function (t) {
-          var on = t === tab;
-          t.classList.toggle('is-active', on);
-          t.setAttribute('aria-selected', on ? 'true' : 'false');
-        });
-        section.classList.toggle('is-supporters', group === 'supporters');
-        syncState();
       });
     });
   });

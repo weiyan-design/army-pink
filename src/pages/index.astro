@@ -96,25 +96,20 @@ const techPartners = [
 // All partners (org + tech) for the greyscale marquee atop the stories section.
 const allPartners = [...partners, ...techPartners];
 
-// Programs collage — toggled between Survivors and Supporters. Each set keeps its
-// own asymmetric layout (pos = left/top/width/height as % of the 1120×489 frame);
-// the two sets overlay and cross-fade. Only the live (featured) card is clickable.
-const programs = {
-  survivors: [
-    { title: 'Wellness Portal', meta: 'Trauma-informed yoga & meditation', img: '/img/program-wellness-portal.jpg', tag: "Coming Fall '26", pos: { l: 0, t: 0, w: 32.74, h: 43.16 } },
-    { title: 'Survivor Toolkit', meta: '12 downloadable tools', img: '/img/program-survivor-toolkit.png', tag: "Coming Fall '26", pos: { l: 7.65, t: 45.21, w: 25.09, h: 43.16 } },
-    { title: 'Calm Room', meta: 'Guided meditation, calming audio. No login.', img: '/img/program-calm-room.jpg', href: '/wellness-portal', featured: true, pos: { l: 33.63, t: 0, w: 32.74, h: 100 } },
-    { title: '30-Day Healing Journey', meta: 'A guided month of gentle practice', img: '/img/program-healing-journey.jpg', tag: "Coming Fall '26", pos: { l: 67.26, t: 11.63, w: 25.09, h: 43.16 } },
-    { title: 'Freedom Journal', meta: 'Prompts to reflect, process, and rebuild', img: '/img/program-freedom-journal.jpg', tag: "Coming Fall '26", pos: { l: 67.26, t: 56.84, w: 32.74, h: 43.16 } },
-  ],
-  supporters: [
-    { title: 'Pathway to Freedom', meta: 'Flagship program providing safe transportation', img: '/img/program-pathway.png', tag: "Coming Fall '26", pos: { l: 7.65, t: 0, w: 25.09, h: 43.16 } },
-    { title: 'The Escape Club', meta: 'Monthly giving community keeping Freedom Rides available', img: '/img/program-escape-club.png', tag: "Coming Fall '26", pos: { l: 0, t: 45.21, w: 32.74, h: 43.16 } },
-    { title: '200 Rides to Freedom', meta: 'Raise $10,000 to fund 200 Freedom Rides', img: '/img/program-200-rides.png', href: '/donate', featured: true, pos: { l: 33.63, t: 0, w: 32.74, h: 100 } },
-    { title: 'Freedom Rides', meta: 'Coordinate through partners for safe transportation', img: '/img/program-freedom-rides.png', tag: "Coming Fall '26", pos: { l: 67.26, t: 11.63, w: 32.74, h: 43.16 } },
-    { title: 'Campus Impact', meta: 'Student-led events and awareness campaigns', img: '/img/program-campus-impact.jpg', tag: "Coming Fall '26", pos: { l: 67.26, t: 56.84, w: 25.09, h: 43.16 } },
-  ],
-};
+// Programs for Survivors — the four "in the making" programs shown as a coverflow
+// (one expanded card + slivers, reusing the .fc-* feature-carousel). No labels on
+// the cards themselves; the description + "Help Us Build" CTA live underneath and
+// swap with whichever card is active.
+// Each caption = the program name (semibold) + the rest of the sentence; the two
+// are kept separate so the name can be bolded both in the markup and when the JS
+// swaps the live caption on card change.
+const survivorPrograms = [
+  { img: '/img/program-wellness-portal.jpg',  name: 'Wellness Portal',           rest: 'offers grounding tools and wellness resources for survivors.' },
+  { img: '/img/program-survivor-toolkit.png', name: 'The Survivor Toolkit',       rest: 'is the practical stuff — safety planning, a safe-exit roadmap, and guides for starting over: housing, money, the next hard phone call.' },
+  { img: '/img/program-healing-journey.jpg',  name: 'The 30-Day Healing Journey', rest: 'gives you something small to hold onto each day — a prompt, a grounding practice, one step forward.' },
+  { img: '/img/program-freedom-journal.jpg',  name: 'The Freedom Journal',         rest: "is a place to process — guided prompts to make sense of what happened, and who you're becoming." },
+];
+const progCaption = (p) => `<strong class="psg__prog">${p.name}</strong> ${p.rest}`;
 ---
 
 <Layout title="Army Pink — Pathway to Freedom">
@@ -237,40 +232,66 @@ const programs = {
     </div>
   </div>
 
-  <!-- ===== PROGRAMS — "We're here for every step" (Survivors / Supporters toggle) ===== -->
-  <section class="programs" id="support" aria-label="Our programs">
-    <div class="container">
-      <div class="programs__head">
-        <span class="programs__eyebrow">Current &amp; Upcoming Programs</span>
-        <h2 class="programs__title">We're here for <em>every step</em></h2>
-        <div class="programs__toggle" role="tablist" aria-label="Choose audience" data-programs-toggle>
-          <button class="programs__tab is-active" type="button" role="tab" aria-selected="true" data-prog="survivors">Survivors</button>
-          <button class="programs__tab" type="button" role="tab" aria-selected="false" data-prog="supporters">Supporters</button>
-          <span class="programs__tab-ind" aria-hidden="true"></span>
-        </div>
+  <!-- ===== PROGRAMS FOR SURVIVORS — pinned arch beside a scrolling column,
+       with the "in the making" coverflow (reuses .fc-* feature-carousel JS) ===== -->
+  <section class="psg" id="support" aria-label="Programs for survivors">
+    <!-- Cream band: just the title, aligned to the right content column -->
+    <div class="psg__band psg__band--cream">
+      <div class="container psg__grid">
+        <div class="psg__media" aria-hidden="true"></div>
+        <header class="psg__head">
+          <span class="psg__eyebrow">Programs for Survivors</span>
+          <h2 class="psg__title">We're here for <em>every step</em></h2>
+        </header>
       </div>
-      <div class="programs__stage" data-programs-stage>
-        {Object.entries(programs).map(([group, cards]) => (
-          <div class="programs__set" data-prog={group} aria-hidden={group === 'survivors' ? 'false' : 'true'}>
-            {cards.map((c) => {
-              const Tag = c.href ? 'a' : 'div';
-              return (
-                <Tag
-                  class={`program-card${c.featured ? ' program-card--featured' : ''}`}
-                  href={c.href || undefined}
-                  style={`left:${c.pos.l}%;top:${c.pos.t}%;width:${c.pos.w}%;height:${c.pos.h}%`}
-                >
-                  <img class="program-card__img" src={c.img} alt={c.title} loading="lazy" />
-                  {c.tag && <span class="program-card__tag">{c.tag}</span>}
-                  <div class="program-card__body">
-                    <h3 class="program-card__title">{c.title}</h3>
-                    <p class="program-card__meta">{c.meta}</p>
-                  </div>
-                </Tag>
-              );
-            })}
+    </div>
+
+    <!-- Yellow band (full-width): pinned arch (left) + scrolling content (right).
+         The arch floats up into the cream band above and its sticky container ends
+         at the caption, so its foot lands on the description at the bottom. -->
+    <div class="psg__band psg__band--yellow">
+      <div class="container psg__grid">
+        <div class="psg__media">
+          <div class="empowering-image psg__arch">
+            <img src="/img/empowering-hero.jpg" alt="A survivor resting in a quiet, sunlit moment" loading="lazy" />
           </div>
-        ))}
+        </div>
+
+        <div class="psg__content">
+          <div class="psg__intro">
+            <p>Getting out is the first step. What comes next is often harder — the panic that hits at 2am, the nights you can't sleep, figuring out who you are again once the dust settles. The programs we're building are for this part. We aim to give you a private, safe place to land, for free.</p>
+            <p>None of this replaces a therapist or a crisis line. It's the support in between — for the ordinary, brutal work of rebuilding a life. You don't have to do it alone.</p>
+          </div>
+
+          <!-- "Programs In The Making" — coverflow (one expanded card + slivers) -->
+          <div class="psg__making" data-feature-carousel>
+            <div class="psg__making-head">
+              <h3 class="psg__making-title">Programs In The Making</h3>
+              <div class="fc-controls">
+                <button class="fc-arrow fc-arrow--prev" aria-label="Previous program">&lsaquo;</button>
+                <button class="fc-arrow fc-arrow--next" aria-label="Next program">&rsaquo;</button>
+              </div>
+            </div>
+
+            <div class="fc-track psg__track">
+              {survivorPrograms.map((p, i) => (
+                <article
+                  class={`fc-card${i === 0 ? ' is-active' : ''}`}
+                  data-caption={progCaption(p)}
+                  data-cta-href="/get-involved"
+                  data-cta-label="Help Us Build"
+                >
+                  <img src={p.img} alt="" loading="lazy" />
+                </article>
+              ))}
+            </div>
+
+            <div class="psg__footer">
+              <p class="fc-caption" set:html={progCaption(survivorPrograms[0])}></p>
+              <a class="fc-cta psg__cta" href="/get-involved"><span class="fc-cta__label">Help Us Build</span></a>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </section>
