@@ -6,6 +6,7 @@ import { team } from '../data/team.js';
 // with src/pages/team.astro, which renders the same people as leadership.
 const leadershipSlugs = [
   'robin-bement',
+  'bill-hensley',
   'cecelia-machuca',
   'debra-prince',
   'diana-drews',
@@ -75,7 +76,7 @@ const volunteersByCat = volunteers.map((p) => ({ ...p, category: categorize(p.ti
       <div class="vol-hero__text">
         <h1 class="tp-display vol-hero__title reveal-item"><span class="tp-w tp-w--blue">meet</span><span class="tp-w tp-w--orange">the</span><br /><span class="tp-w tp-w--blue">volunteers</span></h1>
         <p class="vol-hero__sub reveal-item">Volunteers power every escape. Bring your skills — leave with purpose. Join the team.</p>
-        <a href="#" class="dn-btn reveal-item">Become a Volunteer</a>
+        <button type="button" class="dn-btn reveal-item" data-volunteer-form>Become a Volunteer</button>
       </div>
       <div class="vol-hero__media reveal-item">
         <video

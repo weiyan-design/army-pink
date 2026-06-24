@@ -1,20 +1,11 @@
 ---
 import Layout from '../layouts/Layout.astro';
+import { team } from '../data/team.js';
 
-// Stats section — two independent column stacks (right one offset down).
-// Reading order pairs across: 1in3/$50, 200/100+, Fall 2026/Survivor-led.
-const statsCols = [
-  [
-    { value: '1 in 3', label: 'women experience intimate partner violence (CDC)' },
-    { value: '200', label: 'rides in our first LA pilot' },
-    { value: 'Fall 2026', label: 'Freedom Rides launch' },
-  ],
-  [
-    { value: '$50', label: 'funds one ride to safety' },
-    { value: '100+', label: 'volunteers building the mission' },
-    { value: 'Survivor-led', label: "built by people who've lived it" },
-  ],
-];
+// Non-leadership volunteers with photos — the floating avatars pick a fresh
+// random set from these on every page load (client-side, see script.js).
+const launchLeadership = ['robin-bement', 'bill-hensley', 'cecelia-machuca', 'debra-prince', 'diana-drews', 'cynthia-modders', 'kathy-hallen', 'liliana-pettenkofer', 'beverly-taridona', 'wei-yan'];
+const volunteerPhotos = team.filter((p) => !launchLeadership.includes(p.slug) && p.photo).map((p) => p.photo);
 
 const partners = [
   {
@@ -86,98 +77,90 @@ const techPartners = [
   { name: 'Monday.com', img: '/img/partner-logo/color-monday.png', href: 'https://monday.com', mark: true, paras: ['Keeps our projects, campaigns, and launch plans on track.'] },
   { name: 'Canva', img: '/img/partner-logo/color-canva.svg', href: 'https://www.canva.com', mark: true, paras: ['Powers our brand, campaign, and outreach design.'] },
 ];
+
+// All partners (org + tech) for the greyscale marquee atop the stories section.
+const allPartners = [...partners, ...techPartners];
+
+// Programs for Survivors — the four "in the making" programs shown as a coverflow
+// (one expanded card + slivers, reusing the .fc-* feature-carousel). No labels on
+// the cards themselves; the description + "Help Us Build" CTA live underneath and
+// swap with whichever card is active.
+// Each caption = the program name (semibold) + the rest of the sentence; the two
+// are kept separate so the name can be bolded both in the markup and when the JS
+// swaps the live caption on card change.
+const survivorPrograms = [
+  { img: '/img/program-wellness-portal.jpg',  name: 'Wellness Portal',           rest: 'offers grounding tools and wellness resources for survivors.' },
+  { img: '/img/program-survivor-toolkit.png', name: 'The Survivor Toolkit',       rest: 'is the practical stuff — safety planning, a safe-exit roadmap, and guides for starting over: housing, money, the next hard phone call.' },
+  { img: '/img/program-healing-journey.jpg',  name: 'The 30-Day Healing Journey', rest: 'gives you something small to hold onto each day — a prompt, a grounding practice, one step forward.' },
+  { img: '/img/program-freedom-journal.jpg',  name: 'The Freedom Journal',         rest: "is a place to process — guided prompts to make sense of what happened, and who you're becoming." },
+];
+const progCaption = (p) => `<strong class="psg__prog">${p.name}</strong> ${p.rest}`;
+
+// 200 Rides to Freedom — home teaser (mirrors the /donate figures).
+const waysRides = 102;
+const waysGoal = 200;
+const waysTicks = 40;
+const waysFilled = Math.round((waysRides / waysGoal) * waysTicks);
+const waysPct = (waysRides / waysGoal) * 100;
+
+// "Other Ways to Give" rows. icon = a stand-in from /img (real Escape-Club /
+// steering-wheel / ticket / college marks to be swapped in). action: 'donate'
+// opens the Givebutter popup; 'contact' opens the contact slide-up form.
+const waysToGive = [
+  { cat: 'Membership',       title: 'Escape Club',          desc: 'A community of monthly supporters keeping Freedom Rides on the road all year.', icon: '/img/give-escape-club.png',    cta: 'Join',       action: 'donate'  },
+  { cat: 'In-kind & Service', title: 'Partnership',          desc: 'Companies fund rides or sponsor the mission.',                                  icon: '/img/give-partnership.png',    cta: 'Contact Us', action: 'contact' },
+  { cat: 'Events',           title: 'Golden Ticket Auction', desc: 'Buy tickets / bid at the benefit event.',                                       icon: '/img/give-golden-ticket.png',  cta: 'Contact Us', action: 'contact' },
+  { cat: 'Events',           title: 'Campus Impact',         desc: 'Campus chapters & student-led events.',                                         icon: '/img/give-campus-impact.png',  cta: 'Contact Us', action: 'contact' },
+];
 ---
 
 <Layout title="Army Pink — Pathway to Freedom">
 
-  <!-- ===== HERO STAGE: fullscreen video shrinks into the upper area while the
-       mission statement rises up to meet it (both pinned, scroll-driven) ===== -->
-  <section class="hero-stage" id="home" aria-label="Army Pink intro">
-    <div class="hero-stage__pin">
-      <button class="hero-scrub" id="heroScrub" type="button" data-hero-thumb aria-label="Play the Army Pink intro video">
-        <video
-          class="hero-scrub__vid"
-          src="/vid/Home_Hero_Vid.mp4"
-          autoplay muted loop playsinline preload="auto"
-          aria-hidden="true"
-        ></video>
-        <span class="hero-scrub__play" aria-hidden="true">
-          <svg viewBox="0 0 24 24" fill="currentColor"><polygon points="7 4 20 12 7 20 7 4"/></svg>
-        </span>
-      </button>
-      <div class="hero-stage__mission" id="heroMission">
-        <span class="pill-label">Our Mission</span>
-        <p class="statement-text" id="statementText">Providing safe, reliable transportation to help survivors escape domestic violence and begin their path to freedom.</p>
+  <!-- SVG filter: organic torn-paper edges for the survivor-quote note -->
+  <svg width="0" height="0" aria-hidden="true" focusable="false" style="position:absolute">
+    <filter id="paperTear" x="-12%" y="-12%" width="124%" height="124%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.014 0.024" numOctaves="3" seed="7" result="n"/>
+      <feDisplacementMap in="SourceGraphic" in2="n" scale="11" xChannelSelector="R" yChannelSelector="G"/>
+    </filter>
+  </svg>
+
+  <!-- ===== HERO: full-bleed sky, mission statement + video card, parallax clouds.
+       Sky sits behind the (transparent) nav via a negative-margin underlap. ===== -->
+  <section class="sky-hero" id="home" aria-label="Army Pink intro" data-sky-hero data-nav-theme="hero">
+    <div class="sky-hero__sky" aria-hidden="true"></div>
+    <div class="sky-hero__content">
+      <p class="sky-hero__statement">We provide safe, reliable transportation to help survivors escape domestic violence and begin their path to freedom.</p>
+      <div class="sky-hero__stage">
+        <div class="sky-hero__cloud sky-hero__cloud--left" data-cloud-speed="-0.16" aria-hidden="true">
+          <img src="/img/cloud-white.png" alt="" />
+        </div>
+        <div class="sky-hero__cloud sky-hero__cloud--right" data-cloud-speed="0.1" aria-hidden="true">
+          <img src="/img/cloud-warm.png" alt="" />
+        </div>
+        <button class="sky-hero__video" type="button" data-hero-thumb aria-label="Play the Army Pink intro video">
+          <video
+            src="/vid/Home_Hero_Vid.mp4"
+            autoplay muted loop playsinline preload="auto"
+            aria-hidden="true"
+          ></video>
+          <span class="sky-hero__expand" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/>
+            </svg>
+          </span>
+        </button>
       </div>
     </div>
   </section>
 
-  <!-- Intro video popup (full video with sound) -->
-  <div class="video-modal" id="heroVideoModal" role="dialog" aria-modal="true" aria-label="Army Pink intro video" hidden>
-    <div class="video-modal__backdrop" data-close></div>
-    <div class="video-modal__inner">
-      <button class="video-modal__close" type="button" data-close aria-label="Close video">&times;</button>
-      <video class="video-modal__vid" src="/vid/Home_Hero_Vid.mp4" controls playsinline preload="none"></video>
-    </div>
-  </div>
-
-  <!-- ===== WHO WE ARE / STATS (pinned text left, stat cells right) ===== -->
-  <section class="stats-section" aria-label="Army Pink at a glance">
-    <div class="stats-grid">
-      <div class="stats-text">
-        <p>
-          Army Pink is a survivor-led nonprofit providing safe, discreet
-          transportation for people escaping domestic violence. Working
-          alongside crisis organizations and referral partners, our
-          volunteer-powered team is building Freedom Rides — launching
-          Fall 2026 with a 200-ride pilot in Los Angeles.
-        </p>
-      </div>
-      <div class="stats-cells">
-        {statsCols.map((col, ci) => (
-          <div class={`stats-col${ci === 1 ? ' stats-col--offset' : ''}`}>
-            {col.map((s) => (
-              <div class="stat-cell reveal-item">
-                <span class="stat-value">{s.value}</span>
-                <span class="stat-label">{s.label}</span>
-              </div>
-            ))}
-          </div>
-        ))}
-      </div>
-    </div>
-  </section>
-
-  <!-- ===== FOUNDER QUOTE (char-blur reveal like Our Mission) ===== -->
-  <section class="quote-section" id="founder-quote">
-    <figure class="tp-quote">
-      <svg class="tp-quote-squiggle" viewBox="0 0 90 80" fill="none" aria-hidden="true">
-        <path d="M8 52 C 4 26, 40 14, 52 34 C 60 48, 44 60, 38 46 C 33 34, 52 28, 66 36 C 78 43, 80 22, 70 14" stroke="var(--pink)" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"/>
-      </svg>
-      <span class="tp-quote-mark" aria-hidden="true">“</span>
-      <blockquote class="tp-quote-text">
-        <span class="q-reveal">What stayed with me most was realizing that survivors are not lacking courage</span>
-        <span class="tp-quote-dot" aria-hidden="true"></span>
-        <span class="q-reveal">— they are lacking the support needed to leave and rebuild their lives.</span>
-      </blockquote>
-      <figcaption class="tp-quote-chip">
-        <img src="/img/people/robin-bement.jpg" alt="Robin Bement" loading="lazy" />
-        <span class="tp-quote-chip-meta">
-          <span class="tp-quote-chip-name">Robin Bement</span>
-          <span class="tp-quote-chip-role">Founder of Army Pink</span>
-        </span>
-      </figcaption>
-    </figure>
-  </section>
-
-  <!-- ===== SURVIVOR STORIES ===== -->
+  <!-- ===== SURVIVOR STORIES (peach section directly beneath the hero) ===== -->
   <section class="section section-stories" id="stories">
     <div class="container">
       <div class="stories-grid">
         <div class="stories-text">
           <span class="pill-label reveal-item">Survivor Stories</span>
-          <h2 class="reveal-item">Reflections From<br>Our <em>Community</em></h2>
-          <p class="reveal-item">
+          <h2 class="section-title reveal-item">Reflections From<br>Our <em>Community</em></h2>
+          <p class="section-text reveal-item">
             Every journey is different. These are the voices of survivors who found
             their way forward - in their own time, on their own terms.
           </p>
@@ -242,38 +225,200 @@ const techPartners = [
     </div>
   </section>
 
-  <!-- ===== WELLNESS PORTAL TEASER ===== -->
-  <section class="feature-carousel feature-carousel--pink" data-feature-carousel>
-    <svg class="fc-wave" viewBox="0 0 1440 80" preserveAspectRatio="none" aria-hidden="true">
-      <path d="M0,36 C360,0 720,76 1080,36 C1260,16 1380,46 1440,36 L1440,80 L0,80 Z"/>
-    </svg>
-    <div class="container">
-      <div class="fc-header">
-        <h2>Leaving is just the beginning.</h2>
-        <a href="/wellness-portal" class="btn btn-ghost">Start your journey</a>
+  <!-- Intro video popup (full video with sound) -->
+  <div class="video-modal" id="heroVideoModal" role="dialog" aria-modal="true" aria-label="Army Pink intro video" hidden>
+    <div class="video-modal__backdrop" data-close></div>
+    <div class="video-modal__inner">
+      <button class="video-modal__close" type="button" data-close aria-label="Close video">&times;</button>
+      <video class="video-modal__vid" src="/vid/Home_Hero_Vid.mp4" controls playsinline preload="none"></video>
+    </div>
+  </div>
+
+  <!-- ===== PROGRAMS FOR SURVIVORS — pinned arch beside a scrolling column,
+       with the "in the making" coverflow (reuses .fc-* feature-carousel JS) ===== -->
+  <section class="psg" id="support" aria-label="Programs for survivors">
+    <!-- Cream band: just the title, aligned to the right content column -->
+    <div class="psg__band psg__band--cream">
+      <div class="container psg__grid">
+        <div class="psg__media" aria-hidden="true"></div>
+        <header class="psg__head">
+          <span class="pill-label reveal-item">Programs for Survivors</span>
+          <h2 class="section-title section-title--lg reveal-item">We're here for <br><em>every step</em></h2>
+        </header>
       </div>
-      <div class="fc-track">
-        <article class="fc-card is-active" data-caption="Trauma-informed yoga that helps your nervous system unwind, one breath at a time.">
-          <img src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=600&h=1000&fit=crop&q=80" alt="" loading="lazy" />
-        </article>
-        <article class="fc-card" data-caption="Mindfulness practices for the days when sitting still feels impossible.">
-          <img src="https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=600&h=1000&fit=crop&q=80" alt="" loading="lazy" />
-        </article>
-        <article class="fc-card" data-caption="Breathing exercises for the 2am moments your body refuses to settle.">
-          <img src="https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?w=600&h=1000&fit=crop&q=80" alt="" loading="lazy" />
-        </article>
-        <article class="fc-card" data-caption="Sleep practices for bodies still scanning for danger.">
-          <img src="https://images.unsplash.com/photo-1476041800959-2f6bb412c8ce?w=600&h=1000&fit=crop&q=80" alt="" loading="lazy" />
-        </article>
-        <article class="fc-card" data-caption="Movement that meets you where you are — no performance, no pressure.">
-          <img src="https://images.unsplash.com/photo-1545389336-cf090694435e?w=600&h=1000&fit=crop&q=80" alt="" loading="lazy" />
-        </article>
+    </div>
+
+    <!-- Yellow band (full-width): pinned arch (left) + scrolling content (right).
+         The arch floats up into the cream band above and its sticky container ends
+         at the caption, so its foot lands on the description at the bottom. -->
+    <div class="psg__band psg__band--yellow">
+      <div class="container psg__grid">
+        <div class="psg__media">
+          <div class="empowering-image psg__arch">
+            <video src="/vid/calm-room-cover.mp4" autoplay muted loop playsinline preload="metadata" aria-hidden="true"></video>
+            <div class="psg__glass">
+              <span class="psg__glass-label">Calm Room</span>
+              <a class="psg__glass-btn" href="/wellness-portal">Explore</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="psg__content">
+          <div class="psg__intro">
+            <p class="section-text reveal-item">Getting out is the first step. What comes next is often harder — the panic that hits at 2am, the nights you can't sleep, figuring out who you are again once the dust settles. The programs we're building are for this part. We aim to give you a private, safe place to land, for free.</p>
+            <p class="section-text reveal-item">None of this replaces a therapist or a crisis line. It's the support in between — for the ordinary, brutal work of rebuilding a life. You don't have to do it alone.</p>
+          </div>
+
+          <!-- "Programs In The Making" — coverflow (one expanded card + slivers) -->
+          <div class="psg__making" data-feature-carousel>
+            <div class="psg__making-head">
+              <h3 class="psg__making-title">Programs In The Making</h3>
+              <div class="fc-controls">
+                <button class="fc-arrow fc-arrow--prev" aria-label="Previous program">&lsaquo;</button>
+                <button class="fc-arrow fc-arrow--next" aria-label="Next program">&rsaquo;</button>
+              </div>
+            </div>
+
+            <div class="fc-track psg__track">
+              {survivorPrograms.map((p, i) => (
+                <article
+                  class={`fc-card${i === 0 ? ' is-active' : ''}`}
+                  data-caption={progCaption(p)}
+                  data-cta-href="/get-involved"
+                  data-cta-label="Help Us Build"
+                >
+                  <img src={p.img} alt="" loading="lazy" />
+                </article>
+              ))}
+            </div>
+
+            <div class="psg__footer">
+              <p class="fc-caption" set:html={progCaption(survivorPrograms[0])}></p>
+              <a class="fc-cta psg__cta" href="/get-involved"><span class="fc-cta__label">Help Us Build</span></a>
+            </div>
+          </div>
+        </div>
       </div>
-      <div class="fc-footer">
-        <p class="fc-caption">Trauma-informed yoga that helps your nervous system unwind, one breath at a time.</p>
-        <div class="fc-controls">
-          <button class="fc-arrow fc-arrow--prev" aria-label="Previous">&lsaquo;</button>
-          <button class="fc-arrow fc-arrow--next" aria-label="Next">&rsaquo;</button>
+    </div>
+  </section>
+
+  <!-- ===== 200 RIDES TO FREEDOM — fundraising teaser. Mirror of the section above
+       (content left, pinned media right). Reuses the cream/yellow bands, global text
+       components, and the /donate impact video + tracker. A car drives along the
+       tracker as you scroll the section. ===== -->
+  <section class="ways" id="ways" aria-label="200 Rides to Freedom" data-ways style={`--car-max:${waysPct.toFixed(2)}`}>
+    <!-- Cream band: eyebrow + title (left) -->
+    <div class="ways__band ways__band--cream">
+      <div class="container ways__grid">
+        <div class="ways__intro">
+          <header class="ways__head">
+            <span class="pill-label reveal-item">Current Fundraising Campaign</span>
+            <h2 class="section-title section-title--lg reveal-item">200 Rides to <em>Freedom</em></h2>
+          </header>
+          <!-- tracker + car, directly under the title -->
+          <div
+            class="dn-tracker ways__tracker"
+            data-tracker
+            role="progressbar"
+            aria-valuemin="0"
+            aria-valuemax={waysGoal}
+            aria-valuenow={waysRides}
+            aria-label={`${waysRides} of ${waysGoal} rides funded`}
+          >
+            <div class="dn-tracker__bar">
+              <div class="dn-tracker__bubble" style={`left:${waysPct}%`}>
+                <span class="dn-tracker__count">{waysRides}</span>
+                <span class="dn-tracker__label">Rides Funded</span>
+              </div>
+              {Array.from({ length: waysTicks }).map((_, i) => (
+                <span class={`dn-tracker__tick${i < waysFilled ? ' is-filled' : ''}`}></span>
+              ))}
+              <img class="ways__car" src="/img/freedom-rides-car.gif" alt="" aria-hidden="true" data-ways-car />
+            </div>
+          </div>
+        </div>
+        <div class="ways__media" aria-hidden="true"></div>
+      </div>
+    </div>
+
+    <!-- Body band (light grey): body + "Other Ways to Give" (left); pinned impact card + tracker (right) -->
+    <div class="ways__band ways__band--body">
+      <div class="container ways__grid">
+        <div class="ways__content">
+          <p class="section-text reveal-item">Every gift helps provide safe, discreet transportation for survivors who need to leave unsafe environments, reach safe destinations, or access critical services. A single Freedom Ride costs $50 and can help a survivor reach shelter, medical care, legal support, a trusted support network, or another destination connected to their safety plan. A ride at the right time can save a life.</p>
+
+          <h3 class="ways__sub reveal-item">Other Ways to Give</h3>
+          <ul class="give-list">
+            {waysToGive.map((w) => (
+              <li class="give-row reveal-item">
+                <img class="give-row__icon" src={w.icon} alt="" loading="lazy" />
+                <span class="give-row__cat">{w.cat}</span>
+                <h4 class="give-row__title">{w.title}</h4>
+                <div class="give-row__foot">
+                  <p class="give-row__desc">{w.desc}</p>
+                  <button
+                    class="give-row__cta"
+                    type="button"
+                    data-donate-panel={w.action === 'donate' ? true : undefined}
+                    data-contact-form={w.action === 'contact' ? true : undefined}
+                  >{w.cta}</button>
+                </div>
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        <div class="ways__media">
+          <div class="ways__pin">
+            <div class="ways__card">
+              <video class="ways__vid" src="/vid/give-impact-loop.mp4" autoplay muted loop playsinline preload="auto" aria-label="Army Pink Freedom Rides impact loop"></video>
+            </div>
+            <button class="btn btn-primary ways__fund" type="button">Fund 200 Rides</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== HELP LAUNCH THE MOVEMENT — volunteer callout + donate form ===== -->
+  <section class="launch launch--volunteers" id="launch" aria-label="Help launch the movement" data-launch data-volunteer-photos={JSON.stringify(volunteerPhotos)}>
+    <div class="launch__callout">
+      <div class="launch__avatars" aria-hidden="true">
+        <span class="launch__avatar launch__avatar--1 launch__avatar--blob" data-depth="22"><img class="launch__avatar-img" alt="" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" /></span>
+        <span class="launch__avatar launch__avatar--2 launch__avatar--blob" data-depth="14"><img class="launch__avatar-img" alt="" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" /></span>
+        <span class="launch__avatar launch__avatar--3 launch__avatar--blob" data-depth="26"><img class="launch__avatar-img" alt="" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" /></span>
+        <span class="launch__avatar launch__avatar--4 launch__avatar--blob" data-depth="20"><img class="launch__avatar-img" alt="" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" /></span>
+        <span class="launch__avatar launch__avatar--5 launch__avatar--blob" data-depth="14"><img class="launch__avatar-img" alt="" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" /></span>
+        <span class="launch__avatar launch__avatar--6 launch__avatar--blob" data-depth="24"><img class="launch__avatar-img" alt="" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" /></span>
+      </div>
+      <div class="launch__intro">
+        <h2 class="section-title">Our volunteers make<br><em>freedom possible.</em></h2>
+        <p class="section-text">From tech to design to outreach, everyday people give their skills to help survivors reach safety. Find your place on the team.</p>
+        <div class="launch__cta">
+          <button class="btn btn-primary" type="button" data-volunteer-form>Become A Volunteer</button>
+        </div>
+        <a class="launch__joined" href="/volunteers">
+          <span class="launch__joined-avatars" aria-hidden="true">
+            <span class="launch__joined-av"></span>
+            <span class="launch__joined-av"></span>
+            <span class="launch__joined-av"></span>
+          </span>
+          <span class="launch__joined-text"><strong>100+ volunteers</strong> already joined the movement</span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== DONATE — cloud meadow + flower + Givebutter form ===== -->
+  <section class="launch launch--donate" aria-label="Support survivors" data-launch>
+    <img class="launch__flower" src="/img/flower-vector-edge.png" alt="" aria-hidden="true" data-launch-flower />
+    <div class="launch__form-wrap">
+      <div class="launch__form">
+        <div class="launch__form-photo">
+          <img src="/img/donation-form-img.jpg" alt="A woman cycling freely through a sunlit, cloud-filled meadow" loading="lazy" />
+        </div>
+        <div class="launch__form-widget">
+          <givebutter-widget id="jb2b4P"></givebutter-widget>
         </div>
       </div>
     </div>
@@ -319,8 +464,7 @@ const techPartners = [
   <!-- ===== PARTNERS ===== -->
   <section class="partner-section">
     <div class="partner-header">
-      <h2>We're proud to partner with</h2>
-      <a href="/partners" class="btn btn-ghost">Become A Partner</a>
+      <span class="pill-label">Army Pink is empowered by</span>
     </div>
     <div class="partner-track-wrap">
       <div class="partner-track" data-partner-track>
@@ -346,76 +490,33 @@ const techPartners = [
       </div>
     </div>
 
-    <!-- Row 2: tools that power Army Pink — full-color logos, reverse scroll -->
+    <!-- Row 2: tools that power Army Pink — static greyscale logos, reverse scroll -->
     <div class="partner-track-wrap">
       <div class="partner-track partner-track--reverse" data-partner-track>
         {[0, 1].map((setIdx) => techPartners.map((p) => (
-          <article class="partner-tile partner-tile--logo partner-tile--color" data-partner aria-hidden={setIdx === 1 ? 'true' : undefined}>
-            <div class="partner-tile-inner">
-              <div class="partner-face partner-face--front">
-                <div class="partner-photo">
-                  <img src={p.img} alt={p.name} loading="lazy" />
-                </div>
-                <h3 class="partner-name">{p.name}</h3>
-              </div>
-              <div class="partner-face partner-face--back">
-                <h3 class="partner-back-name">{p.name}</h3>
-                <div class="partner-back-body">
-                  {p.paras.map((para) => <p>{para}</p>)}
-                </div>
-                <a href={p.href} class="partner-link" target={p.href.startsWith('http') ? '_blank' : undefined} rel={p.href.startsWith('http') ? 'noopener' : undefined}>Visit Them</a>
-              </div>
+          <a
+            class="partner-tile partner-tile--static"
+            href={p.href}
+            target={p.href.startsWith('http') ? '_blank' : undefined}
+            rel={p.href.startsWith('http') ? 'noopener' : undefined}
+            aria-label={p.name}
+            aria-hidden={setIdx === 1 ? 'true' : undefined}
+            tabindex={setIdx === 1 ? '-1' : undefined}
+          >
+            <div class="partner-photo">
+              <img src={p.img} alt={p.name} loading="lazy" />
             </div>
-          </article>
+          </a>
         )))}
       </div>
     </div>
-  </section>
 
-  <!-- ===== ABOUT ARMY PINK ===== -->
-  <section class="section section-mission" id="mission">
-    <div class="container">
-      <div class="mission-grid">
-        <div class="mission-text">
-          <span class="overline">Our Mission</span>
-          <h2>We don't provide rides.<br>We provide access to safety.<br><br>We don't sell healing.<br>We connect you to it.</h2>
-          <p>
-            Army Pink is a 501(c)(3) nonprofit supporting domestic violence survivors
-            through safety-centered transportation, concierge support, and wellness resources.
-          </p>
-          <p>
-            Our <strong>Pathway to Freedom</strong> program provides donation-based Freedom Rides —
-            immediate safe transportation when you need it most — plus connections to
-            ongoing wellness support for the road ahead.
-          </p>
-          <p class="quiet">Based in California. Serving survivors nationwide.</p>
-        </div>
-        <div class="mission-values">
-          <div class="value">
-            <span class="value-number">01</span>
-            <div>
-              <h4>Safety First</h4>
-              <p>Every decision we make starts with your safety.</p>
-            </div>
-          </div>
-          <div class="value">
-            <span class="value-number">02</span>
-            <div>
-              <h4>Survivor-Led</h4>
-              <p>People who understand the journey shape our work.</p>
-            </div>
-          </div>
-          <div class="value">
-            <span class="value-number">03</span>
-            <div>
-              <h4>No Barriers</h4>
-              <p>Survivors never pay. Supporters make that possible.</p>
-            </div>
-          </div>
-        </div>
-      </div>
+    <div class="partner-footer">
+      <a href="/partners" class="btn btn-ghost">Become A Partner</a>
     </div>
   </section>
+
+  <!-- Stats + "Our Mission" sections moved to /mission (under "What We Stand For"). -->
 
   <!-- ===== OVERLAYS (kept for future use) ===== -->
 

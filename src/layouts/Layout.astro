@@ -2,18 +2,22 @@
 interface Props {
   title?: string;
   description?: string;
+  /** Initial nav variant before JS adaptivity kicks in (avoids a flash on pages
+   *  whose first section sits behind the nav). 'transparent' | 'light' | 'dark'. */
+  navStart?: 'transparent' | 'light' | 'dark';
 }
 
 const {
   title = 'Army Pink — Pathway to Freedom',
   description = 'Army Pink is a survivor-led initiative addressing the #1 unmet need for survivors: safe, immediate transportation out of dangerous situations. We turn compassion into action by providing urgent rides and structured wellness support, helping survivors of domestic abuse leave danger and begin again with dignity, guidance, and connection.',
+  navStart,
 } = Astro.props;
 
 const navLinks = [
   { href: '/', label: 'Home' },
   { href: '/mission', label: 'Mission' },
   { href: '/wellness-portal', label: 'Calm Room' },
-  { href: '/donate', label: 'Get Involved', children: [
+  { href: '/get-involved', label: 'Get Involved', children: [
     { href: '/donate', label: 'Donate' },
     { href: '/partners', label: 'Partner' },
     { href: '/volunteers', label: 'Volunteer' },
@@ -22,6 +26,7 @@ const navLinks = [
   { href: '/team', label: 'Leadership' },
 ];
 const path = Astro.url.pathname.replace(/\/$/, '') || '/';
+const navInitial = navStart ? `is-${navStart}` : (path === '/' ? 'is-transparent' : 'is-light');
 function isActive(href: string) {
   if (href === '/') return path === '/';
   return path === href || path.startsWith(href + '/');
@@ -42,7 +47,7 @@ function isActive(href: string) {
   <script src="https://unpkg.com/lucide@latest" is:inline></script>
   <script async src="https://widgets.givebutter.com/latest.umd.cjs?acct=yLfulzFp7eIMG8jn" is:inline></script>
 </head>
-<body>
+<body class={path === '/' ? 'has-sky-hero' : undefined}>
 
   <!-- ===== STICKY HEADER (crisis banner + nav, always visible) ===== -->
   <header class="site-header">
@@ -57,8 +62,8 @@ function isActive(href: string) {
       </p>
     </div>
 
-    <!-- ===== NAVIGATION ===== -->
-    <nav class="main-nav" aria-label="Main navigation">
+    <!-- ===== NAVIGATION (floating glassy pill; JS swaps light/dark/transparent) ===== -->
+    <nav class={`main-nav ${navInitial}`} aria-label="Main navigation">
       <div class="nav-inner">
         <a href="/" class="logo" aria-label="Army Pink home">
           <img src="/img/AP_Logo.png" alt="Army Pink" class="logo-img" />
@@ -96,6 +101,46 @@ function isActive(href: string) {
       </svg>
       <span>Quick Exit</span>
     </button>
+  </div>
+
+  <!-- ===== SHARED "BECOME A VOLUNTEER" SLIDE-UP FORM (any [data-volunteer-form] opens it) ===== -->
+  <div class="vform" data-volunteer-overlay hidden>
+    <div class="vform__backdrop" data-vform-close></div>
+    <div class="vform__sheet" role="dialog" aria-modal="true" aria-labelledby="vform-title">
+      <button class="vform__close" type="button" data-vform-close aria-label="Close">&times;</button>
+      <h2 class="vform__title" id="vform-title">Become a volunteer</h2>
+      <p class="vform__intro">Tell us a little about you and how you'd like to help — we'll be in touch.</p>
+      <form class="vform__form" name="volunteer" method="POST" data-netlify="true" netlify-honeypot="bot-field" data-vform-form>
+        <input type="hidden" name="form-name" value="volunteer" />
+        <p class="vform__hp" hidden><label>Don't fill this out: <input name="bot-field" /></label></p>
+        <label class="vform__field"><span>Name</span><input type="text" name="name" autocomplete="name" required /></label>
+        <label class="vform__field"><span>Email</span><input type="email" name="email" autocomplete="email" required /></label>
+        <label class="vform__field"><span>Your message</span><textarea name="message" rows="4" required></textarea></label>
+        <button class="btn btn-primary vform__submit" type="submit">Send</button>
+        <p class="vform__status" data-vform-status role="status" aria-live="polite"></p>
+      </form>
+    </div>
+  </div>
+
+  <!-- ===== SHARED CONTACT SLIDE-UP FORM (any [data-contact-form] opens it) — routed
+       to support@armypink via Netlify (set the form's notification recipient in the
+       Netlify dashboard, like the /contact form) ===== -->
+  <div class="vform" data-contact-overlay hidden>
+    <div class="vform__backdrop" data-cform-close></div>
+    <div class="vform__sheet" role="dialog" aria-modal="true" aria-labelledby="cform-title">
+      <button class="vform__close" type="button" data-cform-close aria-label="Close">&times;</button>
+      <h2 class="vform__title" id="cform-title">Get in touch</h2>
+      <p class="vform__intro">Tell us how you'd like to help — a partnership, an event, or a campus chapter — and we'll be in touch.</p>
+      <form class="vform__form" name="get-involved" method="POST" data-netlify="true" netlify-honeypot="bot-field" data-cform-form>
+        <input type="hidden" name="form-name" value="get-involved" />
+        <p class="vform__hp" hidden><label>Don't fill this out: <input name="bot-field" /></label></p>
+        <label class="vform__field"><span>Name</span><input type="text" name="name" autocomplete="name" required /></label>
+        <label class="vform__field"><span>Email</span><input type="email" name="email" autocomplete="email" required /></label>
+        <label class="vform__field"><span>How can we help?</span><textarea name="message" rows="4" required></textarea></label>
+        <button class="btn btn-primary vform__submit" type="submit">Send</button>
+        <p class="vform__status" data-cform-status role="status" aria-live="polite"></p>
+      </form>
+    </div>
   </div>
 
   <!-- PAGE CONTENT -->
@@ -142,7 +187,7 @@ function isActive(href: string) {
           <ul>
             <li><a href="/">Home</a></li>
             <li><a href="/mission">Mission</a></li>
-            <li><a href="/donate">Get Involved</a></li>
+            <li><a href="/get-involved">Get Involved</a></li>
             <li><a href="/wellness-portal">Calm Room</a></li>
             <li><a href="/partners">Partners</a></li>
             <li><a href="/team">Leadership</a></li>
