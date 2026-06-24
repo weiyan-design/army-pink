@@ -896,12 +896,17 @@
           for (var i = 0; i < lAvatars.length; i++) {
             var d = parseFloat(lAvatars[i].getAttribute('data-depth')) || 16;
             lAvatars[i].style.transform = 'translate(' + (lpx * d).toFixed(1) + 'px,' + (lpy * d).toFixed(1) + 'px)';
+            // feature avatars: rotate the colour block + line subtly with the cursor
+            lAvatars[i].style.setProperty('--blob-rot', (lpx * 7).toFixed(1) + 'deg');
           }
           lpTicking = false;
         });
       });
       launchEl.addEventListener('mouseleave', function () {
-        for (var i = 0; i < lAvatars.length; i++) lAvatars[i].style.transform = '';
+        for (var i = 0; i < lAvatars.length; i++) {
+          lAvatars[i].style.transform = '';
+          lAvatars[i].style.setProperty('--blob-rot', '0deg');
+        }
       });
     }
   });
@@ -949,6 +954,74 @@
           });
       });
     }
+  }
+
+  // --- Shared contact slide-up form (any [data-contact-form] opens it) ---
+  var cform = document.querySelector('[data-contact-overlay]');
+  if (cform) {
+    var cformForm = cform.querySelector('[data-cform-form]');
+    var cformStatus = cform.querySelector('[data-cform-status]');
+    function openCform(e) {
+      if (e) e.preventDefault();
+      cform.hidden = false;
+      requestAnimationFrame(function () { cform.classList.add('is-open'); });
+      document.body.style.overflow = 'hidden';
+      var first = cform.querySelector('input, textarea');
+      if (first) setTimeout(function () { first.focus(); }, 420);
+    }
+    function closeCform() {
+      cform.classList.remove('is-open');
+      document.body.style.overflow = '';
+      setTimeout(function () { cform.hidden = true; }, 400);
+    }
+    document.querySelectorAll('[data-contact-form]').forEach(function (btn) {
+      btn.addEventListener('click', openCform);
+    });
+    cform.querySelectorAll('[data-cform-close]').forEach(function (el) {
+      el.addEventListener('click', closeCform);
+    });
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape' && !cform.hidden) closeCform();
+    });
+    if (cformForm) {
+      cformForm.addEventListener('submit', function (e) {
+        e.preventDefault();
+        var body = new URLSearchParams(new FormData(cformForm)).toString();
+        if (cformStatus) cformStatus.textContent = 'Sending…';
+        fetch('/', { method: 'POST', headers: { 'Content-Type': 'application/x-www-form-urlencoded' }, body: body })
+          .then(function () {
+            if (cformStatus) cformStatus.textContent = "Thank you — we'll be in touch soon.";
+            cformForm.reset();
+          })
+          .catch(function () {
+            if (cformStatus) cformStatus.textContent = 'Something went wrong — please email support@armypink.org.';
+          });
+      });
+    }
+  }
+
+  // --- 200 Rides: drive the car along the tracker from scroll progress ---
+  var waysSection = document.querySelector('[data-ways]');
+  var waysCar = waysSection && waysSection.querySelector('[data-ways-car]');
+  if (waysSection && waysCar) {
+    var waysTicking = false;
+    var updateWaysCar = function () {
+      var rect = waysSection.getBoundingClientRect();
+      var vh = window.innerHeight || document.documentElement.clientHeight;
+      // 0 as the section enters from the bottom → 1 as it leaves the top
+      var p = (vh - rect.top) / (vh + rect.height);
+      p = Math.max(0, Math.min(1, p));
+      waysSection.style.setProperty('--car-x', p.toFixed(3));
+      waysTicking = false;
+    };
+    var onWaysScroll = function () {
+      if (waysTicking) return;
+      waysTicking = true;
+      requestAnimationFrame(updateWaysCar);
+    };
+    window.addEventListener('scroll', onWaysScroll, { passive: true });
+    window.addEventListener('resize', onWaysScroll);
+    updateWaysCar();
   }
 
   // --- Hero video thumbnail → full-video popup ---

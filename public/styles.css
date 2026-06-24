@@ -20,6 +20,7 @@
   --beige: #f5efe6;
   --beige-dark: #e8ddd0;
   --cream: #fdfbf7;
+  --cream-rgb: 253, 251, 247;
   /* Warm peach that continues the hero's sunset clouds into the next section */
   --peach: #f6e0d5;
   --peach-rgb: 246, 224, 213;
@@ -636,7 +637,7 @@ img {
   inset: 0;
   background: linear-gradient(180deg, rgba(80, 100, 150, 0) 42%, rgba(255, 150, 110, 0.14) 100%);
 }
-/* Dissolve the sky's bottom edge into the peach of the next section (last ~20%).
+/* Dissolve the sky's bottom edge into the cream of the next section (last ~20%).
    Sits above the sky bg (z0) but below the content + clouds (z2) so the floating
    clouds stay crisp. */
 .sky-hero::after {
@@ -649,9 +650,9 @@ img {
   z-index: 1;
   pointer-events: none;
   background: linear-gradient(to bottom,
-    rgba(var(--peach-rgb), 0) 0%,
-    rgba(var(--peach-rgb), 1) 88%,
-    rgba(var(--peach-rgb), 1) 100%);
+    rgba(var(--cream-rgb), 0) 0%,
+    rgba(var(--cream-rgb), 1) 88%,
+    rgba(var(--cream-rgb), 1) 100%);
 }
 .sky-hero__content {
   position: relative;
@@ -1181,10 +1182,14 @@ img {
   overflow: hidden;
 }
 
-.empowering-image img {
+.empowering-image img,
+.empowering-image video {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  /* <video> ignores the parent's overflow+radius corner clip in many browsers,
+     so round it to the arch shape directly. */
+  border-radius: inherit;
 }
 
 .empowering-image::after {
@@ -1222,6 +1227,43 @@ img {
   color: var(--pink-dark);
   margin-bottom: var(--space-sm);
 }
+
+/* ===== Global text components — the reusable "Survivor Stories" type language.
+   Eyebrow = .pill-label (above), title = .section-title, description = .section-text,
+   button = .btn.btn-primary. Add .reveal-item to any of them for the shared scroll-in
+   transition (JS-driven). Modifiers: --sm / --lg resize the title; --on-dark flips
+   colours for dark/photo backgrounds. Each selector also has a `.section .x` variant
+   so it out-ranks the element-scoped `.section h2` rule when used inside `.section`. */
+.pill-label--on-dark { color: #fff; }
+
+.section-title,
+.section .section-title {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: var(--title-size, clamp(1.8rem, 4vw, 2.6rem));
+  line-height: 1.2;
+  color: var(--text);
+  margin: 0 0 var(--space-md);
+  text-wrap: balance;
+}
+.section-title em,
+.section .section-title em { color: var(--pink); font-style: normal; }
+.section-title--sm { --title-size: clamp(1.5rem, 3vw, 2rem); }
+.section-title--lg { --title-size: clamp(2.2rem, 5vw, 3.25rem); }
+.section-title--on-dark,
+.section .section-title--on-dark { color: #fff; }
+
+.section-text,
+.section .section-text {
+  font-family: var(--font-body);
+  font-size: 1.05rem;
+  line-height: 1.8;
+  color: var(--text-light);
+  margin: 0 0 var(--space-md);
+  max-width: 42rem;
+}
+.section-text--on-dark,
+.section .section-text--on-dark { color: rgba(255, 255, 255, 0.85); }
 
 /* --- Featured Classes Section --- */
 .section-featured {
@@ -1733,9 +1775,9 @@ button.featured-card {
 /* Survivor stories now sits directly beneath the hero — peach bg continues the
    sky's sunset, pulled up 1px so no hairline shows at the seam. */
 .section-stories {
-  background: var(--peach);
+  background: var(--cream);
   margin-top: -1px;
-  padding: 12rem 0 12rem;
+  padding: 12rem 0 8rem;
 }
 
 /* Greyscale partner marquee atop the (peach) stories section. Self-contained so
@@ -1798,22 +1840,8 @@ button.featured-card {
   align-items: center;
 }
 
-.stories-text h2 {
-  font-size: clamp(1.8rem, 4vw, 2.6rem);
-  text-wrap: balance;
-}
-
-.stories-text h2 em {
-  color: var(--pink);
-  font-style: normal;
-}
-
-.stories-text p {
-  font-size: 1.05rem;
-  color: var(--text-light);
-  line-height: 1.8;
-  margin-bottom: var(--space-md);
-}
+/* Title + description now use the global .section-title / .section-text (whose
+   defaults match this section's original sizing). */
 
 .stories-deck-area {
   position: relative;
@@ -4351,7 +4379,7 @@ body.overlay-open {
   --psg-yellow: #fdd36a;
   --psg-yellow-pt: clamp(2.25rem, 4vw, 3.25rem);   /* yellow band top padding */
   --arch-lift: clamp(6rem, 10vw, 11rem);           /* how far the arch rises into the cream band (desktop) */
-  --arch-h: clamp(520px, 55vw, 680px);             /* arch height — shared so the cream band can reserve room */
+  --arch-h: clamp(460px, 46vw, 560px);             /* arch height — width derives via 9/13; shared so the cream band can reserve room */
   position: relative;
 }
 .psg__band { position: relative; }
@@ -4367,7 +4395,7 @@ body.overlay-open {
 }
 .psg__grid {
   display: grid;
-  grid-template-columns: minmax(340px, 540px) 1fr;
+  grid-template-columns: minmax(260px, 400px) 1fr;   /* narrower arch column, wider text */
   gap: clamp(2.5rem, 4vw, 4.5rem);
   align-items: start;            /* cream band: title hugs the top */
 }
@@ -4391,30 +4419,78 @@ body.overlay-open {
 }
 .psg__arch.empowering-image {
   aspect-ratio: 9 / 13;            /* width derives from the explicit height */
-  border-radius: 280px 280px 0 0;
+  border-radius: 280px 280px 28px 28px;   /* arched top, softly rounded bottom corners */
 }
-/* Wavy foot blends into the yellow it sits over. */
-.psg__arch.empowering-image::after { background: var(--psg-yellow); }
+/* No wavy foot — the arch is a clean rounded shape. */
+.psg__arch.empowering-image::after { display: none; }
 
-/* --- Title (cream band) --- */
-.psg__head { display: flex; flex-direction: column; gap: 0.6rem; }
-.psg__eyebrow {
+/* Calm Room overlay — NOT a bordered card. The foot of the arch dissolves into a
+   soft, progressively-blurred wash: a masked backdrop-filter that fades in toward
+   the bottom (no hard edge) plus a gentle warm gradient. The blur smears the photo's
+   own colours, so it reads as part of the image — like paint blended into the foot.
+   The label + button sit directly on that blend. */
+.psg__glass {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 2;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 0.75rem;
+  /* Height is driven by the label/button content; the top padding (--fade-lead) is
+     how far the blurred wash ramps up ABOVE the text, so the blend hugs the text
+     instead of being a fixed slice of the arch. */
+  --fade-lead: 1rem;
+  padding: var(--fade-lead) clamp(1.1rem, 6%, 1.85rem) clamp(1.25rem, 7%, 2rem);
+  pointer-events: none;          /* only the label/button below are interactive */
+}
+.psg__glass > * { pointer-events: auto; }
+.psg__glass::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  -webkit-backdrop-filter: blur(13px) saturate(1.15);
+  backdrop-filter: blur(13px) saturate(1.15);
+  /* One continuous ramp (0% → 100%): the blur never abruptly saturates into a
+     flat band, so there's no visible seam line where it begins. */
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0%, #000 100%);
+  mask-image: linear-gradient(to bottom, transparent 0%, #000 100%);
+  /* warm wash for legibility, also fading up so it blends like a brushstroke */
+  background: linear-gradient(to top,
+    rgba(28, 18, 10, 0.55) 0%,
+    rgba(28, 18, 10, 0.12) 55%,
+    rgba(28, 18, 10, 0) 100%);
+}
+.psg__glass-label {
+  font-family: var(--font-body);
+  font-weight: 700;
+  font-size: clamp(1.05rem, 1.7vw, 1.3rem);
+  letter-spacing: 0.01em;
+  color: #fff;
+  text-shadow: 0 1px 12px rgba(0, 0, 0, 0.4);
+}
+.psg__glass-btn {
+  flex: none;
+  padding: 0.5rem 1.3rem;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.95);
+  color: var(--dark-grey);
   font-family: var(--font-body);
   font-weight: 600;
-  font-size: 0.8rem;
-  letter-spacing: 0.02em;
-  color: var(--pink-dark);
+  font-size: 0.9rem;
+  text-decoration: none;
+  transition: background 0.2s ease, transform 0.2s ease;
 }
-.psg__title {
-  font-family: var(--font-display);
-  font-weight: 700;
-  font-size: clamp(2.5rem, 4.5vw, 3.25rem);
-  line-height: 1.08;
-  letter-spacing: -0.01em;
-  color: var(--dark-grey);
-  margin: 0;
-}
-.psg__title em { font-style: italic; color: var(--pink-dark); }
+.psg__glass-btn:hover { background: #fff; transform: translateY(-1px); }
+
+/* --- Title (cream band): now the global .pill-label + .section-title--lg. Zero
+   their default bottom margins since .psg__head controls spacing with `gap`. --- */
+.psg__head { display: flex; flex-direction: column; gap: 0.6rem; }
+.psg__head .pill-label,
+.psg__head .section-title { margin-bottom: 0; }
 
 /* --- Content (yellow band) --- */
 .psg__content { min-width: 0; }
@@ -4424,14 +4500,9 @@ body.overlay-open {
   gap: 1.1rem;
   margin-bottom: clamp(2.5rem, 5vw, 3.5rem);
 }
-.psg__intro p {
-  margin: 0;
-  font-family: var(--font-body);
-  font-size: 1rem;
-  line-height: 1.7;
-  color: #574a1d;          /* warm dark brown, readable on yellow */
-  max-width: 42rem;
-}
+/* Description uses the global .section-text; just recolour it for the yellow
+   background and drop its bottom margin (the flex `gap` handles paragraph spacing). */
+.psg__intro .section-text { margin: 0; color: #574a1d; }
 
 /* "Programs In The Making" coverflow block */
 .psg__making-head {
@@ -4510,11 +4581,13 @@ body.overlay-open {
    the title (+1rem) so the two never collide. */
 @media (max-width: 1027.98px) {
   .psg {
-    --arch-h: clamp(380px, 70vw, 520px);   /* smaller arch when stacked */
+    --arch-h: clamp(380px, 70vw, 900px);   /* taller arch when stacked */
   }
   .psg__grid { grid-template-columns: 1fr; gap: 1.5rem; }
   .psg__band--cream .psg__media { display: none; }
-  .psg__band--cream { padding-bottom: calc(var(--arch-h) / 3 + 1rem); }
+  /* arch-h/3 reserves room for the arch's top third; +3rem is the gap between the
+     title and the Calm Room card. */
+  .psg__band--cream { padding-bottom: calc(var(--arch-h) / 3 + 3rem); }
   .psg__arch {
     position: static;
     top: auto;
@@ -4534,6 +4607,129 @@ body.overlay-open {
   .psg__cta { transition: none; }
 }
 
+/* ===== 200 Rides to Freedom — fundraising teaser. Mirror of .psg (content left,
+   pinned media right). Reuses .pill-label / .section-title / .section-text and the
+   .dn-tracker; a car (data-ways-car) drives along the tracker on scroll. ===== */
+.ways { position: relative; }
+.ways__band { position: relative; }
+.ways__band--cream {
+  background: var(--cream);
+  padding-top: clamp(3.5rem, 7vw, 6rem);
+  padding-bottom: clamp(1.5rem, 3vw, 2.5rem);
+}
+.ways__band--yellow {
+  background: var(--sunny-yellow);
+  padding-top: clamp(2.25rem, 4vw, 3.25rem);
+  padding-bottom: clamp(4rem, 8vw, 7rem);
+}
+/* content LEFT, media RIGHT (mirror of the psg grid) */
+.ways__grid {
+  display: grid;
+  grid-template-columns: 1fr minmax(320px, 420px);
+  gap: clamp(2.5rem, 4vw, 4.5rem);
+  align-items: start;
+}
+.ways__band--yellow .ways__grid { align-items: stretch; }
+
+.ways__head { display: flex; flex-direction: column; gap: 0.6rem; }
+.ways__head .pill-label,
+.ways__head .section-title { margin-bottom: 0; }
+
+.ways__content { min-width: 0; }
+.ways__content .section-text { color: #574a1d; }   /* readable brown on the yellow */
+.ways__sub {
+  margin: clamp(2rem, 4vw, 3rem) 0 1rem;
+  font-family: var(--font-body);
+  font-weight: 700;
+  font-size: 1.2rem;
+  color: #1a1a1a;
+}
+
+/* "Other Ways to Give" rows */
+.give-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 0.85rem; }
+.give-row {
+  display: grid;
+  grid-template-columns: 46px 1fr auto;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.95rem 1.2rem;
+  background: rgba(255, 255, 255, 0.42);
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  border-radius: 16px;
+}
+.give-row__icon { width: 46px; height: 46px; border-radius: 11px; object-fit: cover; }
+.give-row__body { min-width: 0; }
+.give-row__cat {
+  display: block;
+  font-size: 0.7rem; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase;
+  color: var(--pink-dark);
+}
+.give-row__title { margin: 1px 0; font-family: var(--font-display); font-weight: 700; font-size: 1.05rem; color: var(--text); }
+.give-row__desc { margin: 0; font-size: 0.85rem; line-height: 1.45; color: #5a5048; }
+.give-row__cta {
+  flex: none; white-space: nowrap; cursor: pointer;
+  background: transparent; border: 0; padding: 0;
+  font-family: var(--font-body); font-weight: 600; font-size: 0.9rem;
+  color: var(--pink-dark);
+  text-decoration: underline; text-underline-offset: 3px;
+  transition: color 0.2s ease;
+}
+.give-row__cta:hover { color: var(--pink); }
+
+/* Pinned media (impact video + caption + tracker + car) */
+.ways__media { position: relative; min-width: 0; }
+.ways__pin {
+  position: sticky;
+  top: calc(var(--header-h, 7.5rem) + 1rem);
+  margin-top: clamp(-7rem, -8vw, -4rem);   /* peek up into the cream band, like the psg arch */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.ways__card {
+  width: 100%;
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.18);
+}
+.ways__vid { display: block; width: 100%; aspect-ratio: 491 / 620; object-fit: cover; }
+.ways__cap {
+  margin: 1rem 0 0;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1.15rem;
+  color: var(--text);
+  text-align: center;
+}
+.ways__cap em { font-style: italic; color: var(--pink); }
+
+/* Tracker recoloured for the yellow background (donate's white ticks were for a dark bg) */
+.ways__tracker { max-width: 100%; padding-top: 84px; margin-top: 1.25rem; }
+.ways__tracker .dn-tracker__tick { background: rgba(0, 0, 0, 0.12); border-radius: 4px; }
+.ways__tracker .dn-tracker__tick.is-filled { background: var(--pink); }
+.ways__tracker .dn-tracker__count { color: var(--pink-dark); }
+
+/* Car rides along the bar; --car-x (0–1) set by JS from scroll progress */
+.ways__car {
+  position: absolute;
+  bottom: calc(100% - 7px);
+  left: clamp(0%, calc(var(--car-x, 0) * 100%), 100%);
+  width: 54px;
+  height: auto;
+  transform: translateX(-50%);
+  pointer-events: none;
+  z-index: 2;
+}
+
+@media (max-width: 860px) {
+  .ways__grid { grid-template-columns: 1fr; gap: 1.75rem; }
+  .ways__band--cream .ways__media { display: none; }
+  .ways__pin { position: static; margin-top: 0; }
+  .ways__media { order: -1; }            /* show the impact card above the give list */
+  .ways__card { max-width: 360px; margin: 0 auto; }
+  .ways__tracker { margin-inline: auto; }
+}
+
 /* ===== Help launch the movement — volunteer callout + donate form. One landscape
    image backs the whole section (its top third is the paper area for the callout).
    Decorations (sun / car / love) reveal in on scroll; car + love slide from the
@@ -4543,8 +4739,36 @@ body.overlay-open {
   overflow: hidden;
   padding: clamp(2.5rem, 6vw, 5rem) var(--space-md) clamp(4rem, 9vw, 8rem);
 }
-/* Volunteer callout — light paper background (readable) */
-.launch--volunteers { background: #fcf9ed; }
+/* Volunteer callout — torn-paper sheet (procedural noise) revealing a teal band */
+.launch--volunteers {
+  /* Two procedural noise layers (fine tooth + soft mottle) over warm cream =
+     aged-paper texture, no asset. */
+  background-color: #fcf9ed;
+  background-image:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='a'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23a)' opacity='0.05'/%3E%3C/svg%3E"),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='600' height='600'%3E%3Cfilter id='b'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.016' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23b)' opacity='0.045'/%3E%3C/svg%3E");
+  background-size: 200px 200px, 600px 600px;
+  background-repeat: repeat, repeat;
+  /* Room below the content so the torn edge never overlaps the CTA / counter. */
+  padding-bottom: clamp(7.5rem, 14vw, 10rem);
+}
+/* Torn bottom edge revealing a flat #3D6268 band. The edge is an SVG whose top
+   is frayed by a turbulence displacement filter (organic, not a calculated
+   zigzag), with a light fibre lip + contact shadow for a lifted-paper look. The
+   tile is a fixed 120px tall and repeats along x (the noise stitches across the
+   1600px width), so the tear reads identically from mobile to ultrawide. */
+.launch--volunteers::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 120px;
+  z-index: 5;
+  background: url('/img/paper-tear.svg') left bottom / 1600px 120px repeat-x;
+  /* Faint cast onto the teal reinforces the paper sitting above it. */
+  filter: drop-shadow(0 2px 2px rgba(17, 39, 46, 0.16));
+}
 /* Donate form — landscape photo background (carries the sun + form) */
 .launch--donate {
   background: var(--cream) url('/img/launch-movement-bg.jpg') center / cover no-repeat;
@@ -4592,21 +4816,8 @@ body.overlay-open {
 .launch__joined-av:first-child { margin-left: 0; }
 .launch__joined-text { margin: 0; font-size: 0.9rem; color: var(--text-light); }
 .launch__joined-text strong { color: var(--text); font-weight: 700; }
-.launch__title {
-  font-family: var(--font-display);
-  font-weight: 700;
-  font-size: clamp(2rem, 4.5vw, 2.6rem);
-  line-height: 1.1;
-  color: var(--dark-grey);
-  margin: 0 0 1rem;
-}
-.launch__title em { font-style: italic; color: var(--pink-dark); }
-.launch__lead {
-  color: var(--text);
-  font-size: clamp(0.95rem, 1.4vw, 1.05rem);
-  line-height: 1.6;
-  margin: 0 0 1.6rem;
-}
+/* Title + lead now use the global .section-title / .section-text (centred by the
+   .launch__intro container). */
 .launch__cta {
   display: flex;
   gap: 1.25rem;
@@ -4654,6 +4865,85 @@ body.overlay-open {
 .launch__avatar--5 .launch__avatar-img { width: 5rem; height: auto; }
 .launch__avatar--3 .launch__avatar-img,
 .launch__avatar--6 .launch__avatar-img { width: 7.75rem; height: auto; }
+
+/* Volunteer avatars: organic-blob photo with a filled colour block + a thin outline
+   "line" behind it (Army Pink palette). Shape (--*-blob) and colours (--block-from /
+   --block-to / --line-color) are variables so each avatar can differ; per-avatar
+   overrides below. The block + line rotate subtly on cursor move (--blob-rot, set in
+   JS) while the photo keeps its parallax move. */
+.launch__avatar--blob {
+  --blob-rot: 0deg;
+  --block-from: var(--pink);
+  --block-to: var(--pink-dark);
+  --line-color: var(--sunny-yellow);
+  --img-blob:   49% 51% 62% 38% / 45% 52% 48% 55%;
+  --block-blob: 63% 37% 44% 56% / 49% 58% 42% 51%;
+  --line-blob:  38% 62% 56% 44% / 60% 41% 59% 40%;
+}
+.launch__avatar--blob .launch__avatar-img {
+  position: relative;
+  z-index: 1;
+  border-radius: var(--img-blob);
+}
+.launch__avatar--blob::before,
+.launch__avatar--blob::after {
+  content: '';
+  position: absolute;
+  z-index: -1;
+  opacity: 0;
+  transition: transform 0.35s ease-out, opacity 0.7s ease;
+  will-change: transform;
+}
+/* filled colour block — just peeks out top/right */
+.launch__avatar--blob::before {
+  left: 3%; top: -5%;
+  width: 105%; height: 106%;
+  background: linear-gradient(150deg, var(--block-from), var(--block-to));
+  border-radius: var(--block-blob);
+  transform: rotate(var(--blob-rot));
+}
+/* outline "line" — just peeks out bottom/left, rotates the other way */
+.launch__avatar--blob::after {
+  left: -5%; top: 4%;
+  width: 106%; height: 106%;
+  border: 2px solid var(--line-color);
+  border-radius: var(--line-blob);
+  transform: rotate(calc(var(--blob-rot) * -1.5));
+}
+.launch.is-revealed .launch__avatar--blob::before,
+.launch.is-revealed .launch__avatar--blob::after { opacity: 1; }
+
+/* Per-avatar variety — distinct shapes + colour pairings (#1 uses the defaults). */
+.launch__avatar--2.launch__avatar--blob {
+  --block-from: var(--orange); --block-to: var(--pink); --line-color: var(--pink-dark);
+  --img-blob:   55% 45% 38% 62% / 42% 57% 43% 58%;
+  --block-blob: 42% 58% 60% 40% / 57% 43% 55% 45%;
+  --line-blob:  60% 40% 47% 53% / 38% 55% 45% 62%;
+}
+.launch__avatar--3.launch__avatar--blob {
+  --block-from: var(--pink-dark); --block-to: var(--pink); --line-color: var(--orange);
+  --img-blob:   47% 53% 35% 65% / 58% 39% 61% 42%;
+  --block-blob: 65% 35% 55% 45% / 44% 60% 40% 56%;
+  --line-blob:  52% 48% 64% 36% / 50% 47% 53% 50%;
+}
+.launch__avatar--4.launch__avatar--blob {
+  --block-from: var(--pink); --block-to: var(--orange); --line-color: var(--sunny-yellow);
+  --img-blob:   63% 37% 44% 56% / 49% 58% 42% 51%;
+  --block-blob: 38% 62% 56% 44% / 60% 41% 59% 40%;
+  --line-blob:  49% 51% 62% 38% / 45% 52% 48% 55%;
+}
+.launch__avatar--5.launch__avatar--blob {
+  --block-from: var(--pink-dark); --block-to: var(--orange); --line-color: var(--pink-light);
+  --img-blob:   42% 58% 60% 40% / 57% 43% 55% 45%;
+  --block-blob: 60% 40% 47% 53% / 38% 55% 45% 62%;
+  --line-blob:  55% 45% 38% 62% / 42% 57% 43% 58%;
+}
+.launch__avatar--6.launch__avatar--blob {
+  --block-from: var(--orange); --block-to: var(--pink-dark); --line-color: var(--sunny-yellow);
+  --img-blob:   65% 35% 55% 45% / 44% 60% 40% 56%;
+  --block-blob: 52% 48% 64% 36% / 50% 47% 53% 50%;
+  --line-blob:  47% 53% 35% 65% / 58% 39% 61% 42%;
+}
 
 /* --- Donate form + decorations --- */
 .launch__form-wrap {

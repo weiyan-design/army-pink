@@ -122,6 +122,27 @@ function isActive(href: string) {
     </div>
   </div>
 
+  <!-- ===== SHARED CONTACT SLIDE-UP FORM (any [data-contact-form] opens it) — routed
+       to support@armypink via Netlify (set the form's notification recipient in the
+       Netlify dashboard, like the /contact form) ===== -->
+  <div class="vform" data-contact-overlay hidden>
+    <div class="vform__backdrop" data-cform-close></div>
+    <div class="vform__sheet" role="dialog" aria-modal="true" aria-labelledby="cform-title">
+      <button class="vform__close" type="button" data-cform-close aria-label="Close">&times;</button>
+      <h2 class="vform__title" id="cform-title">Get in touch</h2>
+      <p class="vform__intro">Tell us how you'd like to help — a partnership, an event, or a campus chapter — and we'll be in touch.</p>
+      <form class="vform__form" name="get-involved" method="POST" data-netlify="true" netlify-honeypot="bot-field" data-cform-form>
+        <input type="hidden" name="form-name" value="get-involved" />
+        <p class="vform__hp" hidden><label>Don't fill this out: <input name="bot-field" /></label></p>
+        <label class="vform__field"><span>Name</span><input type="text" name="name" autocomplete="name" required /></label>
+        <label class="vform__field"><span>Email</span><input type="email" name="email" autocomplete="email" required /></label>
+        <label class="vform__field"><span>How can we help?</span><textarea name="message" rows="4" required></textarea></label>
+        <button class="btn btn-primary vform__submit" type="submit">Send</button>
+        <p class="vform__status" data-cform-status role="status" aria-live="polite"></p>
+      </form>
+    </div>
+  </div>
+
   <!-- PAGE CONTENT -->
   <slot />
 
