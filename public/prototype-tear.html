@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Paper Tear — Tuner</title>
+<style>
+  :root {
+    --cream: #fcf9ed;
+    --ink: #2c2622;
+    --panel: #ffffff;
+    --line: rgba(0,0,0,0.12);
+    --accent: #c0566b;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font: 13px/1.4 -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    color: var(--ink);
+    background: #ece7da;
+    display: grid;
+    grid-template-columns: 1fr 340px;
+    height: 100vh;
+    overflow: hidden;
+  }
+
+  /* ---------- Preview ---------- */
+  .stage {
+    position: relative;
+    overflow: auto;
+    padding: 40px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 18px;
+  }
+  .stage__hint { font-size: 12px; opacity: 0.6; }
+  /* resizable wrapper so you can drag-test breakpoints */
+  .sheet-wrap {
+    width: 100%;
+    max-width: 100%;
+    min-width: 280px;
+    resize: horizontal;
+    overflow: hidden;
+    border: 1px dashed rgba(0,0,0,0.18);
+  }
+  .sheet {
+    position: relative;
+    min-height: 520px;
+    background-color: var(--cream);
+    background-image:
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='a'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23a)' opacity='0.05'/%3E%3C/svg%3E"),
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='600' height='600'%3E%3Cfilter id='b'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.016' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23b)' opacity='0.045'/%3E%3C/svg%3E");
+    background-size: 200px 200px, 600px 600px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    color: #6a635c;
+    font-size: 14px;
+  }
+  .sheet__copy { max-width: 340px; padding-bottom: 80px; }
+  .sheet__copy h2 { font-size: 26px; margin-bottom: 8px; color: #3a332e; }
+  .tear {
+    position: absolute;
+    left: 0; right: 0; bottom: 0;
+    background-repeat: repeat-x;
+    background-position: left bottom;
+    pointer-events: none;
+  }
+
+  /* ---------- Controls ---------- */
+  .panel {
+    background: var(--panel);
+    border-left: 1px solid var(--line);
+    overflow-y: auto;
+    padding: 16px 16px 60px;
+  }
+  .panel h1 { font-size: 15px; margin-bottom: 4px; }
+  .panel .sub { font-size: 11px; opacity: 0.55; margin-bottom: 14px; }
+  fieldset { border: 1px solid var(--line); border-radius: 8px; padding: 10px 12px 12px; margin-bottom: 14px; }
+  legend { font-size: 11px; text-transform: uppercase; letter-spacing: 0.06em; font-weight: 600; padding: 0 6px; opacity: 0.7; }
+  .row { display: grid; grid-template-columns: 1fr 54px; align-items: center; gap: 8px; margin: 8px 0; }
+  .row label { font-size: 12px; }
+  .row input[type=range] { width: 100%; }
+  .row .val { font-variant-numeric: tabular-nums; font-size: 11px; text-align: right; opacity: 0.75; }
+  .row.color { grid-template-columns: 1fr auto; }
+  .row.check { grid-template-columns: auto 1fr; justify-content: start; }
+  .btns { display: flex; gap: 8px; margin-top: 6px; }
+  button {
+    font: inherit; font-size: 12px; cursor: pointer;
+    border: 1px solid var(--line); background: #fff; border-radius: 6px;
+    padding: 7px 10px;
+  }
+  button.primary { background: var(--accent); color: #fff; border-color: transparent; }
+  button:hover { filter: brightness(0.97); }
+  .out { margin-top: 10px; }
+  .out textarea {
+    width: 100%; height: 120px; font: 11px/1.4 ui-monospace, Menlo, monospace;
+    border: 1px solid var(--line); border-radius: 6px; padding: 8px; resize: vertical;
+    background: #faf9f6;
+  }
+  .out h3 { font-size: 11px; text-transform: uppercase; letter-spacing: 0.06em; opacity: 0.7; margin: 12px 0 4px; }
+</style>
+</head>
+<body>
+  <div class="stage">
+    <div class="stage__hint">↔ drag the right edge of the frame to test breakpoints</div>
+    <div class="sheet-wrap" style="width:100%">
+      <div class="sheet">
+        <div class="sheet__copy">
+          <h2>Our volunteers make <em>freedom possible</em></h2>
+          <p>Paper sheet preview — the tear sits at the bottom, revealing the teal beneath.</p>
+        </div>
+        <div class="tear" id="tear"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="panel" id="panel">
+    <h1>Paper Tear Tuner</h1>
+    <div class="sub">Live-tunes the torn edge. Copy the SVG + CSS at the bottom into <code>public/img/paper-tear.svg</code> and <code>.launch--volunteers::after</code>.</div>
+
+    <fieldset>
+      <legend>Edge shape</legend>
+      <div class="row"><label>Band height (px)</label><input type="range" id="height" min="40" max="220" step="2" value="120"><span class="val" data-for="height"></span></div>
+      <div class="row"><label>Baseline (from top)</label><input type="range" id="baseline" min="10" max="160" step="1" value="64"><span class="val" data-for="baseline"></span></div>
+      <div class="row"><label>Wave amplitude</label><input type="range" id="amp" min="0" max="60" step="1" value="24"><span class="val" data-for="amp"></span></div>
+      <div class="row"><label>Wave count</label><input type="range" id="waves" min="2" max="24" step="1" value="9"><span class="val" data-for="waves"></span></div>
+      <div class="row"><label>Shape seed</label><input type="range" id="shapeSeed" min="1" max="200" step="1" value="7"><span class="val" data-for="shapeSeed"></span></div>
+      <div class="row"><label>Tile width (px)</label><input type="range" id="tile" min="600" max="2400" step="50" value="1600"><span class="val" data-for="tile"></span></div>
+    </fieldset>
+
+    <fieldset>
+      <legend>Fray (torn fibres)</legend>
+      <div class="row"><label>Intensity (scale)</label><input type="range" id="scale" min="0" max="60" step="1" value="22"><span class="val" data-for="scale"></span></div>
+      <div class="row"><label>Coarseness X (freq)</label><input type="range" id="freqX" min="2" max="120" step="1" value="16"><span class="val" data-for="freqX"></span></div>
+      <div class="row"><label>Coarseness Y (freq)</label><input type="range" id="freqY" min="2" max="120" step="1" value="22"><span class="val" data-for="freqY"></span></div>
+      <div class="row"><label>Octaves (detail)</label><input type="range" id="octaves" min="1" max="6" step="1" value="4"><span class="val" data-for="octaves"></span></div>
+      <div class="row"><label>Noise seed</label><input type="range" id="noiseSeed" min="1" max="200" step="1" value="11"><span class="val" data-for="noiseSeed"></span></div>
+    </fieldset>
+
+    <fieldset>
+      <legend>Fibre lip (the white edge)</legend>
+      <div class="row check"><input type="checkbox" id="lipOn" checked><label>Show lip</label></div>
+      <div class="row color"><label>Colour</label><input type="color" id="lipColor" value="#fffdf5"></div>
+      <div class="row"><label>Opacity</label><input type="range" id="lipOpacity" min="0" max="100" step="1" value="90"><span class="val" data-for="lipOpacity"></span></div>
+      <div class="row"><label>Width</label><input type="range" id="lipWidth" min="0.5" max="8" step="0.1" value="2.4"><span class="val" data-for="lipWidth"></span></div>
+      <div class="row"><label>Blur</label><input type="range" id="lipBlur" min="0" max="8" step="0.1" value="2.6"><span class="val" data-for="lipBlur"></span></div>
+      <div class="row"><label>Offset Y (− = into paper)</label><input type="range" id="lipOffset" min="-8" max="8" step="0.5" value="0"><span class="val" data-for="lipOffset"></span></div>
+    </fieldset>
+
+    <fieldset>
+      <legend>Contact shadow (on teal)</legend>
+      <div class="row check"><input type="checkbox" id="shOn" checked><label>Show shadow</label></div>
+      <div class="row color"><label>Colour</label><input type="color" id="shColor" value="#11272e"></div>
+      <div class="row"><label>Opacity</label><input type="range" id="shOpacity" min="0" max="100" step="1" value="42"><span class="val" data-for="shOpacity"></span></div>
+      <div class="row"><label>Width</label><input type="range" id="shWidth" min="1" max="20" step="0.5" value="9"><span class="val" data-for="shWidth"></span></div>
+      <div class="row"><label>Blur</label><input type="range" id="shBlur" min="0" max="10" step="0.1" value="2.6"><span class="val" data-for="shBlur"></span></div>
+      <div class="row"><label>Offset Y (down)</label><input type="range" id="shOffset" min="0" max="14" step="0.5" value="3.5"><span class="val" data-for="shOffset"></span></div>
+    </fieldset>
+
+    <fieldset>
+      <legend>Colours & lift</legend>
+      <div class="row color"><label>Teal (revealed)</label><input type="color" id="teal" value="#3d6268"></div>
+      <div class="row check"><input type="checkbox" id="csOn" checked><label>CSS drop-shadow (lift)</label></div>
+      <div class="row"><label>Lift opacity</label><input type="range" id="csOpacity" min="0" max="60" step="1" value="16"><span class="val" data-for="csOpacity"></span></div>
+      <div class="row"><label>Lift offset Y</label><input type="range" id="csOffset" min="0" max="8" step="0.5" value="2"><span class="val" data-for="csOffset"></span></div>
+      <div class="row"><label>Lift blur</label><input type="range" id="csBlur" min="0" max="8" step="0.5" value="2"><span class="val" data-for="csBlur"></span></div>
+    </fieldset>
+
+    <div class="btns">
+      <button class="primary" id="copySvg">Copy SVG</button>
+      <button id="copyCss">Copy CSS</button>
+      <button id="reset">Reset</button>
+    </div>
+
+    <div class="out">
+      <h3>paper-tear.svg</h3>
+      <textarea id="svgOut" readonly spellcheck="false"></textarea>
+      <h3>.launch--volunteers::after</h3>
+      <textarea id="cssOut" readonly spellcheck="false"></textarea>
+    </div>
+  </div>
+
+<script>
+  // ---- seeded RNG (mulberry32) ----
+  function rng(seed){
+    let s = seed >>> 0;
+    return function(){
+      s = (s + 0x6D2B79F5) >>> 0;
+      let t = Math.imul(s ^ (s >>> 15), 1 | s);
+      t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+      return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+    };
+  }
+
+  // ---- build a smooth, irregular open edge path (endpoints share Y so it tiles) ----
+  function edgePath(W, baseline, amp, waves, seed){
+    const rand = rng(seed);
+    const pts = [];
+    for (let i = 0; i <= waves; i++){
+      const x = (W * i) / waves;
+      const y = baseline + (rand() * 2 - 1) * amp;
+      pts.push([x, Math.round(y * 10) / 10]);
+    }
+    pts[waves][1] = pts[0][1]; // seamless tile
+    // Catmull-Rom -> cubic bezier
+    let d = `M${pts[0][0]},${pts[0][1]}`;
+    for (let i = 0; i < pts.length - 1; i++){
+      const p0 = pts[i - 1] || pts[i];
+      const p1 = pts[i];
+      const p2 = pts[i + 1];
+      const p3 = pts[i + 2] || p2;
+      const c1x = p1[0] + (p2[0] - p0[0]) / 6;
+      const c1y = p1[1] + (p2[1] - p0[1]) / 6;
+      const c2x = p2[0] - (p3[0] - p1[0]) / 6;
+      const c2y = p2[1] - (p3[1] - p1[1]) / 6;
+      const r = (n) => Math.round(n * 10) / 10;
+      d += ` C${r(c1x)},${r(c1y)} ${r(c2x)},${r(c2y)} ${r(p2[0])},${r(p2[1])}`;
+    }
+    return d;
+  }
+
+  const $ = (id) => document.getElementById(id);
+  const ids = ['height','baseline','amp','waves','shapeSeed','tile','scale','freqX','freqY','octaves','noiseSeed',
+    'lipOn','lipColor','lipOpacity','lipWidth','lipBlur','lipOffset',
+    'shOn','shColor','shOpacity','shWidth','shBlur','shOffset',
+    'teal','csOn','csOpacity','csOffset','csBlur'];
+
+  function v(id){
+    const el = $(id);
+    if (!el) return null;
+    if (el.type === 'checkbox') return el.checked;
+    if (el.type === 'range') return parseFloat(el.value);
+    return el.value;
+  }
+
+  function buildSVG(){
+    const W = v('tile');
+    const H = v('height');
+    const edge = edgePath(W, v('baseline'), v('amp'), v('waves'), v('shapeSeed'));
+    const tealFill = `${edge} L${W},${H + 60} L0,${H + 60} Z`;
+    const teal = v('teal');
+    const fx = (v('freqX') / 1000).toFixed(3);
+    const fy = (v('freqY') / 1000).toFixed(3);
+
+    let shadow = '';
+    if (v('shOn')){
+      shadow = `
+    <g clip-path="url(#tclip)">
+      <path fill="none" stroke="${v('shColor')}" stroke-width="${v('shWidth')}" opacity="${(v('shOpacity')/100).toFixed(2)}" filter="url(#blurSh)" transform="translate(0,${v('shOffset')})" d="${edge}"/>
+    </g>`;
+    }
+    let lip = '';
+    if (v('lipOn')){
+      lip = `
+    <path fill="none" stroke="${v('lipColor')}" stroke-width="${v('lipWidth')}" opacity="${(v('lipOpacity')/100).toFixed(2)}" filter="url(#blurLip)" transform="translate(0,${v('lipOffset')})" d="${edge}"/>`;
+    }
+
+    return `<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" preserveAspectRatio="none">
+  <defs>
+    <filter id="rough" x="0%" y="-60%" width="100%" height="260%">
+      <feTurbulence type="fractalNoise" baseFrequency="${fx} ${fy}" numOctaves="${v('octaves')}" seed="${v('noiseSeed')}" stitchTiles="stitch" result="n"/>
+      <feDisplacementMap in="SourceGraphic" in2="n" scale="${v('scale')}" xChannelSelector="R" yChannelSelector="G"/>
+    </filter>
+    <filter id="blurSh" x="-20%" y="-60%" width="140%" height="220%"><feGaussianBlur stdDeviation="${v('shBlur')}"/></filter>
+    <filter id="blurLip" x="-20%" y="-60%" width="140%" height="220%"><feGaussianBlur stdDeviation="${v('lipBlur')}"/></filter>
+    <clipPath id="tclip"><path d="${tealFill}"/></clipPath>
+  </defs>
+  <g filter="url(#rough)">
+    <path fill="${teal}" d="${tealFill}"/>${shadow}${lip}
+  </g>
+</svg>`;
+  }
+
+  function buildCSS(){
+    const H = v('height');
+    const W = v('tile');
+    let lift = '';
+    if (v('csOn')){
+      lift = `\n  filter: drop-shadow(0 ${v('csOffset')}px ${v('csBlur')}px rgba(17, 39, 46, ${(v('csOpacity')/100).toFixed(2)}));`;
+    }
+    return `.launch--volunteers::after {
+  content: '';
+  position: absolute;
+  left: 0; right: 0; bottom: 0;
+  height: ${H}px;
+  z-index: 5;
+  background: url('/img/paper-tear.svg') left bottom / ${W}px ${H}px repeat-x;${lift}
+}`;
+  }
+
+  function render(){
+    // update value labels
+    document.querySelectorAll('.val').forEach((el) => {
+      const id = el.dataset.for;
+      const val = v(id);
+      el.textContent = (typeof val === 'number') ? val : '';
+    });
+    const svg = buildSVG();
+    const tear = $('tear');
+    tear.style.height = v('height') + 'px';
+    tear.style.backgroundImage = `url("data:image/svg+xml,${encodeURIComponent(svg)}")`;
+    tear.style.backgroundSize = `${v('tile')}px ${v('height')}px`;
+    tear.style.filter = v('csOn')
+      ? `drop-shadow(0 ${v('csOffset')}px ${v('csBlur')}px rgba(17,39,46,${(v('csOpacity')/100).toFixed(2)}))`
+      : 'none';
+    $('svgOut').value = svg;
+    $('cssOut').value = buildCSS();
+  }
+
+  ids.forEach((id) => { const el = $(id); if (el) el.addEventListener('input', render); });
+
+  $('copySvg').addEventListener('click', () => navigator.clipboard.writeText($('svgOut').value));
+  $('copyCss').addEventListener('click', () => navigator.clipboard.writeText($('cssOut').value));
+  $('reset').addEventListener('click', () => { document.querySelectorAll('input').forEach((el) => {
+    if (el.type === 'checkbox') el.checked = el.defaultChecked; else el.value = el.defaultValue;
+  }); render(); });
+
+  render();
+</script>
+</body>
+</html>

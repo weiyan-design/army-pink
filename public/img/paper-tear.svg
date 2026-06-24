@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="120" viewBox="0 0 1600 120" preserveAspectRatio="none">
+  <defs>
+    <!-- Frays the whole edge with fractal noise. stitchTiles keeps the noise
+         periodic across the 1600px width so the tile repeats seamlessly. -->
+    <filter id="rough" x="0%" y="-60%" width="100%" height="260%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.016 0.022" numOctaves="4" seed="11" stitchTiles="stitch" result="n"/>
+      <feDisplacementMap in="SourceGraphic" in2="n" scale="22" xChannelSelector="R" yChannelSelector="G"/>
+    </filter>
+    <filter id="soft" x="-20%" y="-60%" width="140%" height="220%">
+      <feGaussianBlur stdDeviation="2.6"/>
+    </filter>
+    <!-- Clip used to keep the contact shadow inside the teal only. -->
+    <clipPath id="teal">
+      <path d="M0,64 C100,52 180,86 300,76 C410,69 470,96 600,90 C700,86 760,60 880,66 C990,71 1050,44 1170,50 C1280,55 1340,80 1450,72 C1520,68 1560,60 1600,64 L1600,180 L0,180 Z"/>
+    </clipPath>
+  </defs>
+  <g filter="url(#rough)">
+    <!-- Teal body (bottom runs off-canvas so it always fills) -->
+    <path fill="#3D6268" d="M0,64 C100,52 180,86 300,76 C410,69 470,96 600,90 C700,86 760,60 880,66 C990,71 1050,44 1170,50 C1280,55 1340,80 1450,72 C1520,68 1560,60 1600,64 L1600,180 L0,180 Z"/>
+    <!-- Contact shadow: soft dark line hugging the underside of the torn edge -->
+    <g clip-path="url(#teal)">
+      <path fill="none" stroke="#11272e" stroke-width="9" opacity="0.42" filter="url(#soft)" transform="translate(0,3.5)"
+            d="M0,64 C100,52 180,86 300,76 C410,69 470,96 600,90 C700,86 760,60 880,66 C990,71 1050,44 1170,50 C1280,55 1340,80 1450,72 C1520,68 1560,60 1600,64"/>
+    </g>
+  </g>
+</svg>
