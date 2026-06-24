@@ -1,0 +1,344 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Calm Room blend tuner — Army Pink</title>
+<style>
+  :root {
+    --cream: #fdfbf7;
+    --yellow: #fdd36a;
+    --ink: #2c2a28;
+    --pink: #d4728c;
+    --pink-dark: #b85a73;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    color: var(--ink);
+    background: #efeae1;
+    display: grid;
+    grid-template-columns: 1fr 380px;
+    min-height: 100vh;
+  }
+  @media (max-width: 860px) { body { grid-template-columns: 1fr; } }
+
+  /* ---------- Preview stage (mimics the cream→yellow section split) ---------- */
+  .stage {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    padding: 4rem 3rem;
+    background: linear-gradient(to bottom, var(--cream) 0 38%, var(--yellow) 38% 100%);
+    overflow: auto;
+  }
+  .stage__hint {
+    position: absolute;
+    top: 1rem; left: 1.25rem;
+    font-size: 0.75rem;
+    color: #7a746b;
+    letter-spacing: 0.02em;
+  }
+
+  /* ---------- The arch + blend (mirrors .psg__arch / .psg__glass) ---------- */
+  .arch {
+    position: relative;
+    height: var(--arch-h);
+    aspect-ratio: 9 / 13;
+    border-radius: 280px 280px var(--bottom-radius) var(--bottom-radius);
+    overflow: hidden;
+    align-self: center;
+    flex: none;
+  }
+  .arch > img {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  .glass {
+    position: absolute;
+    left: 0; right: 0; bottom: 0;
+    z-index: 2;
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 0.75rem;
+    /* Height is driven by the text content (auto). --fade-lead is how far the
+       blurred wash ramps up ABOVE the text, so the blend hugs the content. */
+    padding: var(--fade-lead) clamp(1.1rem, 6%, 1.85rem) clamp(1.25rem, 7%, 2rem);
+    pointer-events: none;
+  }
+  .glass > * { pointer-events: auto; }
+  .glass::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    -webkit-backdrop-filter: blur(var(--blur)) saturate(var(--saturate));
+    backdrop-filter: blur(var(--blur)) saturate(var(--saturate));
+    -webkit-mask-image: var(--glass-mask);
+    mask-image: var(--glass-mask);
+    background: linear-gradient(to top,
+      rgba(var(--wash-rgb), var(--wash-opacity)) 0%,
+      rgba(var(--wash-rgb), calc(var(--wash-opacity) * 0.33)) var(--wash-mid),
+      rgba(var(--wash-rgb), 0) 100%);
+  }
+  .glass__label {
+    font-weight: var(--label-weight);
+    font-size: var(--label-size);
+    letter-spacing: 0.01em;
+    color: #fff;
+    text-shadow: 0 1px 12px rgba(0, 0, 0, 0.4);
+  }
+  .glass__btn {
+    flex: none;
+    padding: 0.5rem 1.3rem;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.95);
+    color: #5a534b;
+    font-weight: 600;
+    font-size: 0.9rem;
+    text-decoration: none;
+    white-space: nowrap;
+  }
+
+  /* ---------- Control panel ---------- */
+  .panel {
+    background: #fff;
+    border-left: 1px solid #e4ded4;
+    padding: 1.25rem 1.25rem 2rem;
+    overflow: auto;
+    max-height: 100vh;
+  }
+  .panel h1 { font-size: 1.05rem; margin: 0 0 0.25rem; }
+  .panel .sub { font-size: 0.78rem; color: #8a847b; margin: 0 0 1.25rem; }
+  .group { margin: 0 0 1.5rem; }
+  .group h2 {
+    font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.08em;
+    color: var(--pink-dark); margin: 0 0 0.6rem;
+  }
+  .ctrl { margin-bottom: 0.85rem; }
+  .ctrl__row { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 0.25rem; }
+  .ctrl label { font-size: 0.82rem; font-weight: 500; }
+  .ctrl output { font-size: 0.78rem; color: #6a645c; font-variant-numeric: tabular-nums; }
+  .ctrl input[type=range] { width: 100%; accent-color: var(--pink); }
+  .ctrl input[type=color] { width: 48px; height: 28px; border: 1px solid #ddd; border-radius: 6px; padding: 0; background: none; vertical-align: middle; }
+
+  .out { margin-top: 0.5rem; }
+  .out h2 { display: flex; justify-content: space-between; align-items: center; }
+  .out button {
+    font: inherit; font-size: 0.72rem; font-weight: 600;
+    border: 1px solid var(--pink); color: var(--pink-dark); background: #fff;
+    border-radius: 999px; padding: 0.2rem 0.75rem; cursor: pointer;
+  }
+  .out button:hover { background: #fdf2f5; }
+  pre {
+    margin: 0; padding: 0.85rem; border-radius: 10px;
+    background: #1f1d1b; color: #e9e4dc;
+    font-size: 0.72rem; line-height: 1.5; overflow: auto;
+    white-space: pre-wrap; word-break: break-word;
+  }
+  textarea {
+    width: 100%; font: inherit; font-size: 0.72rem; line-height: 1.45;
+    padding: 0.5rem; border: 1px solid #ddd; border-radius: 8px;
+    resize: vertical; color: #2c2a28;
+  }
+  .presets { display: flex; gap: 0.4rem; margin-bottom: 0.5rem; flex-wrap: wrap; }
+  .presets button {
+    font: inherit; font-size: 0.7rem; border: 1px solid #e0d6c8;
+    background: #faf6ef; border-radius: 999px; padding: 0.2rem 0.6rem; cursor: pointer;
+  }
+  .presets button:hover { background: #f3ebdf; }
+  .hint { font-size: 0.7rem; color: #8a847b; margin: 0.4rem 0 0; line-height: 1.4; }
+</style>
+</head>
+<body>
+  <div class="stage">
+    <span class="stage__hint">Live preview — cream (top) / yellow (bottom) like the real section</span>
+    <div class="arch" id="arch">
+      <img src="/img/empowering-hero.jpg" alt="" />
+      <div class="glass">
+        <span class="glass__label">Calm Room</span>
+        <a class="glass__btn" href="#" onclick="return false">Explore</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="panel">
+    <h1>Calm Room blend tuner</h1>
+    <p class="sub">Drag to tune the seamless image blend. Copy the CSS at the bottom and hand it back.</p>
+
+    <div class="group">
+      <h2>Blend / blur</h2>
+      <div class="ctrl" data-var="--blur" data-unit="px">
+        <div class="ctrl__row"><label>Blur strength</label><output></output></div>
+        <input type="range" min="0" max="40" step="1" value="13" />
+      </div>
+      <div class="ctrl" data-var="--saturate" data-unit="">
+        <div class="ctrl__row"><label>Saturation</label><output></output></div>
+        <input type="range" min="1" max="2" step="0.05" value="1.15" />
+      </div>
+      <div class="ctrl" data-var="--fade-lead" data-unit="rem">
+        <div class="ctrl__row"><label>Fade lead-in above text</label><output></output></div>
+        <input type="range" min="0.5" max="12" step="0.25" value="4" />
+      </div>
+      <div class="ctrl">
+        <div class="ctrl__row"><label>mask-image (edit freely)</label></div>
+        <div class="presets">
+          <button type="button" data-preset="linear">Linear</button>
+          <button type="button" data-preset="eased">Eased (soft)</button>
+          <button type="button" data-preset="late">Late fade</button>
+        </div>
+        <textarea id="maskInput" rows="4"></textarea>
+        <p class="hint">Pure-black = full blur, transparent = none. More gradual stops near the top hide the onset line. The blur is masked by this gradient.</p>
+      </div>
+    </div>
+
+    <div class="group">
+      <h2>Colour wash</h2>
+      <div class="ctrl" data-color="1">
+        <div class="ctrl__row"><label>Wash colour</label></div>
+        <input type="color" value="#1c120a" />
+      </div>
+      <div class="ctrl" data-var="--wash-opacity" data-unit="">
+        <div class="ctrl__row"><label>Wash strength (bottom)</label><output></output></div>
+        <input type="range" min="0" max="0.9" step="0.01" value="0.55" />
+      </div>
+      <div class="ctrl" data-var="--wash-mid" data-unit="%">
+        <div class="ctrl__row"><label>Wash midpoint</label><output></output></div>
+        <input type="range" min="20" max="80" step="1" value="48" />
+      </div>
+    </div>
+
+    <div class="group">
+      <h2>Arch shape</h2>
+      <div class="ctrl" data-var="--arch-h" data-unit="px">
+        <div class="ctrl__row"><label>Arch height (preview)</label><output></output></div>
+        <input type="range" min="320" max="900" step="10" value="560" />
+      </div>
+      <div class="ctrl" data-var="--bottom-radius" data-unit="px">
+        <div class="ctrl__row"><label>Bottom corner radius</label><output></output></div>
+        <input type="range" min="0" max="140" step="2" value="28" />
+      </div>
+    </div>
+
+    <div class="group">
+      <h2>Label</h2>
+      <div class="ctrl" data-var="--label-size" data-unit="px">
+        <div class="ctrl__row"><label>Label size</label><output></output></div>
+        <input type="range" min="14" max="34" step="1" value="20" />
+      </div>
+      <div class="ctrl" data-var="--label-weight" data-unit="">
+        <div class="ctrl__row"><label>Label weight</label><output></output></div>
+        <input type="range" min="400" max="800" step="100" value="700" />
+      </div>
+    </div>
+
+    <div class="group out">
+      <h2>Generated CSS <button id="copy">Copy</button></h2>
+      <pre id="css"></pre>
+    </div>
+  </div>
+
+<script>
+  var arch = document.getElementById('arch');
+  var ctrls = Array.prototype.slice.call(document.querySelectorAll('.ctrl'));
+  var maskInput = document.getElementById('maskInput');
+
+  var MASK_PRESETS = {
+    linear: 'linear-gradient(to bottom, transparent 0%, #000 100%)',
+    eased: 'linear-gradient(to bottom,\n  transparent 0%,\n  rgba(0,0,0,0.04) 22%,\n  rgba(0,0,0,0.15) 40%,\n  rgba(0,0,0,0.38) 60%,\n  rgba(0,0,0,0.70) 80%,\n  #000 100%)',
+    late: 'linear-gradient(to bottom, transparent 0%, transparent 28%, #000 100%)'
+  };
+
+  function hexToRgb(hex) {
+    var h = hex.replace('#', '');
+    if (h.length === 3) h = h[0]+h[0]+h[1]+h[1]+h[2]+h[2];
+    var n = parseInt(h, 16);
+    return [(n >> 16) & 255, (n >> 8) & 255, n & 255];
+  }
+
+  function maskValue() { return (maskInput.value.trim() || MASK_PRESETS.eased); }
+
+  function applyMask() {
+    arch.style.setProperty('--glass-mask', maskValue());
+    writeCss();
+  }
+
+  function apply() {
+    ctrls.forEach(function (c) {
+      if (!c.dataset.var && !c.dataset.color) return;   // skip the mask textarea ctrl
+      var input = c.querySelector('input');
+      if (!input) return;
+      if (c.dataset.color) {
+        var rgb = hexToRgb(input.value);
+        arch.style.setProperty('--wash-rgb', rgb.join(', '));
+        return;
+      }
+      var unit = c.dataset.unit || '';
+      var val = input.value + unit;
+      arch.style.setProperty(c.dataset.var, val);
+      var out = c.querySelector('output');
+      if (out) out.textContent = val || input.value;
+    });
+    writeCss();
+  }
+
+  function getVar(name) { return arch.style.getPropertyValue(name).trim(); }
+
+  function writeCss() {
+    var washRgb = getVar('--wash-rgb');
+    var washOp = getVar('--wash-opacity');
+    var mask = maskValue().replace(/\s*\n\s*/g, ' ');   // collapse to one line for CSS
+    var css =
+'/* Arch bottom corners */\n' +
+'.psg__arch.empowering-image {\n' +
+'  border-radius: 280px 280px ' + getVar('--bottom-radius') + ' ' + getVar('--bottom-radius') + ';\n' +
+'}\n\n' +
+'.psg__glass {\n' +
+'  height: auto;          /* sized by the text content */\n' +
+'  --fade-lead: ' + getVar('--fade-lead') + ';   /* blur ramp above the text */\n' +
+'}\n' +
+'.psg__glass::before {\n' +
+'  -webkit-backdrop-filter: blur(' + getVar('--blur') + ') saturate(' + getVar('--saturate') + ');\n' +
+'  backdrop-filter: blur(' + getVar('--blur') + ') saturate(' + getVar('--saturate') + ');\n' +
+'  -webkit-mask-image: ' + mask + ';\n' +
+'  mask-image: ' + mask + ';\n' +
+'  background: linear-gradient(to top,\n' +
+'    rgba(' + washRgb + ', ' + washOp + ') 0%,\n' +
+'    rgba(' + washRgb + ', ' + (Math.round(parseFloat(washOp) * 0.33 * 100) / 100) + ') ' + getVar('--wash-mid') + ',\n' +
+'    rgba(' + washRgb + ', 0) 100%);\n' +
+'}\n' +
+'.psg__glass-label {\n' +
+'  font-weight: ' + getVar('--label-weight') + ';\n' +
+'  font-size: ' + getVar('--label-size') + ';\n' +
+'}';
+    document.getElementById('css').textContent = css;
+  }
+
+  ctrls.forEach(function (c) {
+    var input = c.querySelector('input');
+    if (input) input.addEventListener('input', apply);
+  });
+  maskInput.addEventListener('input', applyMask);
+  Array.prototype.slice.call(document.querySelectorAll('.presets button')).forEach(function (b) {
+    b.addEventListener('click', function () {
+      maskInput.value = MASK_PRESETS[b.dataset.preset];
+      applyMask();
+    });
+  });
+  document.getElementById('copy').addEventListener('click', function () {
+    navigator.clipboard.writeText(document.getElementById('css').textContent);
+    this.textContent = 'Copied!';
+    var btn = this;
+    setTimeout(function () { btn.textContent = 'Copy'; }, 1200);
+  });
+
+  maskInput.value = MASK_PRESETS.eased;
+  applyMask();
+  apply();
+</script>
+</body>
+</html>
