@@ -4611,15 +4611,26 @@ body.overlay-open {
 /* ===== 200 Rides to Freedom — fundraising teaser. Mirror of .psg (content left,
    pinned media right). Reuses .pill-label / .section-title / .section-text and the
    .dn-tracker; a car (data-ways-car) drives along the tracker on scroll. ===== */
-.ways { position: relative; }
+.ways {
+  position: relative;
+  /* How far the impact video floats UP so its top third overlaps onto the cream
+     band — the same offset look as the Calm Room arch (mirror of psg's --arch-lift). */
+  --ways-lift: clamp(7rem, 20vw, 18.5rem);
+}
 .ways__band { position: relative; }
 .ways__band--cream {
   background: var(--cream);
-  padding-top: clamp(3.5rem, 7vw, 6rem);
-  padding-bottom: clamp(2.5rem, 5vw, 4rem);
+  padding-top: clamp(2.5rem, 4vw, 3.5rem);
+  padding-bottom: clamp(1.5rem, 2.5vw, 2.25rem);
 }
+/* Reserve cream room on the right so the video's floated top third always has
+   cream behind it (the empty cream-band media cell is just a spacer). */
+.ways__band--cream .ways__media { min-height: var(--ways-lift); }
 /* left column of the cream band: title + tracker stacked under it */
 .ways__intro { min-width: 0; }
+/* The cream band is tall (it reserves room for the video's floated top third on
+   the right). Drop the title to the bottom so it sits just above the grey seam. */
+.ways__band--cream .ways__intro { align-self: end; }
 .ways__band--body {
   background: var(--light-grey);
   padding-top: clamp(2.25rem, 4vw, 3.25rem);
@@ -4640,6 +4651,7 @@ body.overlay-open {
 
 .ways__content { min-width: 0; }
 .ways__content .section-text { color: var(--text); }
+.ways__cost { font-weight: 600; }
 .ways__sub {
   margin: clamp(2rem, 4vw, 3rem) 0 1rem;
   font-family: var(--font-body);
@@ -4700,8 +4712,14 @@ body.overlay-open {
 .ways__media { position: relative; min-width: 0; }
 .ways__pin {
   position: sticky;
-  top: 50%;
-  transform: translateY(-50%);   /* fixed in the centre of the viewport while scrolling */
+  /* Float the unit up into the cream band so the video's top third sits on cream. */
+  margin-top: calc(-1 * var(--ways-lift));
+  /* Hold the video+button unit centred in the viewport. --pin-h is the unit's
+     own height (set by JS). When the unit is taller than the viewport this goes
+     negative, which still centres it. Because there's no transform, sticky's
+     bottom-clamp stays intact: the unit travels down only until its bottom meets
+     the bottom of the give-list (the stretched media column's bottom edge). */
+  top: calc((100vh - var(--pin-h, 80vh)) / 2);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -4710,23 +4728,32 @@ body.overlay-open {
   width: 100%;
   border-radius: 20px;
   overflow: hidden;
-  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.18);
 }
 /* respect the video's own (tall, 9:16) aspect — no crop */
 .ways__vid { display: block; width: 100%; height: auto; }
 
 /* Tracker now sits under the title on cream. Car rides ABOVE the bar; the
    "Rides Funded" bubble is flipped to sit BELOW the bar so they never overlap. */
-.ways__tracker { max-width: 460px; padding-top: 70px; padding-bottom: 84px; margin-top: 2rem; }
+/* Extra top padding so the floated bubble + car clear the grey band's top edge.
+   Two-class selector (.dn-tracker.ways__tracker) so it outranks the later base
+   `.dn-tracker { padding-top: 100px }` rule, which otherwise wins on source order. */
+.dn-tracker.ways__tracker { max-width: 460px; padding-top: 140px; padding-bottom: 84px; margin-top: 0; }
 .ways__tracker .dn-tracker__tick { background: rgba(0, 0, 0, 0.12); border-radius: 4px; }
 .ways__tracker .dn-tracker__tick.is-filled { background: var(--pink); }
 .ways__tracker .dn-tracker__count { color: var(--pink-dark); }
-/* bubble below the bar, arrow pointing up; bordered so it reads on the cream bg */
-.ways__tracker .dn-tracker__bubble { top: calc(100% + 16px); bottom: auto; border: 1px solid var(--beige-dark); }
+/* bubble rides ON TOP of the car: it shares the car's horizontal position
+   (--car-x × --car-max) and sits just above it, arrow pointing down at the car. */
+.ways__tracker .dn-tracker__bubble {
+  left: calc(var(--car-x, 0) * var(--car-max, 100) * 1%);
+  bottom: calc(100% + 62px);
+  top: auto;
+  border: 1px solid var(--beige-dark);
+  box-shadow: none;
+}
 .ways__tracker .dn-tracker__bubble::after {
-  top: -9px; bottom: auto;
-  border-top: 0;
-  border-bottom: 10px solid #fdfbf7;
+  bottom: -9px; top: auto;
+  border-bottom: 0;
+  border-top: 10px solid #fdfbf7;
 }
 
 /* Car rides along the bar; --car-x (0–1, scroll progress) × --car-max (the funded %)
@@ -4994,7 +5021,10 @@ body.overlay-open {
   position: relative;
   z-index: 2;
   display: grid;
-  grid-template-columns: 0.92fr 1fr;
+  /* Widget column is capped to the Givebutter form's natural width so the
+     column never grows wider than the form (which left-aligns inside it and
+     would otherwise leave white space on the right). Photo absorbs the slack. */
+  grid-template-columns: minmax(0, 1fr) minmax(380px, 480px);
   gap: 12px;
   padding: 12px;
   background: #fff;
@@ -5003,8 +5033,12 @@ body.overlay-open {
 }
 .launch__form-photo { position: relative; min-height: 340px; border-radius: 24px; overflow: hidden; }
 .launch__form-photo img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
-.launch__form-widget { padding: clamp(0.75rem, 1.6vw, 1.5rem); background: #fff; min-width: 0; align-self: center; }
-.launch__form-widget givebutter-widget { display: block; width: 100%; }
+/* Givebutter inline embeds grow their iframe to fit the active step (the
+   credit-card step adds a full billing form ≈1400px tall). Cap the column so
+   the amount-picker fits with no scroll, and the tall billing step scrolls
+   inside the card instead of stretching the whole meadow layout. */
+.launch__form-widget { padding: clamp(0.75rem, 1.6vw, 1.5rem); background: #fff; min-width: 0; align-self: stretch; display: flex; justify-content: center; max-height: 620px; overflow-y: auto; }
+.launch__form-widget givebutter-widget { display: block; width: 100%; max-width: 460px; }
 
 /* Scroll reveal + side-entrances (avatar reveal lives on the inner so the outer
    span is free for cursor parallax) */

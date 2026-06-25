@@ -1024,6 +1024,21 @@
     updateWaysCar();
   }
 
+  // Sticky impact unit (video + Fund button) — feed its own height to CSS so the
+  // sticky `top` can centre it in the viewport while still clamping at the bottom
+  // of the give-list. Re-measure once the (9:16) video reports its dimensions.
+  var waysPin = waysSection && waysSection.querySelector('.ways__pin');
+  if (waysPin) {
+    var setWaysPinH = function () {
+      waysSection.style.setProperty('--pin-h', waysPin.offsetHeight + 'px');
+    };
+    setWaysPinH();
+    window.addEventListener('resize', setWaysPinH);
+    window.addEventListener('load', setWaysPinH);
+    var waysPinVid = waysPin.querySelector('video');
+    if (waysPinVid) waysPinVid.addEventListener('loadedmetadata', setWaysPinH);
+  }
+
   // --- Hero video thumbnail → full-video popup ---
   var heroThumb = document.querySelector('[data-hero-thumb]');
   var videoModal = document.getElementById('heroVideoModal');

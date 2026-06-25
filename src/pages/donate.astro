@@ -25,52 +25,6 @@ const trackerPct = (ridesFunded / ridesGoal) * 100;
 
 <Layout title="Donate — Army Pink" description="Safe exit is a right. Join The Escape Club — Army Pink's monthly giving community sustaining Freedom Rides for survivors.">
 
-  <!-- HERO — fullscreen video on load, shrinks to 80vh on video-end or first scroll -->
-  <section class="dn-hero" id="dn-hero">
-    <video
-      class="dn-hero__vid"
-      src="/vid/safe-exit-hero.mp4"
-      poster="/img/donate/hero-poster.jpg"
-      autoplay muted playsinline preload="auto"
-      aria-label="Safe exit is a right."
-    ></video>
-    <div class="dn-wave" aria-hidden="true"></div>
-  </section>
-
-  <script is:inline>
-    (function () {
-      var hero = document.getElementById('dn-hero');
-      if (!hero) return;
-      var vid = hero.querySelector('.dn-hero__vid');
-      var done = false;
-      function shrink() {
-        if (done) return;
-        done = true;
-        hero.classList.add('is-shrunk');
-        window.removeEventListener('scroll', shrink);
-        window.removeEventListener('wheel', shrink);
-        window.removeEventListener('touchmove', shrink);
-        if (vid) vid.removeEventListener('ended', shrink);
-      }
-      if (vid) {
-        vid.addEventListener('ended', shrink);
-        // Fallback: shrink just after the clip's duration, in case 'ended' is missed
-        function scheduleFallback() {
-          if (isFinite(vid.duration) && vid.duration > 0) {
-            setTimeout(shrink, vid.duration * 1000 + 300);
-          }
-        }
-        if (vid.readyState >= 1) scheduleFallback();
-        else vid.addEventListener('loadedmetadata', scheduleFallback);
-        var p = vid.play();
-        if (p && p.catch) p.catch(function () {});
-      }
-      window.addEventListener('scroll', shrink, { passive: true });
-      window.addEventListener('wheel', shrink, { passive: true });
-      window.addEventListener('touchmove', shrink, { passive: true });
-    })();
-  </script>
-
   <!-- SECTION 1 — one survivor reaches safety each month -->
   <section class="dn-rides">
     <div class="dn-rides__head">
