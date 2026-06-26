@@ -435,12 +435,20 @@ img {
   font-family: var(--font-body);
   font-size: 0.95rem;
   font-weight: 600;
+  /* Explicit so <a> and <button> render the same height — without it, anchors
+     inherit the body's 1.7 line-height while buttons use the UA 'normal'. */
+  line-height: 1.6;
   text-align: center;
   cursor: pointer;
   transition: all var(--duration) var(--ease);
   border: 2px solid transparent;
 }
 
+/* === Canonical CTAs ========================================================
+   .btn-primary   = PRIMARY   — filled pink pill   (e.g. nav "Donate")
+   .btn-secondary = SECONDARY — outline pink pill  (e.g. "Become a Partner")
+   .btn-ghost and .btn-outline are kept as aliases of the secondary so existing
+   markup stays consistent. Primary and secondary share the same geometry. */
 .btn-primary {
   background: var(--pink);
   color: var(--white);
@@ -455,7 +463,9 @@ img {
   color: var(--white);
 }
 
-.btn-ghost {
+.btn-secondary,
+.btn-ghost,
+.btn-outline {
   background: transparent;
   color: var(--pink-dark);
   border-color: var(--pink-dark);
@@ -463,20 +473,12 @@ img {
   border-radius: 40px;
 }
 
-.btn-ghost:hover {
-  background: var(--pink-pale);
-}
-
-.btn-outline {
-  background: transparent;
-  color: var(--pink-dark);
-  border: 2px solid var(--pink-light);
-  padding: 0.7rem 1.6rem;
-}
-
+.btn-secondary:hover,
+.btn-ghost:hover,
 .btn-outline:hover {
-  border-color: var(--pink-dark);
   background: var(--pink-pale);
+  border-color: var(--pink-dark);
+  color: var(--pink-dark);
 }
 
 /* --- Home Hero (Espacio-style fullscreen sticky video) --- */
@@ -2113,6 +2115,22 @@ button.featured-card {
   margin-bottom: var(--space-lg);
 }
 
+.footer-badge {
+  display: inline-block;
+  margin-top: var(--space-md);
+}
+
+.footer-badge img {
+  width: 88px;
+  height: auto;
+  display: block;
+  transition: opacity 0.2s ease;
+}
+
+.footer-badge:hover img {
+  opacity: 0.85;
+}
+
 .footer-brand .logo-text {
   color: var(--pink-light);
   display: block;
@@ -2123,6 +2141,11 @@ button.featured-card {
   font-size: 0.85rem;
   line-height: 1.7;
   max-width: 300px;
+}
+
+.footer-brand .footer-locale {
+  margin-top: 0.5rem;
+  opacity: 0.7;
 }
 
 .footer-social {
@@ -4648,6 +4671,8 @@ body.overlay-open {
 .ways__head { display: flex; flex-direction: column; gap: 0.6rem; }
 .ways__head .pill-label,
 .ways__head .section-title { margin-bottom: 0; }
+/* The stacked-only title (shown under the video on mobile) is hidden on desktop. */
+.ways__head--stacked { display: none; }
 
 .ways__content { min-width: 0; }
 .ways__content .section-text { color: var(--text); }
@@ -4769,17 +4794,36 @@ body.overlay-open {
   z-index: 2;
 }
 
-/* "Fund 200 Rides" — primary button right under the card, above the tracker */
-.ways__fund { margin-top: 3rem; align-self: center; }
+/* "Fund 200 Rides" + "Learn more" — button row under the card. Cross-axis
+   alignment is owned by .ways__pin (centred on desktop, left when stacked). */
+.ways__actions {
+  margin-top: 3rem;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem;
+}
 
 @media (max-width: 860px) {
+  /* Stacked order: video (top third on cream) → Fund button → title → tracker → … */
   .ways__grid { grid-template-columns: 1fr; gap: 1.75rem; }
   .ways__band--cream .ways__media { display: none; }
-  .ways__band--cream { padding-bottom: clamp(1.5rem, 3vw, 2.5rem); }   /* no tall cream zone when stacked */
-  .ways__pin { position: static; transform: none; margin-top: 0; }
-  .ways__media { order: -1; }            /* show the impact card above the give list */
-  .ways__card { max-width: 360px; margin: 0 auto; }
-  .ways__tracker { margin-inline: auto; }
+  .ways__band--cream .ways__intro { display: none; }         /* title moves below the video when stacked */
+  /* Cream strip the video's top third floats onto — the same offset look as desktop */
+  .ways__band--cream { min-height: calc(200px + 1.5rem); padding: 0; }
+  .ways__band--body { padding-top: 0; }
+  /* float video + Fund button up onto the cream strip; left-align the stack */
+  .ways__pin { position: static; transform: none; margin-top: -200px; align-items: flex-start; }
+  .ways__media { order: -1; }            /* video + Fund button first */
+  .ways__card { max-width: 360px; margin: 0; }
+  .ways__tracker { margin-inline: 0; }
+  /* Stacked title sits right under the video + Fund button, left-aligned */
+  .ways__head--stacked {
+    display: flex;
+    align-items: flex-start;
+    text-align: left;
+    margin: 0.5rem 0 0;
+  }
 }
 
 /* ===== Help launch the movement — volunteer callout + donate form. One landscape
@@ -5811,26 +5855,29 @@ body.overlay-open {
   margin: 0;
 }
 .dn-body--light { color: #fdfbf7; }
+/* Donate-flow button — same canonical PRIMARY look as .btn-primary, keeping the
+   inline-flex layout helpers the donate/partner/volunteer forms rely on. */
 .dn-btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   align-self: flex-start;
-  background: #d4728c;
-  border: 2px solid #d4728c;
-  color: #fff;
-  font-family: 'Inter', sans-serif;
+  background: var(--pink);
+  border: 2px solid var(--pink);
+  color: var(--white);
+  font-family: var(--font-body);
   font-weight: 600;
   font-size: 0.95rem;
-  padding: 0.85rem 2.1rem;
-  border-radius: 59px;
-  transition: background var(--duration) var(--ease), transform var(--duration) var(--ease);
+  text-align: center;
+  cursor: pointer;
+  padding: 0.5rem 1.5rem;
+  border-radius: 40px;
+  transition: all var(--duration) var(--ease);
 }
 .dn-btn:hover {
-  background: #c25f7b;
-  border-color: #c25f7b;
-  color: #fff;
-  transform: translateY(-1px);
+  background: var(--pink-dark);
+  border-color: var(--pink-dark);
+  color: var(--white);
 }
 
 /* Wavy divider stamped over the bottom edge of a colored band */
@@ -5850,100 +5897,216 @@ body.overlay-open {
 .dn-wave--footer { background: var(--text); }
 
 /* ============================================================
-   Ways to Give (Get Involved) — copy scrolls on the left; ONE fixed
-   bordered frame on the right whose artwork swaps (slides up 0→1)
-   as each way enters the viewport centre. Palette: sunny #FDD36A,
-   blue-grey #6A7D9A border, pink accent, ink text.
+   Get Involved — HERO (Figma): rounded video banner, then headline (left) +
+   subtext / Give Now (right) on cream.
    ============================================================ */
-.wg {
-  position: relative;
-  background: #FDD36A;
+.gih {
+  background: var(--cream);
+  padding: clamp(1.5rem, 3vw, 2.5rem) 0 clamp(2.5rem, 5vw, 4rem);
 }
-.wg-grid {
+.gih__inner {
   max-width: 1180px;
   margin: 0 auto;
-  padding: 0 var(--space-md);
+  padding: 0 clamp(1.25rem, 4vw, 3rem);
+}
+.gih__media {
+  border-radius: clamp(20px, 2.2vw, 30px);
+  overflow: hidden;
+  aspect-ratio: 16 / 7;
+  background: #000;
+}
+.gih__vid { width: 100%; height: 100%; object-fit: cover; display: block; }
+.gih__row {
+  margin-top: clamp(1.75rem, 4vw, 3rem);
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: clamp(2.5rem, 6vw, 6rem);
-  align-items: stretch;   /* right cell stretches to the copy's height so the frame pins across all steps */
+  gap: clamp(1.5rem, 5vw, 5rem);
+  align-items: end;
 }
-/* LEFT — each way takes a viewport of scroll, vertically centred. */
-.wg-step {
+.gih__title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: clamp(2rem, 4.6vw, 3.4rem);
+  line-height: 1.06;
+  letter-spacing: -0.01em;
+  color: #1c5f59;            /* deep teal — tweak to taste */
+}
+.gih__accent { color: var(--pink); }
+.gih__aside {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: clamp(1rem, 2vw, 1.5rem);
+}
+.gih__lead {
+  margin: 0;
+  font-family: var(--font-body);
+  font-size: clamp(1rem, 1.3vw, 1.15rem);
+  line-height: 1.55;
+  color: #3a4744;
+  max-width: 34rem;
+}
+@media (max-width: 760px) {
+  .gih__row { grid-template-columns: 1fr; gap: 1.25rem; align-items: start; }
+  .gih__media { aspect-ratio: 4 / 3; }
+}
+
+/* ============================================================
+   Get Involved — "Ways to Give" (Figma WorksWrap). Full-bleed band: left copy
+   scrolls; the right panel stays pinned (sticky) and crossfades a visual per
+   active step. Palette: dark green #164A51 (left + card), light green #1B616A
+   (frame), pink accent #EA79A9, off-white text #F4FCFD.
+   ============================================================ */
+.giw {
+  --giw-dark: #164a51;
+  --giw-light: #1b616a;
+  --giw-ink: #f4fcfd;
+  --giw-accent: #ea79a9;
+  position: relative;
+  background: var(--giw-light);
+}
+.giw__grid { display: block; }   /* left scrolls; right panel is fixed (gated by .is-onscreen) */
+/* LEFT — dark column (left half); each way takes a viewport of scroll, centred. */
+.giw__left { width: 50vw; background: var(--giw-dark); }
+.giw__step {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  gap: clamp(1rem, 2vw, 1.6rem);
-  padding: 4vh 0;
-}
-.wg-title {
-  font-family: 'Inter', sans-serif;
-  font-weight: 700;
-  font-size: clamp(2rem, 4vw, 3.2rem);
-  line-height: 1.08;
-  letter-spacing: -0.02em;
-  color: var(--text);
-  margin: 0;
-}
-.wg-accent { color: var(--pink); }
-.wg-desc {
-  font-size: clamp(1rem, 1.3vw, 1.15rem);
-  line-height: 1.6;
-  color: var(--text-light);
-  max-width: 30rem;
-  margin: 0;
-}
-.wg-link {
-  display: inline-flex;
   align-items: center;
-  gap: 0.4rem;
-  width: fit-content;
-  font-family: 'Inter', sans-serif;
-  font-weight: 600;
-  font-size: 0.95rem;
-  color: var(--pink-dark);
-  transition: gap var(--duration) var(--ease), color var(--duration) var(--ease);
+  justify-content: center;
+  padding: 8vh clamp(1.5rem, 4vw, 3rem);
 }
-.wg-link:hover { gap: 0.7rem; color: var(--pink); }
-/* RIGHT — one fixed (sticky) bordered frame, full viewport height. */
-.wg-visual {
-  position: sticky;
-  top: 2rem;
-  height: calc(100vh - 4rem);
-  border: 2px solid #6A7D9A;
-  border-radius: 28px;
+.giw__copy {
+  width: 100%;
+  max-width: 500px;
+  display: flex;
+  flex-direction: column;
+  gap: clamp(0.9rem, 1.6vw, 1.4rem);
+}
+.giw__title {
+  margin: 0;
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: clamp(1.7rem, 2.85vw, 2.25rem);
+  line-height: 90%;
+  letter-spacing: -0.01em;
+  color: var(--giw-ink);
+}
+/* Per-step highlight colour is set inline on each .giw__accent span. */
+.giw__accent { color: var(--giw-accent); }
+.giw__body {
+  margin: 0;
+  max-width: 30rem;
+  font-family: var(--font-body);
+  font-weight: 400;
+  font-size: clamp(0.9rem, 1vw, 0.95rem);
+  line-height: 1.55;
+  color: rgba(244, 252, 253, 0.82);
+}
+.giw__body strong { font-weight: 700; color: var(--giw-ink); }
+/* RIGHT — FIXED light-green frame holding a dark card that crossfades. Fixed
+   (not sticky) because body has overflow-x:hidden, which breaks sticky; the
+   .is-onscreen class (toggled by the data-giw observer) shows it only within the
+   section so it never overlaps the hero above or the footer below. */
+.giw__right {
+  position: fixed;
+  inset: 7.5rem 0 0 50%;   /* right half, below the header (~7.5rem) — defined by edges */
+  padding: 20px 20px 20px 27px;
+  background: var(--giw-light);
+  display: flex;
+  z-index: 1;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.4s var(--ease);
+}
+.giw.is-onscreen .giw__right { opacity: 1; visibility: visible; }
+.giw__card {
+  position: relative;
+  flex: 1;                          /* fill the panel via flex (no %-height dependency) */
+  background: var(--giw-dark);
+  border-radius: 32px;
   overflow: hidden;
 }
-/* Stacked artwork layers; only the active one shows, sliding up as it enters. */
-.wg-art {
+.giw__viz {
   position: absolute;
-  inset: clamp(1.2rem, 3vw, 2.4rem);
+  inset: 0;
   display: flex;
   align-items: center;
   justify-content: center;
+  padding: clamp(1.5rem, 4vw, 3.5rem);
   opacity: 0;
-  transform: translateY(24px);
+  transform: scale(1.02);
   transition: opacity 0.6s var(--ease), transform 0.6s var(--ease);
   pointer-events: none;
 }
-.wg-art.is-active { opacity: 1; transform: none; }
-.wg-art__placeholder {
-  font-family: 'Playfair Display', serif;
-  font-style: italic;
-  font-size: 1.6rem;
-  color: #6A7D9A;
-  opacity: 0.7;
+.giw__viz.is-active { opacity: 1; transform: none; pointer-events: auto; }
+.giw__img { width: min(72%, 520px); height: auto; display: block; }
+.giw__vid { display: block; }
+/* Freedom Rides impact loop (9:16) — fit by height, rounded corners */
+.giw__vid--portrait { max-height: 82%; max-width: 80%; width: auto; height: auto; border-radius: 18px; }
+/* Escape Club logo (transparent gif) — fit by width */
+.giw__vid--logo { width: min(72%, 520px); height: auto; }
+/* Placeholder graphic for the as-yet-undesigned steps */
+.giw__ph {
+  width: min(60%, 340px);
+  aspect-ratio: 1;
+  border-radius: 28px;
+  background: #f7cf63;
+  color: var(--giw-dark);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  text-align: center;
 }
+.giw__ph b { font-family: var(--font-display); font-size: clamp(2.5rem, 6vw, 4rem); line-height: 1; }
+.giw__ph span { font-weight: 600; font-size: 0.85rem; letter-spacing: 0.04em; text-transform: uppercase; }
+/* Pill button, top-right of the card */
+.giw__btn {
+  position: absolute;
+  top: clamp(20px, 4vw, 50px);
+  right: clamp(20px, 4vw, 39px);
+  padding: 0.5rem 1.6rem;
+  border-radius: 59px;
+  background: var(--pink);
+  border: 2px solid var(--pink);
+  color: #fff;
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: 0.9rem;
+  line-height: 1.6;
+  text-decoration: none;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background var(--duration) var(--ease);
+}
+.giw__btn:hover { background: var(--pink-dark); border-color: var(--pink-dark); color: #fff; }
+
 @media (prefers-reduced-motion: reduce) {
-  .wg-art { transition: none; }
+  .giw__viz { transition: none; }
 }
+
+/* Stacked: text scrolls in the top half; media panel fixed to the bottom half
+   (1fr/1fr). Fixed so it stays put while the copy scrolls; the data-giw observer
+   toggles .is-onscreen so the panel only shows within the section (never the footer). */
 @media (max-width: 820px) {
-  .wg-grid { grid-template-columns: 1fr; gap: 0; }
-  /* Pin the frame to the top while the copy scrolls beneath it. */
-  .wg-visual-col { order: -1; position: sticky; top: 64px; height: 44vh; z-index: 1; }
-  .wg-visual { position: static; top: auto; height: 100%; background: #FDD36A; }
-  .wg-step { min-height: 62vh; padding: 1.5rem 0; }
+  .giw__left { width: 100%; padding-bottom: 50svh; }
+  .giw__copy { max-width: 60vw; }
+  /* repositions the (already fixed + .is-onscreen-gated) panel to the bottom half */
+  .giw__right {
+    top: auto;
+    inset: auto 0 0 0;
+    width: 100%;
+    height: 50svh;
+    padding: 12px;
+    z-index: 5;
+  }
+  .giw__step { min-height: 70vh; padding: 6vh 1.5rem; }
+  .giw__img { width: min(58%, 260px); }
+  .giw__vid--logo { width: min(58%, 240px); }
+  .giw__btn { top: 20px; right: 20px; }
 }
 
 /* ---- Statement band — fades up as the hero scrubs down (#dn-hero.is-shrunk) ---- */
@@ -6234,15 +6397,16 @@ body.overlay-open {
   gap: 0.85rem;
   margin-top: 0.5rem;
 }
+/* Secondary variant of the donate-flow button — matches the canonical .btn-secondary */
 .pn-btn--ghost {
   background: transparent;
-  border-color: #686565;
-  color: #686565;
+  border-color: var(--pink-dark);
+  color: var(--pink-dark);
 }
 .pn-btn--ghost:hover {
-  background: #686565;
-  border-color: #686565;
-  color: #fff;
+  background: var(--pink-pale);
+  border-color: var(--pink-dark);
+  color: var(--pink-dark);
 }
 
 /* ---- Ways to partner (sunny band) ---- */

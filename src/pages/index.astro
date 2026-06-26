@@ -294,7 +294,7 @@ const waysToGive = [
 
             <div class="psg__footer">
               <p class="fc-caption" set:html={progCaption(survivorPrograms[0])}></p>
-              <a class="fc-cta psg__cta" href="/get-involved"><span class="fc-cta__label">Help Us Build</span></a>
+              <a class="btn btn-secondary" href="/get-involved">Help Us Build</a>
             </div>
           </div>
         </div>
@@ -324,6 +324,12 @@ const waysToGive = [
     <div class="ways__band ways__band--body">
       <div class="container ways__grid">
         <div class="ways__content">
+          <!-- Stacked (mobile) title — renders under the video + Fund button; the
+               cream-band title above is hidden at this breakpoint. -->
+          <header class="ways__head ways__head--stacked reveal-item">
+            <span class="pill-label">Current Fundraising Campaign</span>
+            <h2 class="section-title section-title--lg">200 Rides to <em>Freedom</em></h2>
+          </header>
           <!-- tracker + car moved here, directly above the description -->
           <div
             class="dn-tracker ways__tracker"
@@ -374,7 +380,10 @@ const waysToGive = [
             <div class="ways__card">
               <video class="ways__vid" src="/vid/give-impact-loop.mp4" autoplay muted loop playsinline preload="auto" aria-label="Army Pink Freedom Rides impact loop"></video>
             </div>
-            <button class="btn btn-primary ways__fund" type="button">Fund 200 Rides</button>
+            <div class="ways__actions">
+              <button class="btn btn-primary" type="button">Fund 200 Rides</button>
+              <a class="btn btn-secondary" href="https://givebutter.com/c/200-rides-x4a9e7" target="_blank" rel="noopener">Learn more</a>
+            </div>
           </div>
         </div>
       </div>
@@ -432,7 +441,7 @@ const waysToGive = [
     </div>
 
     <div class="partner-footer">
-      <a href="/partners" class="btn btn-ghost">Become A Partner</a>
+      <a href="/partners" class="btn btn-secondary">Become A Partner</a>
     </div>
   </section>
 
@@ -538,7 +547,7 @@ const waysToGive = [
         <span class="overline">Learn to Breathe Better</span>
         <h2>Calm starts with a single breath.</h2>
         <p>When your body is stuck in fight-or-flight, breathing is the fastest way back to safety. These exercises are simple, short, and available anytime you need them.</p>
-        <div class="breathing-exercise" role="region" aria-label="Guided breathing exercise"><h3>Try it now: Box Breathing</h3><p>A simple grounding exercise you can use anytime. Follow the animation at your own pace.</p><div class="breath-box" id="breath-box"><div class="breath-circle" id="breath-circle"></div><p class="breath-instruction" id="breath-instruction"></p></div><button class="btn btn-outline" id="breath-toggle">Start breathing exercise</button></div>
+        <div class="breathing-exercise" role="region" aria-label="Guided breathing exercise"><h3>Try it now: Box Breathing</h3><p>A simple grounding exercise you can use anytime. Follow the animation at your own pace.</p><div class="breath-box" id="breath-box"><div class="breath-circle" id="breath-circle"></div><p class="breath-instruction" id="breath-instruction"></p></div><button class="btn btn-secondary" id="breath-toggle">Start breathing exercise</button></div>
         <div class="overlay-cards"><a href="#" class="overlay-card overlay-card-link"><h4>Box Breathing</h4><p>A 4-count breathing technique used to slow your heart rate and regain focus.</p><span class="wellness-tag">Beginner</span></a><a href="#" class="overlay-card overlay-card-link"><h4>5 Minute Stress Relief</h4><p>A short guided breathwork session to release tension.</p><span class="wellness-tag">All levels</span></a><a href="#" class="overlay-card overlay-card-link"><h4>4-7-8 Calming Breath</h4><p>Activate your parasympathetic nervous system within minutes.</p><span class="wellness-tag">Beginner</span></a><a href="#" class="overlay-card overlay-card-link"><h4>Grounding Breathwork for Flashbacks</h4><p>A guided practice to bring you back to the present.</p><span class="wellness-tag">All levels</span></a><a href="#" class="overlay-card overlay-card-link"><h4>Morning Reset: 3 Minutes to Start Your Day</h4><p>A short breathwork routine to set a calm intention.</p><span class="wellness-tag">Beginner</span></a></div>
       </div>
     </div>

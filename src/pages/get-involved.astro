@@ -1,144 +1,156 @@
 ---
 import Layout from '../layouts/Layout.astro';
-
-// Four ways to give. The right-side card is an SVG slot — Wei drops the
-// per-way SVG into `.wg-card__art`; the IntersectionObserver below adds
-// `is-played` when the card scrolls in so the SVG can animate.
-const ways = [
-  {
-    title: 'Fund a ride to', accent: 'safety',
-    desc: "Every $50 funds one Freedom Ride. Give once or monthly through the Escape Club to help survivors leave the moment they're ready.",
-    link: 'About Donate', href: '/donate', art: 'ride',
-  },
-  {
-    title: 'Partner with', accent: 'purpose',
-    desc: "Organizations and sponsors help power rides through funding, services, and in-kind support — strengthening the survivor-support network, not replacing it.",
-    link: 'About Partner', href: '/partners', art: 'partner',
-  },
-  {
-    title: 'Give your', accent: 'time',
-    desc: "From tech to design to outreach, volunteers are the engine behind every escape. Bring what you're good at — we'll put it to work.",
-    link: 'About Volunteer', href: '/volunteers', art: 'time',
-  },
-  {
-    title: 'Rally your', accent: 'community',
-    desc: "Host a fundraiser, start a campus chapter, or join an Army Pink event — and turn the people around you into someone's way out.",
-    link: 'Activate Your Community', href: '/community', art: 'community',
-  },
-];
 ---
 
-<Layout title="Get Involved — Army Pink" description="Be the reason someone gets out. Four ways to help Army Pink: fund a ride, partner with purpose, give your time, or rally your community." navStart="transparent">
+<Layout title="Get Involved — Army Pink" description="Be the reason someone gets out. Four ways to help Army Pink: fund a ride, partner with purpose, give your time, or rally your community.">
 
-  <!-- HERO — fullscreen video on load, shrinks + slides up on video-end / first scroll -->
-  <section class="dn-hero hero-bleed" id="dn-hero" data-nav-theme="dark">
-    <video
-      class="dn-hero__vid"
-      src="/vid/safe-exit-hero.mp4"
-      poster="/img/donate/hero-poster.jpg"
-      autoplay muted playsinline preload="auto"
-      aria-label="Safe exit is a right."
-    ></video>
-    <div class="dn-wave" aria-hidden="true"></div>
-  </section>
-
-  <script is:inline>
-    (function () {
-      var hero = document.getElementById('dn-hero');
-      if (!hero) return;
-      var vid = hero.querySelector('.dn-hero__vid');
-      var done = false;
-      function shrink() {
-        if (done) return;
-        done = true;
-        hero.classList.add('is-shrunk');
-        window.removeEventListener('scroll', shrink);
-        window.removeEventListener('wheel', shrink);
-        window.removeEventListener('touchmove', shrink);
-        if (vid) vid.removeEventListener('ended', shrink);
-      }
-      if (vid) {
-        // Play once on landing — never loop. Freeze on the last frame at end.
-        vid.loop = false;
-        vid.removeAttribute('loop');
-        vid.addEventListener('ended', function () {
-          try { vid.pause(); } catch (e) {}
-          shrink();
-        });
-        // Fallback: shrink just after the clip's duration, in case 'ended' is missed
-        function scheduleFallback() {
-          if (isFinite(vid.duration) && vid.duration > 0) {
-            setTimeout(shrink, vid.duration * 1000 + 300);
-          }
-        }
-        if (vid.readyState >= 1) scheduleFallback();
-        else vid.addEventListener('loadedmetadata', scheduleFallback);
-        var p = vid.play();
-        if (p && p.catch) p.catch(function () {});
-      }
-      window.addEventListener('scroll', shrink, { passive: true });
-      window.addEventListener('wheel', shrink, { passive: true });
-      window.addEventListener('touchmove', shrink, { passive: true });
-    })();
-  </script>
-
-  <!-- STATEMENT — revealed as the hero scrubs down -->
-  <section class="dn-statement" aria-label="Be the reason someone gets out">
-    <div class="dn-statement__inner">
-      <h2 class="dn-title dn-statement__title"><span class="dn-statement__lead">Be the reason someone</span> <em>gets out</em></h2>
-      <a href="#ways" class="dn-btn dn-statement__btn">Ways to Help</a>
-    </div>
-  </section>
-  <noscript>
-    <style>.dn-statement__inner { opacity: 1 !important; transform: none !important; }</style>
-  </noscript>
-
-  <!-- WAYS TO GIVE — copy scrolls on the left; ONE fixed bordered frame on the
-       right whose artwork swaps (slides up 0→1) as each way enters view. -->
-  <section class="wg" id="ways" aria-label="Ways to give">
-    <div class="wg-grid">
-      <div class="wg-copy">
-        {ways.map((w, i) => (
-          <article class="wg-step" data-step={i}>
-            <h2 class="wg-title">{w.title} <span class="wg-accent">{w.accent}</span></h2>
-            <p class="wg-desc">{w.desc}</p>
-            <a class="wg-link" href={w.href}>{w.link} <span aria-hidden="true">→</span></a>
-          </article>
-        ))}
+  <!-- HERO — rounded video banner, then headline (left) + subtext / Give Now
+       (right) on cream. The "safe exit" clip plays as an ambient loop. -->
+  <section class="gih" aria-label="Be the reason someone gets out">
+    <div class="gih__inner">
+      <div class="gih__media">
+        <video
+          class="gih__vid"
+          src="/vid/safe-exit-hero.mp4"
+          poster="/img/donate/hero-poster.jpg"
+          autoplay muted loop playsinline preload="auto"
+          aria-label="Safe exit is a right."
+        ></video>
       </div>
-      <div class="wg-visual-col">
-        <div class="wg-visual">
-          {ways.map((w, i) => (
-            <div class={`wg-art${i === 0 ? ' is-active' : ''}`} data-art={i} aria-hidden="true">
-              <!-- SVG slot for this way (replaces the placeholder) -->
-              <span class="wg-art__placeholder">{w.accent}</span>
-            </div>
-          ))}
+      <div class="gih__row">
+        <h1 class="gih__title">Be the reason someone <span class="gih__accent">gets out</span></h1>
+        <div class="gih__aside">
+          <p class="gih__lead">Give, partner, volunteer, or rally your community — here's how you help survivors reach safety.</p>
+          <button class="btn btn-primary gih__cta" type="button" data-donate-panel>Give Now</button>
         </div>
       </div>
     </div>
-    <div class="dn-wave dn-wave--footer" aria-hidden="true"></div>
+  </section>
+
+  <!-- WAYS TO GIVE — Figma "WorksWrap": left copy scrolls; the right panel is
+       pinned (sticky) and crossfades a visual per active step. Dark-green band. -->
+  <section class="giw" id="ways" aria-label="Ways to give" data-giw>
+    <div class="giw__grid">
+      <!-- LEFT: scrolling copy -->
+      <div class="giw__left">
+        <article class="giw__step" data-step="0">
+          <div class="giw__copy">
+            <h2 class="giw__title">Fund the <span class="giw__accent" style="color:#ea79a9">first 200 rides</span> and help launch the movement.</h2>
+            <p class="giw__body">Every gift helps provide safe, discreet transportation for survivors who need to leave unsafe environments, reach safe destinations, or access critical services.</p>
+          </div>
+        </article>
+        <article class="giw__step" data-step="1">
+          <div class="giw__copy">
+            <h2 class="giw__title"><span class="giw__accent" style="color:#f4c84e">Give monthly</span> and keep safe rides available for survivors year-round.</h2>
+            <p class="giw__body">Through recurring monthly gifts, <strong>Escape Club members</strong> help sustain Freedom Rides and provide the reliable funding needed to keep transportation available when survivors need to leave.</p>
+          </div>
+        </article>
+        <article class="giw__step" data-step="2">
+          <div class="giw__copy">
+            <h2 class="giw__title">Start your own fundraiser and <span class="giw__accent" style="color:#e8833a">rally your people</span> to help.</h2>
+            <p class="giw__body">Start your own fundraiser and rally your community — because this is about proving what's possible when people come together to remove barriers and create access to safety.</p>
+          </div>
+        </article>
+        <article class="giw__step" data-step="3">
+          <div class="giw__copy">
+            <h2 class="giw__title">Bring your <span class="giw__accent" style="color:#8b7fd4">organization's</span> funding or services to keep survivors moving.</h2>
+            <p class="giw__body">Partner with Army Pink through funding, services, or sponsorship to help strengthen the network of organizations, advocates, and support systems that move survivors toward safety.</p>
+          </div>
+        </article>
+        <article class="giw__step" data-step="4">
+          <div class="giw__copy">
+            <h2 class="giw__title">Give goods, services, or <span class="giw__accent" style="color:#5bb3a0">auction items</span> that help survivors further.</h2>
+            <p class="giw__body">In-kind support that helps Army Pink stretch every dollar and keep safe transportation available for more survivors.</p>
+          </div>
+        </article>
+        <article class="giw__step" data-step="5">
+          <div class="giw__copy">
+            <h2 class="giw__title">Start a <span class="giw__accent" style="color:#ea79a9">campus chapter</span> and raise funds and awareness together</h2>
+            <p class="giw__body">Through campus chapters, student-led events, and awareness campaigns, Campus Impact connects young leaders with Army Pink's mission to help remove barriers survivors face when seeking safety.</p>
+          </div>
+        </article>
+        <article class="giw__step" data-step="6">
+          <div class="giw__copy">
+            <h2 class="giw__title">Join our auction, <span class="giw__accent" style="color:#f4c84e">bid on experiences</span>, and fund more rides.</h2>
+            <p class="giw__body">Join our benefit auction to bid on standout experiences and items, turning a night out into rides that move survivors toward safety.</p>
+          </div>
+        </article>
+      </div>
+      <!-- RIGHT: pinned panel whose visual crossfades -->
+      <div class="giw__right">
+        <div class="giw__card">
+          <div class="giw__viz is-active" data-art="0">
+            <video class="giw__vid giw__vid--portrait" src="/vid/impact-loop-200rides.mp4" autoplay muted loop playsinline preload="auto"></video>
+            <button class="giw__btn" type="button" data-donate-panel>Give Now</button>
+          </div>
+          <div class="giw__viz" data-art="1">
+            <img class="giw__vid giw__vid--logo" src="/vid/escape-club-logo.gif" alt="Escape Club logo" />
+            <button class="giw__btn" type="button" data-donate-panel>Give Now</button>
+          </div>
+          <div class="giw__viz" data-art="2">
+            <div class="giw__ph"><b>03</b><span>Right-side placeholder</span></div>
+            <button class="giw__btn" type="button" data-donate-panel>Give Now</button>
+          </div>
+          <div class="giw__viz" data-art="3">
+            <div class="giw__ph"><b>04</b><span>Right-side placeholder</span></div>
+            <button class="giw__btn" type="button" data-donate-panel>Give Now</button>
+          </div>
+          <div class="giw__viz" data-art="4">
+            <div class="giw__ph"><b>05</b><span>Right-side placeholder</span></div>
+            <button class="giw__btn" type="button" data-donate-panel>Give Now</button>
+          </div>
+          <div class="giw__viz" data-art="5">
+            <div class="giw__ph"><b>06</b><span>Right-side placeholder</span></div>
+            <button class="giw__btn" type="button" data-donate-panel>Give Now</button>
+          </div>
+          <div class="giw__viz" data-art="6">
+            <div class="giw__ph"><b>07</b><span>Right-side placeholder</span></div>
+            <button class="giw__btn" type="button" data-donate-panel>Give Now</button>
+          </div>
+        </div>
+      </div>
+    </div>
   </section>
 
   <script is:inline>
     (function () {
-      var steps = document.querySelectorAll('.wg-step');
-      var arts = document.querySelectorAll('.wg-art');
-      if (!steps.length || !arts.length) return;
+      var section = document.querySelector('[data-giw]');
+      var steps = document.querySelectorAll('.giw__step');
+      var vizes = document.querySelectorAll('.giw__viz');
+      if (!section || !steps.length || !vizes.length) return;
+
       function setActive(i) {
-        for (var j = 0; j < arts.length; j++) {
-          arts[j].classList.toggle('is-active', j === i);
-        }
+        for (var j = 0; j < vizes.length; j++) vizes[j].classList.toggle('is-active', j === i);
       }
       if (!('IntersectionObserver' in window)) { setActive(0); return; }
-      // The step whose centre sits in the middle band of the viewport becomes
-      // active — its artwork slides up (0→1) in the fixed frame, replacing the prior.
+
+      // Crossfade the right panel to whichever step is centred.
       var io = new IntersectionObserver(function (entries) {
         entries.forEach(function (e) {
           if (e.isIntersecting) setActive(parseInt(e.target.getAttribute('data-step'), 10));
         });
       }, { rootMargin: '-45% 0px -45% 0px', threshold: 0 });
       steps.forEach(function (s) { io.observe(s); });
+
+      // The panel is fixed, so only reveal it while the section actually FILLS
+      // the viewport (its top is past the header AND its bottom is below the
+      // viewport). That keeps it from overlapping the hero above or footer below
+      // as you scroll in/out.
+      var headerEl = document.querySelector('.site-header');
+      function updatePin() {
+        var top = headerEl ? headerEl.getBoundingClientRect().bottom : 120;
+        var rect = section.getBoundingClientRect();
+        section.classList.toggle('is-onscreen', rect.top <= top && rect.bottom >= window.innerHeight);
+      }
+      var pinTick = false;
+      function onPinScroll() {
+        if (pinTick) return;
+        pinTick = true;
+        requestAnimationFrame(function () { updatePin(); pinTick = false; });
+      }
+      window.addEventListener('scroll', onPinScroll, { passive: true });
+      window.addEventListener('resize', onPinScroll);
+      updatePin();
     })();
   </script>
 
