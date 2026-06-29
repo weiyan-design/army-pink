@@ -7,25 +7,26 @@ import Layout from '../layouts/Layout.astro';
   <!-- HERO — rounded video banner, then headline (left) + subtext / Give Now
        (right) on cream. The "safe exit" clip plays as an ambient loop. -->
   <section class="gih" aria-label="Be the reason someone gets out">
-    <div class="gih__inner">
-      <div class="gih__media">
-        <video
-          class="gih__vid"
-          src="/vid/safe-exit-hero.mp4"
-          poster="/img/donate/hero-poster.jpg"
-          autoplay muted loop playsinline preload="auto"
-          aria-label="Safe exit is a right."
-        ></video>
-      </div>
-      <div class="gih__row">
-        <h1 class="gih__title">Be the reason someone <span class="gih__accent">gets out</span></h1>
-        <div class="gih__aside">
-          <p class="gih__lead">Give, partner, volunteer, or rally your community — here's how you help survivors reach safety.</p>
-          <button class="btn btn-primary gih__cta" type="button" data-donate-panel>Give Now</button>
-        </div>
-      </div>
+    <h1 class="gih__title"><span class="gih__line">Be the reason</span><br /><span class="gih__line">someone</span><br class="gih__br2" /><span class="gih__line gih__accent">gets out</span></h1>
+    <div class="gih__media">
+      <video
+        class="gih__vid"
+        src="/vid/safe-exit-hero.mp4"
+        poster="/img/donate/hero-poster.jpg"
+        autoplay muted loop playsinline preload="auto"
+        aria-label="Safe exit is a right."
+      ></video>
+    </div>
+    <div class="gih__aside">
+      <p class="gih__lead">Give, partner, volunteer, or rally your community — here's how you help survivors reach safety.</p>
+      <!-- Home marker (invisible): anchors the flying CTA's start position. -->
+      <button class="btn btn-primary gih__cta" type="button" data-cta-home aria-hidden="true" tabindex="-1">Give Now</button>
     </div>
   </section>
+
+  <!-- Flying CTA: starts in the hero, pins ~50px below the nav, then slides to the
+       ways card's top-right; scrolls away with the section. Position driven by JS. -->
+  <button class="btn btn-primary cta-fly" type="button" data-cta-fly data-donate-panel>Give Now</button>
 
   <!-- WAYS TO GIVE — Figma "WorksWrap": left copy scrolls; the right panel is
        pinned (sticky) and crossfades a visual per active step. Dark-green band. -->
@@ -80,33 +81,22 @@ import Layout from '../layouts/Layout.astro';
       <div class="giw__right">
         <div class="giw__card">
           <div class="giw__viz is-active" data-art="0">
-            <video class="giw__vid giw__vid--portrait" src="/vid/impact-loop-200rides.mp4" autoplay muted loop playsinline preload="auto"></video>
-            <button class="giw__btn" type="button" data-donate-panel>Give Now</button>
-          </div>
+            <video class="giw__vid giw__vid--portrait" src="/vid/impact-loop-200rides.mp4" autoplay muted loop playsinline preload="auto"></video>          </div>
           <div class="giw__viz" data-art="1">
-            <img class="giw__vid giw__vid--logo" src="/vid/escape-club-logo.gif" alt="Escape Club logo" />
-            <button class="giw__btn" type="button" data-donate-panel>Give Now</button>
-          </div>
+            <img class="giw__vid giw__vid--logo" src="/vid/escape-club-logo.gif" alt="Escape Club logo" />          </div>
           <div class="giw__viz" data-art="2">
-            <div class="giw__ph"><b>03</b><span>Right-side placeholder</span></div>
-            <button class="giw__btn" type="button" data-donate-panel>Give Now</button>
-          </div>
+            <div class="giw__ph"><b>03</b><span>Right-side placeholder</span></div>          </div>
           <div class="giw__viz" data-art="3">
-            <div class="giw__ph"><b>04</b><span>Right-side placeholder</span></div>
-            <button class="giw__btn" type="button" data-donate-panel>Give Now</button>
-          </div>
+            <div class="giw__ph"><b>04</b><span>Right-side placeholder</span></div>          </div>
           <div class="giw__viz" data-art="4">
-            <div class="giw__ph"><b>05</b><span>Right-side placeholder</span></div>
-            <button class="giw__btn" type="button" data-donate-panel>Give Now</button>
-          </div>
+            <div class="giw__ph"><b>05</b><span>Right-side placeholder</span></div>          </div>
           <div class="giw__viz" data-art="5">
-            <div class="giw__ph"><b>06</b><span>Right-side placeholder</span></div>
-            <button class="giw__btn" type="button" data-donate-panel>Give Now</button>
-          </div>
+            <div class="giw__ph"><b>06</b><span>Right-side placeholder</span></div>          </div>
           <div class="giw__viz" data-art="6">
             <div class="giw__ph"><b>07</b><span>Right-side placeholder</span></div>
-            <button class="giw__btn" type="button" data-donate-panel>Give Now</button>
           </div>
+          <!-- Target marker (invisible) — the fixed flyer lands here, top-right of the card. -->
+          <button class="btn btn-primary giw__cta-target" type="button" data-cta-target aria-hidden="true" tabindex="-1">Give Now</button>
         </div>
       </div>
     </div>
@@ -142,15 +132,185 @@ import Layout from '../layouts/Layout.astro';
         var rect = section.getBoundingClientRect();
         section.classList.toggle('is-onscreen', rect.top <= top && rect.bottom >= window.innerHeight);
       }
-      var pinTick = false;
-      function onPinScroll() {
-        if (pinTick) return;
-        pinTick = true;
-        requestAnimationFrame(function () { updatePin(); pinTick = false; });
+
+      // ---- Flying CTA: an L-path. PHASE 1 — rides straight up with the hero until
+      // its top reaches the lock line (the card's top-right target). PHASE 2 — locks
+      // vertically and slides gradually (eased) straight to the right into the card's
+      // top-right. Rides the section's bottom up on exit. Runs every frame so it stays
+      // perfectly in sync with Lenis smooth-scroll (no jitter). ----
+      var fly = document.querySelector('[data-cta-fly]');
+      var homeM = document.querySelector('[data-cta-home]');
+      var targetM = document.querySelector('[data-cta-target]');
+      function clamp(v, lo, hi) { return v < lo ? lo : (v > hi ? hi : v); }
+      function updateFly() {
+        if (!fly || !homeM || !targetM) return;
+        var hr = homeM.getBoundingClientRect();
+        var tr = targetM.getBoundingClientRect();
+        var gr = section.getBoundingClientRect();
+        var bh = fly.offsetHeight;
+        var top = headerEl ? headerEl.getBoundingClientRect().bottom : 100;
+        var lockY = top + 50;                           // pin ~50px below the nav
+        var slide = window.innerHeight * 0.55;          // gradual horizontal scroll range
+        // PHASE 1 (vertical): docked at the home marker, rides up with the hero
+        // until it reaches the lock line. PHASE 2 (horizontal): pinned at lockY,
+        // eases right into the card's top-right. EXIT: rides the section bottom up.
+        var y = clamp(hr.top, lockY, gr.bottom - bh - 20);
+        var p = clamp((lockY - hr.top) / slide, 0, 1);  // 0 until pinned, then ramps
+        var pe = p * p * (3 - 2 * p);                   // smoothstep ease
+        var x = hr.left + (tr.left - hr.left) * pe;
+        fly.style.transform = 'translate(' + x + 'px, ' + y + 'px)';
       }
-      window.addEventListener('scroll', onPinScroll, { passive: true });
-      window.addEventListener('resize', onPinScroll);
+
+      // ---- Hero video: lock its LEFT edge to the headline's right edge so
+      // "Be the reason" always kisses the video, at every breakpoint. Width fills
+      // the rest, capped so it never balloons on ultra-wide (leftover → right). The
+      // stacked layout (<=900px) is CSS-owned, so reset inline styles there. ----
+      var heroEl = document.querySelector('.gih');
+      var titleEl = document.querySelector('.gih__title');
+      var mediaEl = document.querySelector('.gih__media');
+      var asideEl = document.querySelector('.gih__aside');
+      var OVERLAP_FRAC = 0.45;                          // video left starts ~45% into the headline (right ~55% overlaps)
+      var GAP = 28;                                     // video → lead/CTA gap
+      function layoutHeroMedia() {
+        if (!heroEl || !titleEl || !mediaEl) return;
+        if (window.matchMedia('(max-width: 900px)').matches) {
+          mediaEl.style.left = ''; mediaEl.style.right = ''; mediaEl.style.width = '';
+          titleEl.style.left = ''; titleEl.style.top = ''; if (asideEl) asideEl.style.right = '';
+          heroEl.style.height = ''; heroEl.style.minHeight = '';
+          heroEl.style.removeProperty('--gih-media-top'); heroEl.style.removeProperty('--gih-media-h');
+          return;
+        }
+        var vw = window.innerWidth, vh = window.innerHeight;
+        var headerH = headerEl ? headerEl.offsetHeight : 0;
+        var s = heroEl.getBoundingClientRect();
+        titleEl.style.left = '';                          // restore CSS gutter for a clean read
+        if (asideEl) asideEl.style.right = '';            // restore CSS gutter width for a clean read
+        var t = titleEl.getBoundingClientRect();
+        var gutter = t.left - s.left;                     // = var(--gih-gutter)
+        var visible = vh - headerH;                       // hero's on-screen budget
+        // Top/bottom hero padding — clamp(px floor, vh, px ceiling): scales with the
+        // viewport but never collapses on short screens or balloons on tall ones.
+        var TOP_M = clamp(vh * 0.05, 28, 72);             // ≈ clamp(28px, 5vh, 72px)
+        var BOT_M = clamp(vh * 0.055, 32, 80);            // ≈ clamp(32px, 5.5vh, 80px)
+        // Size the 16:9 video to the leftover vertical space so video + lead + CTA
+        // fill ~100svh. Floor at 50vw (never too small), cap to viewport width.
+        function sizeVideo(asideH) {
+          var h = Math.max(0, visible - TOP_M - BOT_M - GAP - asideH);
+          var w = Math.min(Math.max(h * 16 / 9, vw * 0.5), vw - 2 * gutter);
+          return { w: w, h: w * 9 / 16, left: Math.max(gutter, (vw - w) / 2) };
+        }
+        // Two passes: aligning the lead's right edge to the (narrower) video changes
+        // how the lead wraps, which changes its height and thus the video size.
+        var v = sizeVideo(asideEl ? asideEl.offsetHeight : 150);
+        var asideH;
+        if (asideEl) {
+          asideEl.style.right = (vw - (v.left + v.w)) + 'px';
+          asideH = asideEl.offsetHeight;
+          v = sizeVideo(asideH);
+          asideEl.style.right = (vw - (v.left + v.w)) + 'px';   // lead right edge = video right edge
+          asideH = asideEl.offsetHeight;
+        } else { asideH = 150; }
+        // Center the video (balanced cream margins L+R when there's side room).
+        mediaEl.style.right = 'auto';
+        mediaEl.style.left = v.left + 'px';
+        mediaEl.style.width = v.w + 'px';
+        heroEl.style.setProperty('--gih-media-h', v.h + 'px');
+        heroEl.style.minHeight = '0px';                  // let our computed height win over min-height:100svh
+
+        var hh = t.height;                               // headline height
+        var leftCream = v.left - gutter;                 // cream available to the LEFT of the video
+        if (leftCream >= 0.18 * t.width) {
+          // HORIZONTAL overlap (default): headline 40px below the video top, its
+          // left ~45% on the side cream, right ~55% over the video.
+          var blockH = v.h + GAP + asideH;
+          var topOffset = Math.max(TOP_M, (visible - blockH) / 2);
+          titleEl.style.left = Math.max(gutter, v.left - OVERLAP_FRAC * t.width) + 'px';
+          titleEl.style.top = (topOffset + 40) + 'px';
+          heroEl.style.setProperty('--gih-media-top', topOffset + 'px');
+          heroEl.style.height = Math.max(visible, topOffset + blockH + BOT_M) + 'px';
+        } else {
+          // VERTICAL straddle (wide / width-bound video, no side cream): lift the
+          // headline so it sits mostly ABOVE the video on cream, with its bottom
+          // dipping onto the video — same overlap feeling, just from the top edge.
+          // The poke (height above the video) eases back when vertical room is tight
+          // so it always fits: full lift on tall screens, less as space shrinks.
+          var room = visible - (v.h + GAP + asideH + TOP_M + BOT_M);
+          var poke = Math.max(0, Math.min(0.6 * hh, room));   // headline height sitting above the video
+          var blockH = poke + v.h + GAP + asideH;
+          var topOffset = Math.max(TOP_M, (visible - blockH) / 2);   // headline top; ≥ TOP_M below nav
+          titleEl.style.left = gutter + 'px';
+          titleEl.style.top = topOffset + 'px';
+          heroEl.style.setProperty('--gih-media-top', (topOffset + poke) + 'px');   // video starts below the poke
+          heroEl.style.height = Math.max(visible, topOffset + blockH + BOT_M) + 'px';
+        }
+      }
+
+      // Per-frame loop keeps the button glued to the (Lenis-smoothed) scroll position.
+      function frame() { updatePin(); updateFly(); requestAnimationFrame(frame); }
+      requestAnimationFrame(frame);
+      window.addEventListener('resize', function () { layoutHeroMedia(); updatePin(); updateFly(); });
+      layoutHeroMedia();
+      if (document.fonts && document.fonts.ready) document.fonts.ready.then(layoutHeroMedia);
       updatePin();
+      updateFly();
+      // Hand off from the (no-JS-visible) home marker to the now-positioned flyer,
+      // fading it in with the rest of the hero's staggered reveal.
+      if (fly && homeM) {
+        homeM.style.visibility = 'hidden';
+        setTimeout(function () { fly.style.opacity = '1'; }, 450);
+      }
+    })();
+  </script>
+
+  <script>
+    // Cycling headline word: gets out -> begins again -> reaches safety -> starts
+    // to heal -> (loop). The whole phrase slides up as one unit, and the cream box
+    // eases to the new phrase's width in sync with the slide (no instant snap).
+    (function () {
+      var accent = document.querySelector('.gih__accent');
+      if (!accent) return;
+      var PHRASES = ['gets out', 'begins again', 'reaches safety', 'starts to heal'];
+      var HOLD = 2200, DUR = 0.5, EASE = 'cubic-bezier(0.22,0.61,0.36,1)';
+      function phrase(text) {
+        var el = document.createElement('span'); el.className = 'gih__phrase';
+        el.textContent = text; return el;
+      }
+      accent.textContent = '';
+      var win = document.createElement('span'); win.className = 'gih__win';
+      var roll = document.createElement('span'); roll.className = 'gih__roll';
+      roll.appendChild(phrase(PHRASES[0]));
+      win.appendChild(roll); accent.appendChild(win);
+      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+      // Off-screen measurer: each phrase's natural width (font tracks the headline).
+      var measurer = phrase('');
+      measurer.style.cssText = 'position:absolute; visibility:hidden; left:-9999px; top:0; white-space:nowrap;';
+      accent.appendChild(measurer);
+      function widthOf(str) { measurer.textContent = str; return Math.ceil(measurer.getBoundingClientRect().width); }
+
+      var idx = 0;
+      function tick() {
+        win.style.width = win.offsetWidth + 'px';                // pin current width
+        var nextStr = PHRASES[(idx + 1) % PHRASES.length];
+        var next = phrase(nextStr);
+        roll.appendChild(next);
+        var h = next.getBoundingClientRect().height;
+        var targetW = widthOf(nextStr);
+        requestAnimationFrame(function () {
+          win.style.transition = 'width ' + DUR + 's ' + EASE;
+          win.style.width = targetW + 'px';                      // ease the cream box width
+          roll.style.transition = 'transform ' + DUR + 's ' + EASE;
+          roll.style.transform = 'translateY(-' + h + 'px)';     // slide the whole word up
+        });
+        setTimeout(function () {
+          roll.style.transition = 'none';
+          roll.removeChild(roll.firstChild);                     // drop the phrase that left
+          roll.style.transform = 'translateY(0)';
+          idx = (idx + 1) % PHRASES.length;
+          setTimeout(tick, HOLD);
+        }, DUR * 1000 + 50);
+      }
+      setTimeout(tick, HOLD);
     })();
   </script>
 
