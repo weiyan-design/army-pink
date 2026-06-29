@@ -5930,9 +5930,9 @@ body.overlay-open {
   box-decoration-break: clone;
   -webkit-box-decoration-break: clone;
   padding: 0.06em 0.24em;
-  border-radius: 3px;
+  border-radius: 6px;
 }
-.gih__accent { color: var(--pink-dark); }   /* pink text; bg comes from .gih__line */
+.gih__accent { color: var(--pink-dark); font-weight: 700; }   /* pink text; bg comes from .gih__line */
 /* Cycling phrase: the whole word slides up as one unit, swapping to the next
    phrase in the survivor-journey sequence. */
 .gih__win { display: inline-block; overflow: hidden; height: 1.18em; vertical-align: top; }
@@ -5995,7 +5995,7 @@ body.overlay-open {
     height: auto;
     min-height: 0;
     overflow: visible;
-    padding: 8rem var(--gih-gutter) 3rem;
+    padding: 3rem var(--gih-gutter) 3rem;
   }
   .gih__title, .gih__media, .gih__aside { position: static; max-width: none; width: auto; }
   .gih__title { font-size: clamp(2.2rem, 9vw, 3.4rem); margin: 0 0 1.5rem; }
