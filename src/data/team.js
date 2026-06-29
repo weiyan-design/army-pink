@@ -544,6 +544,6 @@ export const team = [
     name: "Beverly Taridona",
     title: "Partnerships Director",
     bio: "Beverly Taridona leads Army Pink's fundraising and partnership efforts with a strong focus on building meaningful collaborations that expand the organization's reach and impact. She is responsible for developing strategic relationships with donors, corporate partners, and community supporters to secure the resources needed to sustain and grow the mission. Her work is centered on creating long-term funding pathways that ensure survivors have consistent access to safety, support, and life-changing resources.",
-    photo: "/img/people/beverly-taridona.png",
+    photo: "/img/people/beverly-taridona.jpg",
   },
 ];

@@ -9,15 +9,19 @@ const leadershipSlugs = [
   'bill-hensley',
   'cecelia-machuca',
   'debra-prince',
-  'diana-drews',
   'cynthia-modders',
   'kathy-hallen',
   'liliana-pettenkofer',
   'beverly-taridona',
   'ashley-antony',
+  'emily-nguyen',
+  'rasit-tasdelen',
   'wei-yan',
 ];
-const volunteers = team.filter((p) => !leadershipSlugs.includes(p.slug));
+const lastName = (p) => p.name.trim().split(/\s+/).pop();
+const volunteers = team
+  .filter((p) => !leadershipSlugs.includes(p.slug))
+  .sort((a, b) => lastName(a).localeCompare(lastName(b)));
 
 // Category chips. Volunteers have no category field in the data, so we infer
 // one from each person's job title via ordered keyword rules (first match
