@@ -294,7 +294,7 @@ const waysToGive = [
 
             <div class="psg__footer">
               <p class="fc-caption" set:html={progCaption(survivorPrograms[0])}></p>
-              <a class="fc-cta psg__cta" href="/get-involved"><span class="fc-cta__label">Help Us Build</span></a>
+              <a class="btn btn-secondary" href="/get-involved">Help Us Build</a>
             </div>
           </div>
         </div>
@@ -315,7 +315,22 @@ const waysToGive = [
             <span class="pill-label reveal-item">Current Fundraising Campaign</span>
             <h2 class="section-title section-title--lg reveal-item">200 Rides to <em>Freedom</em></h2>
           </header>
-          <!-- tracker + car, directly under the title -->
+        </div>
+        <div class="ways__media" aria-hidden="true"></div>
+      </div>
+    </div>
+
+    <!-- Body band (light grey): body + "Other Ways to Give" (left); pinned impact card + tracker (right) -->
+    <div class="ways__band ways__band--body">
+      <div class="container ways__grid">
+        <div class="ways__content">
+          <!-- Stacked (mobile) title — renders under the video + Fund button; the
+               cream-band title above is hidden at this breakpoint. -->
+          <header class="ways__head ways__head--stacked reveal-item">
+            <span class="pill-label">Current Fundraising Campaign</span>
+            <h2 class="section-title section-title--lg">200 Rides to <em>Freedom</em></h2>
+          </header>
+          <!-- tracker + car moved here, directly above the description -->
           <div
             class="dn-tracker ways__tracker"
             data-tracker
@@ -326,7 +341,7 @@ const waysToGive = [
             aria-label={`${waysRides} of ${waysGoal} rides funded`}
           >
             <div class="dn-tracker__bar">
-              <div class="dn-tracker__bubble" style={`left:${waysPct}%`}>
+              <div class="dn-tracker__bubble">
                 <span class="dn-tracker__count">{waysRides}</span>
                 <span class="dn-tracker__label">Rides Funded</span>
               </div>
@@ -336,16 +351,8 @@ const waysToGive = [
               <img class="ways__car" src="/img/freedom-rides-car.gif" alt="" aria-hidden="true" data-ways-car />
             </div>
           </div>
-        </div>
-        <div class="ways__media" aria-hidden="true"></div>
-      </div>
-    </div>
 
-    <!-- Body band (light grey): body + "Other Ways to Give" (left); pinned impact card + tracker (right) -->
-    <div class="ways__band ways__band--body">
-      <div class="container ways__grid">
-        <div class="ways__content">
-          <p class="section-text reveal-item">Every gift helps provide safe, discreet transportation for survivors who need to leave unsafe environments, reach safe destinations, or access critical services. A single Freedom Ride costs $50 and can help a survivor reach shelter, medical care, legal support, a trusted support network, or another destination connected to their safety plan. A ride at the right time can save a life.</p>
+          <p class="section-text reveal-item">Every gift helps provide safe, discreet transportation for survivors who need to leave unsafe environments, reach safe destinations, or access critical services. <span class="ways__cost">A single Freedom Ride costs $50</span> and can help a survivor reach shelter, medical care, legal support, a trusted support network, or another destination connected to their safety plan. A ride at the right time can save a life.</p>
 
           <h3 class="ways__sub reveal-item">Other Ways to Give</h3>
           <ul class="give-list">
@@ -373,95 +380,17 @@ const waysToGive = [
             <div class="ways__card">
               <video class="ways__vid" src="/vid/give-impact-loop.mp4" autoplay muted loop playsinline preload="auto" aria-label="Army Pink Freedom Rides impact loop"></video>
             </div>
-            <button class="btn btn-primary ways__fund" type="button">Fund 200 Rides</button>
+            <div class="ways__actions">
+              <button class="btn btn-primary" type="button">Fund 200 Rides</button>
+              <a class="btn btn-secondary" href="https://givebutter.com/c/200-rides-x4a9e7" target="_blank" rel="noopener">Learn more</a>
+            </div>
           </div>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- ===== HELP LAUNCH THE MOVEMENT — volunteer callout + donate form ===== -->
-  <section class="launch launch--volunteers" id="launch" aria-label="Help launch the movement" data-launch data-volunteer-photos={JSON.stringify(volunteerPhotos)}>
-    <div class="launch__callout">
-      <div class="launch__avatars" aria-hidden="true">
-        <span class="launch__avatar launch__avatar--1 launch__avatar--blob" data-depth="22"><img class="launch__avatar-img" alt="" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" /></span>
-        <span class="launch__avatar launch__avatar--2 launch__avatar--blob" data-depth="14"><img class="launch__avatar-img" alt="" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" /></span>
-        <span class="launch__avatar launch__avatar--3 launch__avatar--blob" data-depth="26"><img class="launch__avatar-img" alt="" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" /></span>
-        <span class="launch__avatar launch__avatar--4 launch__avatar--blob" data-depth="20"><img class="launch__avatar-img" alt="" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" /></span>
-        <span class="launch__avatar launch__avatar--5 launch__avatar--blob" data-depth="14"><img class="launch__avatar-img" alt="" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" /></span>
-        <span class="launch__avatar launch__avatar--6 launch__avatar--blob" data-depth="24"><img class="launch__avatar-img" alt="" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" /></span>
-      </div>
-      <div class="launch__intro">
-        <h2 class="section-title">Our volunteers make<br><em>freedom possible.</em></h2>
-        <p class="section-text">From tech to design to outreach, everyday people give their skills to help survivors reach safety. Find your place on the team.</p>
-        <div class="launch__cta">
-          <button class="btn btn-primary" type="button" data-volunteer-form>Become A Volunteer</button>
-        </div>
-        <a class="launch__joined" href="/volunteers">
-          <span class="launch__joined-avatars" aria-hidden="true">
-            <span class="launch__joined-av"></span>
-            <span class="launch__joined-av"></span>
-            <span class="launch__joined-av"></span>
-          </span>
-          <span class="launch__joined-text"><strong>100+ volunteers</strong> already joined the movement</span>
-        </a>
-      </div>
-    </div>
-  </section>
-
-  <!-- ===== DONATE — cloud meadow + flower + Givebutter form ===== -->
-  <section class="launch launch--donate" aria-label="Support survivors" data-launch>
-    <img class="launch__flower" src="/img/flower-vector-edge.png" alt="" aria-hidden="true" data-launch-flower />
-    <div class="launch__form-wrap">
-      <div class="launch__form">
-        <div class="launch__form-photo">
-          <img src="/img/donation-form-img.jpg" alt="A woman cycling freely through a sunlit, cloud-filled meadow" loading="lazy" />
-        </div>
-        <div class="launch__form-widget">
-          <givebutter-widget id="jb2b4P"></givebutter-widget>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ===== ESCAPE CLUB TEASER ===== -->
-  <section class="feature-carousel feature-carousel--cream" data-feature-carousel>
-    <svg class="fc-wave" viewBox="0 0 1440 80" preserveAspectRatio="none" aria-hidden="true">
-      <path d="M0,36 C360,0 720,76 1080,36 C1260,16 1380,46 1440,36 L1440,80 L0,80 Z"/>
-    </svg>
-    <div class="container">
-      <div class="fc-header">
-        <h2>Healing is harder alone.</h2>
-        <a href="/donate" class="btn btn-ghost">Join the community</a>
-      </div>
-      <div class="fc-track">
-        <article class="fc-card is-active" data-caption="A community of survivors who've walked your path — meeting you in the in-between.">
-          <img src="https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=600&h=1000&fit=crop&q=80" alt="" loading="lazy" />
-        </article>
-        <article class="fc-card" data-caption="Weekly check-ins, kept small enough to feel personal.">
-          <img src="https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?w=600&h=1000&fit=crop&q=80" alt="" loading="lazy" />
-        </article>
-        <article class="fc-card" data-caption="Mentors who remember what year one felt like.">
-          <img src="https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?w=600&h=1000&fit=crop&q=80" alt="" loading="lazy" />
-        </article>
-        <article class="fc-card" data-caption="Cohorts that move at your pace — no one is left behind.">
-          <img src="https://images.unsplash.com/photo-1543269865-cbf427effbad?w=600&h=1000&fit=crop&q=80" alt="" loading="lazy" />
-        </article>
-        <article class="fc-card" data-caption="Peer support designed for the long stretch after the escape.">
-          <img src="https://images.unsplash.com/photo-1502635385003-ee1e6a1a742d?w=600&h=1000&fit=crop&q=80" alt="" loading="lazy" />
-        </article>
-      </div>
-      <div class="fc-footer">
-        <p class="fc-caption">A community of survivors who've walked your path — meeting you in the in-between.</p>
-        <div class="fc-controls">
-          <button class="fc-arrow fc-arrow--prev" aria-label="Previous">&lsaquo;</button>
-          <button class="fc-arrow fc-arrow--next" aria-label="Next">&rsaquo;</button>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ===== PARTNERS ===== -->
+  <!-- ===== PARTNERS — moved up to follow the 200 Rides section ===== -->
   <section class="partner-section">
     <div class="partner-header">
       <span class="pill-label">Army Pink is empowered by</span>
@@ -512,9 +441,56 @@ const waysToGive = [
     </div>
 
     <div class="partner-footer">
-      <a href="/partners" class="btn btn-ghost">Become A Partner</a>
+      <a href="/partners" class="btn btn-secondary">Become A Partner</a>
     </div>
   </section>
+
+  <!-- ===== HELP LAUNCH THE MOVEMENT — volunteer callout + donate form ===== -->
+  <section class="launch launch--volunteers" id="launch" aria-label="Help launch the movement" data-launch data-volunteer-photos={JSON.stringify(volunteerPhotos)}>
+    <div class="launch__callout">
+      <div class="launch__avatars" aria-hidden="true">
+        <span class="launch__avatar launch__avatar--1 launch__avatar--blob" data-depth="22"><img class="launch__avatar-img" alt="" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" /></span>
+        <span class="launch__avatar launch__avatar--2 launch__avatar--blob" data-depth="14"><img class="launch__avatar-img" alt="" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" /></span>
+        <span class="launch__avatar launch__avatar--3 launch__avatar--blob" data-depth="26"><img class="launch__avatar-img" alt="" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" /></span>
+        <span class="launch__avatar launch__avatar--4 launch__avatar--blob" data-depth="20"><img class="launch__avatar-img" alt="" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" /></span>
+        <span class="launch__avatar launch__avatar--5 launch__avatar--blob" data-depth="14"><img class="launch__avatar-img" alt="" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" /></span>
+        <span class="launch__avatar launch__avatar--6 launch__avatar--blob" data-depth="24"><img class="launch__avatar-img" alt="" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" /></span>
+      </div>
+      <div class="launch__intro">
+        <h2 class="section-title">Our volunteers make<br><em>freedom possible.</em></h2>
+        <p class="section-text">From tech to design to outreach, everyday people give their skills to help survivors reach safety. Find your place on the team.</p>
+        <div class="launch__cta">
+          <button class="btn btn-primary" type="button" data-volunteer-form>Become A Volunteer</button>
+        </div>
+        <a class="launch__joined" href="/volunteers">
+          <span class="launch__joined-avatars" aria-hidden="true">
+            <span class="launch__joined-av"></span>
+            <span class="launch__joined-av"></span>
+            <span class="launch__joined-av"></span>
+          </span>
+          <span class="launch__joined-text"><strong>100+ volunteers</strong> already joined the movement</span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== DONATE — cloud meadow + flower + Givebutter form ===== -->
+  <section class="launch launch--donate" aria-label="Support survivors" data-launch>
+    <img class="launch__flower" src="/img/flower-vector-edge.png" alt="" aria-hidden="true" data-launch-flower />
+    <div class="launch__form-wrap">
+      <div class="launch__form">
+        <div class="launch__form-photo">
+          <img src="/img/donation-form-img.jpg" alt="A woman cycling freely through a sunlit, cloud-filled meadow" loading="lazy" />
+        </div>
+        <div class="launch__form-widget">
+          <givebutter-widget id="jb2b4P"></givebutter-widget>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- "Healing is harder alone." carousel archived 2026-06-24 → src/_archive/_healing-is-harder-alone.astro -->
+  <!-- Partners ("Army Pink is empowered by") moved up to follow the 200 Rides section. -->
 
   <!-- Stats + "Our Mission" sections moved to /mission (under "What We Stand For"). -->
 
@@ -571,7 +547,7 @@ const waysToGive = [
         <span class="overline">Learn to Breathe Better</span>
         <h2>Calm starts with a single breath.</h2>
         <p>When your body is stuck in fight-or-flight, breathing is the fastest way back to safety. These exercises are simple, short, and available anytime you need them.</p>
-        <div class="breathing-exercise" role="region" aria-label="Guided breathing exercise"><h3>Try it now: Box Breathing</h3><p>A simple grounding exercise you can use anytime. Follow the animation at your own pace.</p><div class="breath-box" id="breath-box"><div class="breath-circle" id="breath-circle"></div><p class="breath-instruction" id="breath-instruction"></p></div><button class="btn btn-outline" id="breath-toggle">Start breathing exercise</button></div>
+        <div class="breathing-exercise" role="region" aria-label="Guided breathing exercise"><h3>Try it now: Box Breathing</h3><p>A simple grounding exercise you can use anytime. Follow the animation at your own pace.</p><div class="breath-box" id="breath-box"><div class="breath-circle" id="breath-circle"></div><p class="breath-instruction" id="breath-instruction"></p></div><button class="btn btn-secondary" id="breath-toggle">Start breathing exercise</button></div>
         <div class="overlay-cards"><a href="#" class="overlay-card overlay-card-link"><h4>Box Breathing</h4><p>A 4-count breathing technique used to slow your heart rate and regain focus.</p><span class="wellness-tag">Beginner</span></a><a href="#" class="overlay-card overlay-card-link"><h4>5 Minute Stress Relief</h4><p>A short guided breathwork session to release tension.</p><span class="wellness-tag">All levels</span></a><a href="#" class="overlay-card overlay-card-link"><h4>4-7-8 Calming Breath</h4><p>Activate your parasympathetic nervous system within minutes.</p><span class="wellness-tag">Beginner</span></a><a href="#" class="overlay-card overlay-card-link"><h4>Grounding Breathwork for Flashbacks</h4><p>A guided practice to bring you back to the present.</p><span class="wellness-tag">All levels</span></a><a href="#" class="overlay-card overlay-card-link"><h4>Morning Reset: 3 Minutes to Start Your Day</h4><p>A short breathwork routine to set a calm intention.</p><span class="wellness-tag">Beginner</span></a></div>
       </div>
     </div>

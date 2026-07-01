@@ -1,4 +1,7 @@
 ---
+import { languages, defaultLang } from '../i18n/config.js';
+import { useTranslations, getLangFromLocale, localizedPath, stripLocale } from '../i18n/utils.js';
+
 interface Props {
   title?: string;
   description?: string;
@@ -7,39 +10,62 @@ interface Props {
   navStart?: 'transparent' | 'light' | 'dark';
 }
 
+// Locale is inferred from the route the page lives under (/es/* → 'es'), so pages
+// don't have to thread `lang` into the Layout. `t()` looks up shell copy and falls
+// back to English for any key Spanish hasn't translated yet.
+const lang = getLangFromLocale(Astro.currentLocale);
+const t = useTranslations(lang);
+
 const {
-  title = 'Army Pink — Pathway to Freedom',
-  description = 'Army Pink is a survivor-led initiative addressing the #1 unmet need for survivors: safe, immediate transportation out of dangerous situations. We turn compassion into action by providing urgent rides and structured wellness support, helping survivors of domestic abuse leave danger and begin again with dignity, guidance, and connection.',
+  title = t('meta.title'),
+  description = t('meta.description'),
   navStart,
 } = Astro.props;
 
 const navLinks = [
-  { href: '/', label: 'Home' },
-  { href: '/mission', label: 'Mission' },
-  { href: '/wellness-portal', label: 'Calm Room' },
-  { href: '/get-involved', label: 'Get Involved', children: [
-    { href: '/donate', label: 'Donate' },
-    { href: '/partners', label: 'Partner' },
-    { href: '/volunteers', label: 'Volunteer' },
-    { href: '/community', label: 'Activate your community' },
-  ] },
-  { href: '/team', label: 'Leadership' },
+  { href: '/', label: t('nav.home') },
+  { href: '/mission', label: t('nav.mission') },
+  { href: '/wellness-portal', label: t('nav.calmRoom') },
+  { href: '/get-involved', label: t('nav.getInvolved') },
+  { href: '/team', label: t('nav.leadership') },
+  { href: '/volunteers', label: t('nav.volunteers') },
 ];
-const path = Astro.url.pathname.replace(/\/$/, '') || '/';
-const navInitial = navStart ? `is-${navStart}` : (path === '/' ? 'is-transparent' : 'is-light');
+// Archived 2026-06-26 — the "Get Involved" dropdown menu (may be restored).
+// To bring it back, add this `children` array onto the Get Involved item above:
+//   children: [
+//     { href: '/donate', label: 'Donate' },
+//     { href: '/partners', label: 'Partner' },
+//     { href: '/volunteers', label: 'Volunteer' },
+//     { href: '/community', label: 'Activate your community' },
+//   ]
+
+// `logicalPath` is the route with any locale prefix removed — it drives home
+// detection, active-link state, and the language switcher (so ES links point at
+// the Spanish twin of the current page, not always back to /es/).
+const logicalPath = stripLocale(Astro.url.pathname);
+const isHome = logicalPath === '/';
+const navInitial = navStart ? `is-${navStart}` : (isHome ? 'is-transparent' : 'is-light');
 function isActive(href: string) {
-  if (href === '/') return path === '/';
-  return path === href || path.startsWith(href + '/');
+  if (href === '/') return logicalPath === '/';
+  return logicalPath === href || logicalPath.startsWith(href + '/');
 }
+const localeCodes = Object.keys(languages);
 ---
 
 <!DOCTYPE html>
-<html lang="en">
+<html lang={lang}>
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>{title}</title>
   <meta name="description" content={description} />
+  {/* hreflang alternates — tells search engines about the language twins.
+      Resolved against the current origin; set `site` in astro.config.mjs once
+      the production domain is final for canonical absolute URLs. */}
+  {localeCodes.map((code) => (
+    <link rel="alternate" hreflang={code} href={new URL(localizedPath(logicalPath, code), Astro.url).href} />
+  ))}
+  <link rel="alternate" hreflang="x-default" href={new URL(localizedPath(logicalPath, defaultLang), Astro.url).href} />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
@@ -47,59 +73,58 @@ function isActive(href: string) {
   <script src="https://unpkg.com/lucide@latest" is:inline></script>
   <script async src="https://widgets.givebutter.com/latest.umd.cjs?acct=yLfulzFp7eIMG8jn" is:inline></script>
 </head>
-<body class={path === '/' ? 'has-sky-hero' : undefined}>
+<body class={isHome ? 'has-sky-hero' : undefined}>
 
   <!-- ===== STICKY HEADER (crisis banner + nav, always visible) ===== -->
   <header class="site-header">
     <!-- ===== CRISIS BANNER ===== -->
-    <div class="crisis-banner" role="complementary" aria-label="Crisis resources">
-      <p>
-        If you are in immediate danger, call <strong>911</strong>. &nbsp;
-        National DV Hotline: <a href="tel:18007997233"><strong>1-800-799-7233</strong></a> &nbsp;|&nbsp;
-        Text <strong>START</strong> to <strong>88788</strong> &nbsp;|&nbsp;
-        <a href="https://www.thehotline.org" target="_blank" rel="noopener">thehotline.org</a> &nbsp;|&nbsp;
-        Remember to <strong>clear your browser history</strong> when finished.
-      </p>
+    <div class="crisis-banner" role="complementary" aria-label={t('crisis.aria')}>
+      <p set:html={t('crisis.line')}></p>
     </div>
 
     <!-- ===== NAVIGATION (floating glassy pill; JS swaps light/dark/transparent) ===== -->
-    <nav class={`main-nav ${navInitial}`} aria-label="Main navigation">
+    <nav class={`main-nav ${navInitial}`} aria-label={t('nav.ariaMain')}>
       <div class="nav-inner">
-        <a href="/" class="logo" aria-label="Army Pink home">
+        <a href={localizedPath('/', lang)} class="logo" aria-label={t('nav.logoAria')}>
           <img src="/img/AP_Logo.png" alt="Army Pink" class="logo-img" />
         </a>
-        <button class="mobile-menu-toggle" aria-label="Toggle menu" aria-expanded="false">
+        <button class="mobile-menu-toggle" aria-label={t('nav.ariaToggle')} aria-expanded="false">
           <span></span><span></span><span></span>
         </button>
         <ul class="nav-links">
           {navLinks.map(link => (
             <li class={link.children ? 'has-dropdown' : undefined}>
-              <a href={link.href} aria-current={isActive(link.href) ? 'page' : undefined} aria-haspopup={link.children ? 'true' : undefined}>{link.label}</a>
+              <a href={localizedPath(link.href, lang)} aria-current={isActive(link.href) ? 'page' : undefined} aria-haspopup={link.children ? 'true' : undefined}>{link.label}</a>
               {link.children && (
                 <ul class="nav-dropdown">
                   {link.children.map(child => (
-                    <li><a href={child.href}>{child.label}</a></li>
+                    <li><a href={localizedPath(child.href, lang)}>{child.label}</a></li>
                   ))}
                 </ul>
               )}
             </li>
           ))}
         </ul>
-        <a href="#" class="btn btn-primary nav-donate" data-donate-panel>Donate</a>
+        <div class="nav-lang" role="group" aria-label={t('nav.langAria')}>
+          {localeCodes.map((code) => (
+            <a href={localizedPath(logicalPath, code)} lang={code} hreflang={code} class={code === lang ? 'is-current' : undefined} aria-current={code === lang ? 'true' : undefined}>{code.toUpperCase()}</a>
+          ))}
+        </div>
+        <a href="#" class="btn btn-primary nav-donate" data-donate-panel>{t('nav.donate')}</a>
       </div>
     </nav>
   </header>
 
   <!-- ===== SAFE EXIT ===== -->
-  <div class="safe-exit-wrap" role="complementary" aria-label="Safe exit">
-    <span class="safe-exit-tooltip" aria-hidden="true">Press ESC to exit</span>
-    <button class="safe-exit-btn" id="safeExitBtn" aria-label="Immediately leave this site">
+  <div class="safe-exit-wrap" role="complementary" aria-label={t('safeExit.groupAria')}>
+    <span class="safe-exit-tooltip" aria-hidden="true">{t('safeExit.tooltip')}</span>
+    <button class="safe-exit-btn" id="safeExitBtn" aria-label={t('safeExit.aria')}>
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
         <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
         <polyline points="16 17 21 12 16 7"/>
         <line x1="21" y1="12" x2="9" y2="12"/>
       </svg>
-      <span>Quick Exit</span>
+      <span>{t('safeExit.label')}</span>
     </button>
   </div>
 
@@ -107,16 +132,16 @@ function isActive(href: string) {
   <div class="vform" data-volunteer-overlay hidden>
     <div class="vform__backdrop" data-vform-close></div>
     <div class="vform__sheet" role="dialog" aria-modal="true" aria-labelledby="vform-title">
-      <button class="vform__close" type="button" data-vform-close aria-label="Close">&times;</button>
-      <h2 class="vform__title" id="vform-title">Become a volunteer</h2>
-      <p class="vform__intro">Tell us a little about you and how you'd like to help — we'll be in touch.</p>
+      <button class="vform__close" type="button" data-vform-close aria-label={t('form.close')}>&times;</button>
+      <h2 class="vform__title" id="vform-title">{t('vform.volTitle')}</h2>
+      <p class="vform__intro">{t('vform.volIntro')}</p>
       <form class="vform__form" name="volunteer" method="POST" data-netlify="true" netlify-honeypot="bot-field" data-vform-form>
         <input type="hidden" name="form-name" value="volunteer" />
         <p class="vform__hp" hidden><label>Don't fill this out: <input name="bot-field" /></label></p>
-        <label class="vform__field"><span>Name</span><input type="text" name="name" autocomplete="name" required /></label>
-        <label class="vform__field"><span>Email</span><input type="email" name="email" autocomplete="email" required /></label>
-        <label class="vform__field"><span>Your message</span><textarea name="message" rows="4" required></textarea></label>
-        <button class="btn btn-primary vform__submit" type="submit">Send</button>
+        <label class="vform__field"><span>{t('form.name')}</span><input type="text" name="name" autocomplete="name" required /></label>
+        <label class="vform__field"><span>{t('form.email')}</span><input type="email" name="email" autocomplete="email" required /></label>
+        <label class="vform__field"><span>{t('vform.volMessage')}</span><textarea name="message" rows="4" required></textarea></label>
+        <button class="btn btn-primary vform__submit" type="submit">{t('form.send')}</button>
         <p class="vform__status" data-vform-status role="status" aria-live="polite"></p>
       </form>
     </div>
@@ -128,16 +153,16 @@ function isActive(href: string) {
   <div class="vform" data-contact-overlay hidden>
     <div class="vform__backdrop" data-cform-close></div>
     <div class="vform__sheet" role="dialog" aria-modal="true" aria-labelledby="cform-title">
-      <button class="vform__close" type="button" data-cform-close aria-label="Close">&times;</button>
-      <h2 class="vform__title" id="cform-title">Get in touch</h2>
-      <p class="vform__intro">Tell us how you'd like to help — a partnership, an event, or a campus chapter — and we'll be in touch.</p>
+      <button class="vform__close" type="button" data-cform-close aria-label={t('form.close')}>&times;</button>
+      <h2 class="vform__title" id="cform-title">{t('vform.contactTitle')}</h2>
+      <p class="vform__intro">{t('vform.contactIntro')}</p>
       <form class="vform__form" name="get-involved" method="POST" data-netlify="true" netlify-honeypot="bot-field" data-cform-form>
         <input type="hidden" name="form-name" value="get-involved" />
         <p class="vform__hp" hidden><label>Don't fill this out: <input name="bot-field" /></label></p>
-        <label class="vform__field"><span>Name</span><input type="text" name="name" autocomplete="name" required /></label>
-        <label class="vform__field"><span>Email</span><input type="email" name="email" autocomplete="email" required /></label>
-        <label class="vform__field"><span>How can we help?</span><textarea name="message" rows="4" required></textarea></label>
-        <button class="btn btn-primary vform__submit" type="submit">Send</button>
+        <label class="vform__field"><span>{t('form.name')}</span><input type="text" name="name" autocomplete="name" required /></label>
+        <label class="vform__field"><span>{t('form.email')}</span><input type="email" name="email" autocomplete="email" required /></label>
+        <label class="vform__field"><span>{t('vform.contactMessage')}</span><textarea name="message" rows="4" required></textarea></label>
+        <button class="btn btn-primary vform__submit" type="submit">{t('form.send')}</button>
         <p class="vform__status" data-cform-status role="status" aria-live="polite"></p>
       </form>
     </div>
@@ -155,7 +180,8 @@ function isActive(href: string) {
           <div class="footer-logo-wrap">
             <img src="/img/AP_Logo.png" alt="Army Pink" class="logo-img" />
           </div>
-          <p>Supporting domestic violence survivors through safety, transportation, and wellness.</p>
+          <p>{t('footer.brand')}</p>
+          <p class="footer-locale">{t('footer.locale')}</p>
           <div class="footer-social">
             <a href="https://www.instagram.com/armypink" target="_blank" rel="noopener" aria-label="Instagram">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg>
@@ -173,49 +199,52 @@ function isActive(href: string) {
         </div>
 
         <div class="footer-links">
-          <h4>Resources</h4>
+          <h4>{t('footer.resources')}</h4>
           <ul>
-            <li><a href="tel:18007997233">DV Hotline: 1-800-799-7233</a></li>
+            <li><a href="tel:18007997233">{t('footer.hotline')}</a></li>
             <li><a href="https://www.thehotline.org" target="_blank" rel="noopener">thehotline.org</a></li>
-            <li><a href="#">Safety Planning</a></li>
-            <li><a href="#">Crisis Text Line: Text START to 88788</a></li>
+            <li><a href="#">{t('footer.safetyPlanning')}</a></li>
+            <li><a href="#">{t('footer.crisisText')}</a></li>
           </ul>
         </div>
 
         <div class="footer-links">
-          <h4>About</h4>
+          <h4>{t('footer.about')}</h4>
           <ul>
-            <li><a href="/">Home</a></li>
-            <li><a href="/mission">Mission</a></li>
-            <li><a href="/get-involved">Get Involved</a></li>
-            <li><a href="/wellness-portal">Calm Room</a></li>
-            <li><a href="/partners">Partners</a></li>
-            <li><a href="/team">Leadership</a></li>
+            <li><a href={localizedPath('/', lang)}>{t('nav.home')}</a></li>
+            <li><a href={localizedPath('/mission', lang)}>{t('nav.mission')}</a></li>
+            <li><a href={localizedPath('/get-involved', lang)}>{t('nav.getInvolved')}</a></li>
+            <li><a href={localizedPath('/wellness-portal', lang)}>{t('nav.calmRoom')}</a></li>
+            <li><a href={localizedPath('/partners', lang)}>{t('footer.partners')}</a></li>
+            <li><a href={localizedPath('/team', lang)}>{t('nav.leadership')}</a></li>
           </ul>
         </div>
 
         <div class="footer-links">
-          <h4>Connect</h4>
+          <h4>{t('footer.connect')}</h4>
           <ul>
-            <li><a href="/volunteers">Volunteer</a></li>
-            <li><a href="#">Perks</a></li>
-            <li><a href="/faq">FAQ</a></li>
-            <li><a href="/contact">Contact Us</a></li>
+            <li><a href={localizedPath('/volunteers', lang)}>{t('footer.volunteer')}</a></li>
+            <li><a href="#">{t('footer.perks')}</a></li>
+            <li><a href={localizedPath('/faq', lang)}>{t('footer.faq')}</a></li>
+            <li><a href={localizedPath('/contact', lang)}>{t('footer.contact')}</a></li>
           </ul>
         </div>
 
         <div class="footer-links">
-          <h4>Legal</h4>
+          <h4>{t('footer.legal')}</h4>
           <ul>
-            <li><a href="/privacy">Privacy</a></li>
-            <li><a href="/sms-terms">SMS Terms &amp; Conditions</a></li>
-            <li><a href="/disclaimer">Disclaimer</a></li>
+            <li><a href={localizedPath('/privacy', lang)}>{t('footer.privacy')}</a></li>
+            <li><a href={localizedPath('/sms-terms', lang)}>{t('footer.smsTerms')}</a></li>
+            <li><a href={localizedPath('/disclaimer', lang)}>{t('footer.disclaimer')}</a></li>
           </ul>
+          <a class="footer-badge" href="https://app.candid.org/profile/16567005/army-pink" target="_blank" rel="noopener" aria-label="Candid Silver Transparency 2026 — view Army Pink's profile">
+            <img src="/img/candid-silver-transparency-2026.png" alt="Candid Silver Transparency 2026 Seal" loading="lazy" />
+          </a>
         </div>
 
       </div>
       <div class="footer-bottom">
-        <p>&copy; 2026 Army Pink. All rights reserved. 501(c)(3) nonprofit.</p>
+        <p>{t('footer.copyright')}</p>
       </div>
     </div>
   </footer>

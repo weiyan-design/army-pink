@@ -1,144 +1,353 @@
 ---
 import Layout from '../layouts/Layout.astro';
-
-// Four ways to give. The right-side card is an SVG slot — Wei drops the
-// per-way SVG into `.wg-card__art`; the IntersectionObserver below adds
-// `is-played` when the card scrolls in so the SVG can animate.
-const ways = [
-  {
-    title: 'Fund a ride to', accent: 'safety',
-    desc: "Every $50 funds one Freedom Ride. Give once or monthly through the Escape Club to help survivors leave the moment they're ready.",
-    link: 'About Donate', href: '/donate', art: 'ride',
-  },
-  {
-    title: 'Partner with', accent: 'purpose',
-    desc: "Organizations and sponsors help power rides through funding, services, and in-kind support — strengthening the survivor-support network, not replacing it.",
-    link: 'About Partner', href: '/partners', art: 'partner',
-  },
-  {
-    title: 'Give your', accent: 'time',
-    desc: "From tech to design to outreach, volunteers are the engine behind every escape. Bring what you're good at — we'll put it to work.",
-    link: 'About Volunteer', href: '/volunteers', art: 'time',
-  },
-  {
-    title: 'Rally your', accent: 'community',
-    desc: "Host a fundraiser, start a campus chapter, or join an Army Pink event — and turn the people around you into someone's way out.",
-    link: 'Activate Your Community', href: '/community', art: 'community',
-  },
-];
 ---
 
-<Layout title="Get Involved — Army Pink" description="Be the reason someone gets out. Four ways to help Army Pink: fund a ride, partner with purpose, give your time, or rally your community." navStart="transparent">
+<Layout title="Get Involved — Army Pink" description="Be the reason someone gets out. Four ways to help Army Pink: fund a ride, partner with purpose, give your time, or rally your community.">
 
-  <!-- HERO — fullscreen video on load, shrinks + slides up on video-end / first scroll -->
-  <section class="dn-hero hero-bleed" id="dn-hero" data-nav-theme="dark">
-    <video
-      class="dn-hero__vid"
-      src="/vid/safe-exit-hero.mp4"
-      poster="/img/donate/hero-poster.jpg"
-      autoplay muted playsinline preload="auto"
-      aria-label="Safe exit is a right."
-    ></video>
-    <div class="dn-wave" aria-hidden="true"></div>
-  </section>
-
-  <script is:inline>
-    (function () {
-      var hero = document.getElementById('dn-hero');
-      if (!hero) return;
-      var vid = hero.querySelector('.dn-hero__vid');
-      var done = false;
-      function shrink() {
-        if (done) return;
-        done = true;
-        hero.classList.add('is-shrunk');
-        window.removeEventListener('scroll', shrink);
-        window.removeEventListener('wheel', shrink);
-        window.removeEventListener('touchmove', shrink);
-        if (vid) vid.removeEventListener('ended', shrink);
-      }
-      if (vid) {
-        // Play once on landing — never loop. Freeze on the last frame at end.
-        vid.loop = false;
-        vid.removeAttribute('loop');
-        vid.addEventListener('ended', function () {
-          try { vid.pause(); } catch (e) {}
-          shrink();
-        });
-        // Fallback: shrink just after the clip's duration, in case 'ended' is missed
-        function scheduleFallback() {
-          if (isFinite(vid.duration) && vid.duration > 0) {
-            setTimeout(shrink, vid.duration * 1000 + 300);
-          }
-        }
-        if (vid.readyState >= 1) scheduleFallback();
-        else vid.addEventListener('loadedmetadata', scheduleFallback);
-        var p = vid.play();
-        if (p && p.catch) p.catch(function () {});
-      }
-      window.addEventListener('scroll', shrink, { passive: true });
-      window.addEventListener('wheel', shrink, { passive: true });
-      window.addEventListener('touchmove', shrink, { passive: true });
-    })();
-  </script>
-
-  <!-- STATEMENT — revealed as the hero scrubs down -->
-  <section class="dn-statement" aria-label="Be the reason someone gets out">
-    <div class="dn-statement__inner">
-      <h2 class="dn-title dn-statement__title"><span class="dn-statement__lead">Be the reason someone</span> <em>gets out</em></h2>
-      <a href="#ways" class="dn-btn dn-statement__btn">Ways to Help</a>
+  <!-- HERO — rounded video banner, then headline (left) + subtext / Give Now
+       (right) on cream. The "safe exit" clip plays as an ambient loop. -->
+  <section class="gih" aria-label="Be the reason someone gets out">
+    <h1 class="gih__title"><span class="gih__line">Be the reason</span><br /><span class="gih__line">someone</span><br class="gih__br2" /><span class="gih__line gih__accent">gets out</span></h1>
+    <div class="gih__media">
+      <video
+        class="gih__vid"
+        src="/vid/safe-exit-hero.mp4"
+        poster="/img/donate/hero-poster.jpg"
+        autoplay muted loop playsinline preload="auto"
+        aria-label="Safe exit is a right."
+      ></video>
+    </div>
+    <div class="gih__aside">
+      <p class="gih__lead">Give, partner, volunteer, or rally your community — here's how you help survivors reach safety.</p>
+      <!-- Home marker (invisible): anchors the flying CTA's start position. -->
+      <button class="btn btn-primary gih__cta" type="button" data-cta-home aria-hidden="true" tabindex="-1">Give Now</button>
     </div>
   </section>
-  <noscript>
-    <style>.dn-statement__inner { opacity: 1 !important; transform: none !important; }</style>
-  </noscript>
 
-  <!-- WAYS TO GIVE — copy scrolls on the left; ONE fixed bordered frame on the
-       right whose artwork swaps (slides up 0→1) as each way enters view. -->
-  <section class="wg" id="ways" aria-label="Ways to give">
-    <div class="wg-grid">
-      <div class="wg-copy">
-        {ways.map((w, i) => (
-          <article class="wg-step" data-step={i}>
-            <h2 class="wg-title">{w.title} <span class="wg-accent">{w.accent}</span></h2>
-            <p class="wg-desc">{w.desc}</p>
-            <a class="wg-link" href={w.href}>{w.link} <span aria-hidden="true">→</span></a>
-          </article>
-        ))}
+  <!-- Flying CTA: starts in the hero, pins ~50px below the nav, then slides to the
+       ways card's top-right; scrolls away with the section. Position driven by JS. -->
+  <button class="btn btn-primary cta-fly" type="button" data-cta-fly data-donate-panel>Give Now</button>
+
+  <!-- WAYS TO GIVE — Figma "WorksWrap": left copy scrolls; the right panel is
+       pinned (sticky) and crossfades a visual per active step. Dark-green band. -->
+  <section class="giw" id="ways" aria-label="Ways to give" data-giw>
+    <div class="giw__grid">
+      <!-- LEFT: scrolling copy -->
+      <div class="giw__left">
+        <article class="giw__step" data-step="0">
+          <div class="giw__copy">
+            <h2 class="giw__title">Fund the <span class="giw__accent" style="color:#ea79a9">first 200 rides</span> and help launch the movement.</h2>
+            <p class="giw__body">Every gift helps provide safe, discreet transportation for survivors who need to leave unsafe environments, reach safe destinations, or access critical services.</p>
+          </div>
+        </article>
+        <article class="giw__step" data-step="1">
+          <div class="giw__copy">
+            <h2 class="giw__title"><span class="giw__accent" style="color:#f4c84e">Give monthly</span> and keep safe rides available for survivors year-round.</h2>
+            <p class="giw__body">Through recurring monthly gifts, <strong>Escape Club members</strong> help sustain Freedom Rides and provide the reliable funding needed to keep transportation available when survivors need to leave.</p>
+          </div>
+        </article>
+        <article class="giw__step" data-step="2">
+          <div class="giw__copy">
+            <h2 class="giw__title">Start your own fundraiser and <span class="giw__accent" style="color:#e8833a">rally your people</span> to help.</h2>
+            <p class="giw__body">Start your own fundraiser and rally your community — because this is about proving what's possible when people come together to remove barriers and create access to safety.</p>
+          </div>
+        </article>
+        <article class="giw__step" data-step="3">
+          <div class="giw__copy">
+            <h2 class="giw__title">Bring your <span class="giw__accent" style="color:#8b7fd4">organization's</span> funding or services to keep survivors moving.</h2>
+            <p class="giw__body">Partner with Army Pink through funding, services, or sponsorship to help strengthen the network of organizations, advocates, and support systems that move survivors toward safety.</p>
+          </div>
+        </article>
+        <article class="giw__step" data-step="4">
+          <div class="giw__copy">
+            <h2 class="giw__title">Give goods, services, or <span class="giw__accent" style="color:#5bb3a0">auction items</span> that help survivors further.</h2>
+            <p class="giw__body">In-kind support that helps Army Pink stretch every dollar and keep safe transportation available for more survivors.</p>
+          </div>
+        </article>
+        <article class="giw__step" data-step="5">
+          <div class="giw__copy">
+            <h2 class="giw__title">Start a <span class="giw__accent" style="color:#ea79a9">campus chapter</span> and raise funds and awareness together</h2>
+            <p class="giw__body">Through campus chapters, student-led events, and awareness campaigns, Campus Impact connects young leaders with Army Pink's mission to help remove barriers survivors face when seeking safety.</p>
+          </div>
+        </article>
+        <article class="giw__step" data-step="6">
+          <div class="giw__copy">
+            <h2 class="giw__title">Join our auction, <span class="giw__accent" style="color:#f4c84e">bid on experiences</span>, and fund more rides.</h2>
+            <p class="giw__body">Join our benefit auction to bid on standout experiences and items, turning a night out into rides that move survivors toward safety.</p>
+          </div>
+        </article>
       </div>
-      <div class="wg-visual-col">
-        <div class="wg-visual">
-          {ways.map((w, i) => (
-            <div class={`wg-art${i === 0 ? ' is-active' : ''}`} data-art={i} aria-hidden="true">
-              <!-- SVG slot for this way (replaces the placeholder) -->
-              <span class="wg-art__placeholder">{w.accent}</span>
-            </div>
-          ))}
+      <!-- RIGHT: pinned panel whose visual crossfades -->
+      <div class="giw__right">
+        <div class="giw__card">
+          <div class="giw__viz is-active" data-art="0">
+            <video class="giw__vid giw__vid--portrait" src="/vid/impact-loop-200rides.mp4" autoplay muted loop playsinline preload="auto"></video>          </div>
+          <div class="giw__viz" data-art="1">
+            <img class="giw__vid giw__vid--logo" src="/vid/escape-club-logo.gif" alt="Escape Club logo" />          </div>
+          <div class="giw__viz" data-art="2">
+            <div class="giw__ph"><b>03</b><span>Right-side placeholder</span></div>          </div>
+          <div class="giw__viz" data-art="3">
+            <div class="giw__ph"><b>04</b><span>Right-side placeholder</span></div>          </div>
+          <div class="giw__viz" data-art="4">
+            <div class="giw__ph"><b>05</b><span>Right-side placeholder</span></div>          </div>
+          <div class="giw__viz" data-art="5">
+            <div class="giw__ph"><b>06</b><span>Right-side placeholder</span></div>          </div>
+          <div class="giw__viz" data-art="6">
+            <div class="giw__ph"><b>07</b><span>Right-side placeholder</span></div>
+          </div>
+          <!-- Target marker (invisible) — the fixed flyer lands here, top-right of the card. -->
+          <button class="btn btn-primary giw__cta-target" type="button" data-cta-target aria-hidden="true" tabindex="-1">Give Now</button>
         </div>
       </div>
     </div>
-    <div class="dn-wave dn-wave--footer" aria-hidden="true"></div>
   </section>
 
   <script is:inline>
     (function () {
-      var steps = document.querySelectorAll('.wg-step');
-      var arts = document.querySelectorAll('.wg-art');
-      if (!steps.length || !arts.length) return;
+      var section = document.querySelector('[data-giw]');
+      var steps = document.querySelectorAll('.giw__step');
+      var vizes = document.querySelectorAll('.giw__viz');
+      if (!section || !steps.length || !vizes.length) return;
+
       function setActive(i) {
-        for (var j = 0; j < arts.length; j++) {
-          arts[j].classList.toggle('is-active', j === i);
-        }
+        for (var j = 0; j < vizes.length; j++) vizes[j].classList.toggle('is-active', j === i);
       }
       if (!('IntersectionObserver' in window)) { setActive(0); return; }
-      // The step whose centre sits in the middle band of the viewport becomes
-      // active — its artwork slides up (0→1) in the fixed frame, replacing the prior.
+
+      // Crossfade the right panel to whichever step is centred.
       var io = new IntersectionObserver(function (entries) {
         entries.forEach(function (e) {
           if (e.isIntersecting) setActive(parseInt(e.target.getAttribute('data-step'), 10));
         });
       }, { rootMargin: '-45% 0px -45% 0px', threshold: 0 });
       steps.forEach(function (s) { io.observe(s); });
+
+      // The panel is fixed, so only reveal it while the section actually FILLS
+      // the viewport (its top is past the header AND its bottom is below the
+      // viewport). That keeps it from overlapping the hero above or footer below
+      // as you scroll in/out.
+      var headerEl = document.querySelector('.site-header');
+      function updatePin() {
+        var top = headerEl ? headerEl.getBoundingClientRect().bottom : 120;
+        var rect = section.getBoundingClientRect();
+        section.classList.toggle('is-onscreen', rect.top <= top && rect.bottom >= window.innerHeight);
+      }
+
+      // ---- Flying CTA: an L-path. PHASE 1 — rides straight up with the hero until
+      // its top reaches the lock line (the card's top-right target). PHASE 2 — locks
+      // vertically and slides gradually (eased) straight to the right into the card's
+      // top-right. Rides the section's bottom up on exit. Runs every frame so it stays
+      // perfectly in sync with Lenis smooth-scroll (no jitter). ----
+      var fly = document.querySelector('[data-cta-fly]');
+      var homeM = document.querySelector('[data-cta-home]');
+      var targetM = document.querySelector('[data-cta-target]');
+      function clamp(v, lo, hi) { return v < lo ? lo : (v > hi ? hi : v); }
+      // Publish the live header height so the stacked Ways panel/button can sit
+      // just below the (variable-height) mobile header.
+      function setGiwTop() {
+        if (headerEl) document.documentElement.style.setProperty('--giw-panel-top', headerEl.offsetHeight + 'px');
+      }
+      function updateFly() {
+        if (!fly || !homeM || !targetM) return;
+        // Mobile: once the Ways section reaches the top, pin the button to the
+        // top-right over the media panel (no fly). Else it docks at the home marker.
+        if (window.matchMedia('(max-width: 820px)').matches) {
+          var headerH = headerEl ? headerEl.offsetHeight : 0;
+          if (section.getBoundingClientRect().top <= headerH + 1) {
+            fly.style.transform = 'translate(' + (window.innerWidth - 16 - fly.offsetWidth) + 'px, ' + (headerH + 14) + 'px)';
+            return;
+          }
+        }
+        var hr = homeM.getBoundingClientRect();
+        var tr = targetM.getBoundingClientRect();
+        var gr = section.getBoundingClientRect();
+        var bh = fly.offsetHeight;
+        var top = headerEl ? headerEl.getBoundingClientRect().bottom : 100;
+        var lockY = top + 50;                           // pin ~50px below the nav
+        var slide = window.innerHeight * 0.55;          // gradual horizontal scroll range
+        // PHASE 1 (vertical): docked at the home marker, rides up with the hero
+        // until it reaches the lock line. PHASE 2 (horizontal): pinned at lockY,
+        // eases right into the card's top-right. EXIT: rides the section bottom up.
+        var y = clamp(hr.top, lockY, gr.bottom - bh - 20);
+        var p = clamp((lockY - hr.top) / slide, 0, 1);  // 0 until pinned, then ramps
+        var pe = p * p * (3 - 2 * p);                   // smoothstep ease
+        var x = hr.left + (tr.left - hr.left) * pe;
+        fly.style.transform = 'translate(' + x + 'px, ' + y + 'px)';
+      }
+
+      // ---- Hero video: lock its LEFT edge to the headline's right edge so
+      // "Be the reason" always kisses the video, at every breakpoint. Width fills
+      // the rest, capped so it never balloons on ultra-wide (leftover → right). The
+      // stacked layout (<=900px) is CSS-owned, so reset inline styles there. ----
+      var heroEl = document.querySelector('.gih');
+      var titleEl = document.querySelector('.gih__title');
+      var mediaEl = document.querySelector('.gih__media');
+      var asideEl = document.querySelector('.gih__aside');
+      var OVERLAP_FRAC = 0.45;                          // video left starts ~45% into the headline (right ~55% overlaps)
+      var GAP = 28;                                     // video → lead/CTA gap
+      function layoutHeroMedia() {
+        if (!heroEl || !titleEl || !mediaEl) return;
+        if (window.matchMedia('(max-width: 900px)').matches) {
+          mediaEl.style.left = ''; mediaEl.style.right = ''; mediaEl.style.width = '';
+          titleEl.style.left = ''; titleEl.style.top = ''; if (asideEl) asideEl.style.right = '';
+          heroEl.style.height = ''; heroEl.style.minHeight = '';
+          heroEl.style.removeProperty('--gih-media-top'); heroEl.style.removeProperty('--gih-media-h');
+          return;
+        }
+        var vw = window.innerWidth, vh = window.innerHeight;
+        var headerH = headerEl ? headerEl.offsetHeight : 0;
+        var s = heroEl.getBoundingClientRect();
+        titleEl.style.left = '';                          // restore CSS gutter for a clean read
+        if (asideEl) asideEl.style.right = '';            // restore CSS gutter width for a clean read
+        var t = titleEl.getBoundingClientRect();
+        var gutter = t.left - s.left;                     // = var(--gih-gutter)
+        var visible = vh - headerH;                       // hero's on-screen budget
+        // Top/bottom hero padding — clamp(px floor, vh, px ceiling): scales with the
+        // viewport but never collapses on short screens or balloons on tall ones.
+        var TOP_M = clamp(vh * 0.05, 28, 72);             // ≈ clamp(28px, 5vh, 72px)
+        var BOT_M = clamp(vh * 0.055, 32, 80);            // ≈ clamp(32px, 5.5vh, 80px)
+        // Size the 16:9 video to the leftover vertical space so video + lead + CTA
+        // fill ~100svh. Floor at 50vw (never too small), cap to viewport width.
+        function sizeVideo(asideH) {
+          var h = Math.max(0, visible - TOP_M - BOT_M - GAP - asideH);
+          var w = Math.min(Math.max(h * 16 / 9, vw * 0.5), vw - 2 * gutter, 1120);
+          return { w: w, h: w * 9 / 16, left: Math.max(gutter, (vw - w) / 2) };
+        }
+        // Two passes: aligning the lead's right edge to the (narrower) video changes
+        // how the lead wraps, which changes its height and thus the video size.
+        var v = sizeVideo(asideEl ? asideEl.offsetHeight : 150);
+        var asideH;
+        if (asideEl) {
+          asideEl.style.right = (vw - (v.left + v.w)) + 'px';
+          asideH = asideEl.offsetHeight;
+          v = sizeVideo(asideH);
+          asideEl.style.right = (vw - (v.left + v.w)) + 'px';   // lead right edge = video right edge
+          asideH = asideEl.offsetHeight;
+        } else { asideH = 150; }
+        // Center the video (balanced cream margins L+R when there's side room).
+        mediaEl.style.right = 'auto';
+        mediaEl.style.left = v.left + 'px';
+        mediaEl.style.width = v.w + 'px';
+        heroEl.style.setProperty('--gih-media-h', v.h + 'px');
+        heroEl.style.minHeight = '0px';                  // let our computed height win over min-height:100svh
+
+        var hh = t.height;                               // headline height
+        var leftCream = v.left - gutter;                 // cream available to the LEFT of the video
+        if (leftCream >= 0.18 * t.width) {
+          // HORIZONTAL overlap (default): headline 40px below the video top, its
+          // left ~45% on the side cream, right ~55% over the video.
+          var blockH = v.h + GAP + asideH;
+          var topOffset = Math.max(TOP_M, (visible - blockH) / 2);
+          titleEl.style.left = Math.max(gutter, v.left - OVERLAP_FRAC * t.width) + 'px';
+          titleEl.style.top = (topOffset + 40) + 'px';
+          heroEl.style.setProperty('--gih-media-top', topOffset + 'px');
+          heroEl.style.height = Math.max(visible, topOffset + blockH + BOT_M) + 'px';
+        } else {
+          // VERTICAL straddle (wide / width-bound video, no side cream): lift the
+          // headline so it sits mostly ABOVE the video on cream, with its bottom
+          // dipping onto the video — same overlap feeling, just from the top edge.
+          // The poke (height above the video) eases back when vertical room is tight
+          // so it always fits: full lift on tall screens, less as space shrinks.
+          var room = visible - (v.h + GAP + asideH + TOP_M + BOT_M);
+          var poke = Math.max(0, Math.min(0.6 * hh, room));   // headline height sitting above the video
+          var blockH = poke + v.h + GAP + asideH;
+          var topOffset = Math.max(TOP_M, (visible - blockH) / 2);   // headline top; ≥ TOP_M below nav
+          titleEl.style.left = gutter + 'px';
+          titleEl.style.top = topOffset + 'px';
+          heroEl.style.setProperty('--gih-media-top', (topOffset + poke) + 'px');   // video starts below the poke
+          heroEl.style.height = Math.max(visible, topOffset + blockH + BOT_M) + 'px';
+        }
+      }
+
+      // Per-frame loop keeps the button glued to the (Lenis-smoothed) scroll position.
+      function frame() { updatePin(); updateFly(); requestAnimationFrame(frame); }
+      requestAnimationFrame(frame);
+      window.addEventListener('resize', function () { setGiwTop(); layoutHeroMedia(); updatePin(); updateFly(); });
+      setGiwTop();
+      layoutHeroMedia();
+      if (document.fonts && document.fonts.ready) document.fonts.ready.then(layoutHeroMedia);
+      updatePin();
+      updateFly();
+      // Hand off from the (no-JS-visible) home marker to the now-positioned flyer,
+      // fading it in with the rest of the hero's staggered reveal.
+      if (fly && homeM) {
+        homeM.style.visibility = 'hidden';
+        setTimeout(function () { fly.style.opacity = '1'; }, 450);
+      }
+    })();
+  </script>
+
+  <script>
+    // Cycling headline word: gets out -> begins again -> reaches safety -> starts
+    // to heal -> (loop). The whole phrase slides up as one unit, and the cream box
+    // eases to the new phrase's width in sync with the slide (no instant snap).
+    (function () {
+      var accent = document.querySelector('.gih__accent');
+      if (!accent) return;
+      var PHRASES = ['gets out', 'begins again', 'reaches safety', 'starts to heal'];
+      var HOLD = 2200, DUR = 0.5, EASE = 'cubic-bezier(0.22,0.61,0.36,1)';
+      function phrase(text) {
+        var el = document.createElement('span'); el.className = 'gih__phrase';
+        el.textContent = text; return el;
+      }
+      accent.textContent = '';
+      var win = document.createElement('span'); win.className = 'gih__win';
+      var roll = document.createElement('span'); roll.className = 'gih__roll';
+      roll.appendChild(phrase(PHRASES[0]));
+      win.appendChild(roll); accent.appendChild(win);
+      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+      // Off-screen measurer: each phrase's natural width (font tracks the headline).
+      var measurer = phrase('');
+      measurer.style.cssText = 'position:absolute; visibility:hidden; left:-9999px; top:0; white-space:nowrap;';
+      accent.appendChild(measurer);
+      function widthOf(str) { measurer.textContent = str; return Math.ceil(measurer.getBoundingClientRect().width); }
+
+      var idx = 0;
+      function tick() {
+        win.style.width = win.offsetWidth + 'px';                // pin current width
+        var nextStr = PHRASES[(idx + 1) % PHRASES.length];
+        var next = phrase(nextStr);
+        roll.appendChild(next);
+        var h = next.getBoundingClientRect().height;
+        var targetW = widthOf(nextStr);
+        requestAnimationFrame(function () {
+          win.style.transition = 'width ' + DUR + 's ' + EASE;
+          win.style.width = targetW + 'px';                      // ease the cream box width
+          roll.style.transition = 'transform ' + DUR + 's ' + EASE;
+          roll.style.transform = 'translateY(-' + h + 'px)';     // slide the whole word up
+        });
+        setTimeout(function () {
+          roll.style.transition = 'none';
+          roll.removeChild(roll.firstChild);                     // drop the phrase that left
+          roll.style.transform = 'translateY(0)';
+          idx = (idx + 1) % PHRASES.length;
+          setTimeout(tick, HOLD);
+        }, DUR * 1000 + 50);
+      }
+      setTimeout(tick, HOLD);
+    })();
+  </script>
+
+  <!-- TEMP headline-size tuner (remove after dialing in the value) -->
+  <div id="fsTool" style="position:fixed; left:12px; bottom:12px; z-index:99999; background:#111; color:#fff; font:600 12px/1.5 ui-monospace,monospace; padding:10px 12px; border-radius:8px; width:230px; box-shadow:0 4px 16px rgba(0,0,0,.3);">
+    <div>headline max: <span id="fsVal" style="color:#7ef">–</span></div>
+    <input id="fsRange" type="range" min="3" max="5.5" step="0.0625" value="4.5" style="width:100%; margin-top:6px;">
+    <div style="opacity:.6; font-size:11px;">drag → live resize</div>
+  </div>
+  <script>
+    (function () {
+      var title = document.querySelector('.gih__title');
+      var range = document.getElementById('fsRange');
+      var out = document.getElementById('fsVal');
+      function apply() {
+        var rem = parseFloat(range.value);
+        title.style.setProperty('--gih-title-max', rem + 'rem');
+        out.textContent = rem + 'rem  (' + Math.round(rem * 16) + 'px cap)';
+        window.dispatchEvent(new Event('resize'));   // re-run the hero layout
+      }
+      range.addEventListener('input', apply);
+      apply();
     })();
   </script>
 

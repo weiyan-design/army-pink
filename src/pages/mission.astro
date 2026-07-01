@@ -1,18 +1,23 @@
 ---
 import Layout from '../layouts/Layout.astro';
 
-// Stats section (moved from the home page) — two independent column stacks
-// (right one offset down). Reading order pairs across: 1in3/$50, 200/100+,
-// Fall 2026/Survivor-led.
-const statsCols = [
+// Stats grid — 3 horizontal rows of 3. Top row is the impact framing
+// (7× / #1 / $0); rows below carry the at-a-glance numbers. Alternating
+// rows drift in opposite directions on scroll (parallax in script.js).
+const statsRows = [
   [
-    { value: '1 in 3', label: 'women experience intimate partner violence (CDC)' },
-    { value: '200', label: 'rides in our first LA pilot' },
-    { value: 'Fall 2026', label: 'Freedom Rides launch' },
+    { value: '7×', label: 'Average attempts before a survivor leaves permanently' },
+    { value: '#1', label: 'Invisible and underfunded barrier to safety: access to safe, reliable transportation' },
+    { value: '$0', label: 'Cost to survivors — always free, always will be' },
   ],
   [
+    { value: '1 in 3', label: 'women experience intimate partner violence (CDC)' },
     { value: '$50', label: 'funds one ride to safety' },
+    { value: '200', label: 'rides in our first LA pilot' },
+  ],
+  [
     { value: '100+', label: 'volunteers building the mission' },
+    { value: 'Fall 2026', label: 'Freedom Rides launch' },
     { value: 'Survivor-led', label: "built by people who've lived it" },
   ],
 ];
@@ -20,75 +25,8 @@ const statsCols = [
 
 <Layout title="Our Mission — Army Pink" description="Army Pink is a survivor-led initiative addressing the #1 unmet need for survivors: safe, immediate transportation out of dangerous situations.">
 
-  <!-- PAGE HERO -->
-  <section class="page-hero">
-    <span class="pill-label reveal-item">Our Mission</span>
-    <h1 class="reveal-item">Turning compassion<br>into action.</h1>
-    <p class="reveal-item">
-      Army Pink is a survivor-led initiative addressing the #1 unmet need for survivors:
-      safe, immediate transportation out of dangerous situations. We turn compassion into action
-      by providing urgent rides and structured wellness support — helping survivors leave danger
-      and begin again with dignity, guidance, and connection.
-    </p>
-    <div class="page-hero-actions reveal-item">
-      <a href="#our-story" class="btn btn-primary">Our story</a>
-      <a href="#team" class="btn btn-ghost">Meet the team</a>
-    </div>
-  </section>
-
-  <!-- IMPACT STATS -->
-  <section class="section" style="padding-bottom: 0;">
-    <div class="container">
-      <div class="stat-row">
-        <div class="stat-item reveal-item">
-          <span class="stat-number">7×</span>
-          <span class="stat-label">Average attempts before a survivor leaves permanently</span>
-        </div>
-        <div class="stat-item reveal-item">
-          <span class="stat-number">#1</span>
-          <span class="stat-label">Invisible and underfunded barrier to safety: access to safe, reliable transportation</span>
-        </div>
-        <div class="stat-item reveal-item">
-          <span class="stat-number">$0</span>
-          <span class="stat-label">Cost to survivors — always free, always will be</span>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- OUR STORY -->
-  <section class="section" id="our-story">
-    <div class="container">
-      <div class="prose-grid">
-        <div class="prose-image reveal-item">
-          <img src="/img/empowering-hero.jpg" alt="Yoga and wellness" />
-        </div>
-        <div class="prose-text">
-          <span class="pill-label reveal-item">How We Started</span>
-          <h2 class="reveal-item">Built by survivors,<br>for survivors.</h2>
-          <p class="reveal-item">
-            Army Pink was founded on a simple, painful truth: when survivors finally find the
-            courage to leave, they often have nowhere safe to go and no way to get there.
-            Shelters are full. Friends are too close to the situation. And calling a rideshare
-            from a shared location feels like leaving a trail.
-          </p>
-          <p class="reveal-item">
-            Our <strong>Pathway to Freedom</strong> program fills that gap — providing
-            donation-funded Freedom Rides the moment a survivor needs to move. No waiting list.
-            No paperwork at the door. Just safe, immediate transportation handled with discretion
-            and care.
-          </p>
-          <p class="reveal-item">
-            From there, we stay connected — linking survivors to vetted wellness resources,
-            peer community, and structured support for the long road of recovery.
-          </p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- FOUNDER QUOTE -->
-  <section class="section founder-quote">
+  <!-- HERO — founder quote -->
+  <section class="section founder-quote quote-hero">
     <div class="container">
       <figure class="tp-quote">
         <svg class="tp-quote-squiggle" viewBox="0 0 90 80" fill="none" aria-hidden="true">
@@ -108,6 +46,34 @@ const statsCols = [
           </span>
         </figcaption>
       </figure>
+    </div>
+  </section>
+
+  <!-- ===== MISSION + STATS (mission left, stats grid right w/ row parallax) ===== -->
+  <section class="stats-section" aria-label="Army Pink at a glance">
+    <div class="stats-grid">
+      <div class="stats-text">
+        <span class="pill-label reveal-item">Our Mission</span>
+        <p>
+          Army Pink is a survivor-led nonprofit providing safe, discreet
+          transportation for people escaping domestic violence. Working
+          alongside crisis organizations and referral partners, our
+          volunteer-powered team is building Freedom Rides — launching
+          Fall 2026 with a 200-ride pilot in Los Angeles.
+        </p>
+      </div>
+      <div class="stats-cells">
+        {statsRows.map((row, ri) => (
+          <div class={`stats-row${ri % 2 === 1 ? ' stats-row--alt' : ''}`}>
+            {row.map((s) => (
+              <div class="stat-cell">
+                <span class="stat-value">{s.value}</span>
+                <span class="stat-label">{s.label}</span>
+              </div>
+            ))}
+          </div>
+        ))}
+      </div>
     </div>
   </section>
 
@@ -153,78 +119,6 @@ const statsCols = [
     </div>
   </section>
 
-  <!-- ===== WHO WE ARE / STATS (moved from home) ===== -->
-  <section class="stats-section" aria-label="Army Pink at a glance">
-    <div class="stats-grid">
-      <div class="stats-text">
-        <p>
-          Army Pink is a survivor-led nonprofit providing safe, discreet
-          transportation for people escaping domestic violence. Working
-          alongside crisis organizations and referral partners, our
-          volunteer-powered team is building Freedom Rides — launching
-          Fall 2026 with a 200-ride pilot in Los Angeles.
-        </p>
-      </div>
-      <div class="stats-cells">
-        {statsCols.map((col, ci) => (
-          <div class={`stats-col${ci === 1 ? ' stats-col--offset' : ''}`}>
-            {col.map((s) => (
-              <div class="stat-cell reveal-item">
-                <span class="stat-value">{s.value}</span>
-                <span class="stat-label">{s.label}</span>
-              </div>
-            ))}
-          </div>
-        ))}
-      </div>
-    </div>
-  </section>
-
-  <!-- ===== OUR MISSION (moved from home) ===== -->
-  <section class="section section-mission" id="mission">
-    <div class="container">
-      <div class="mission-grid">
-        <div class="mission-text">
-          <span class="pill-label reveal-item">Our Mission</span>
-          <h2 class="section-title reveal-item">We don't provide rides.<br>We provide access to safety.<br><br>We don't sell healing.<br>We connect you to it.</h2>
-          <p class="section-text reveal-item">
-            Army Pink is a 501(c)(3) nonprofit supporting domestic violence survivors
-            through safety-centered transportation, concierge support, and wellness resources.
-          </p>
-          <p class="section-text reveal-item">
-            Our <strong>Pathway to Freedom</strong> program provides donation-based Freedom Rides —
-            immediate safe transportation when you need it most — plus connections to
-            ongoing wellness support for the road ahead.
-          </p>
-          <p class="quiet">Based in California. Serving survivors nationwide.</p>
-        </div>
-        <div class="mission-values">
-          <div class="value">
-            <span class="value-number">01</span>
-            <div>
-              <h4>Safety First</h4>
-              <p>Every decision we make starts with your safety.</p>
-            </div>
-          </div>
-          <div class="value">
-            <span class="value-number">02</span>
-            <div>
-              <h4>Survivor-Led</h4>
-              <p>People who understand the journey shape our work.</p>
-            </div>
-          </div>
-          <div class="value">
-            <span class="value-number">03</span>
-            <div>
-              <h4>No Barriers</h4>
-              <p>Survivors never pay. Supporters make that possible.</p>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
   <!-- TEAM -->
   <section class="section" id="team">
     <div class="container">
@@ -241,17 +135,5 @@ const statsCols = [
       </div>
     </div>
   </section>
-
-  <!-- CTA -->
-  <div class="cta-section">
-    <h2 class="reveal-item">Ready to help us grow?</h2>
-    <p class="reveal-item">
-      Every donation funds a Freedom Ride. Every supporter gives a survivor one more option.
-    </p>
-    <div class="cta-actions reveal-item">
-      <a href="#" class="btn btn-primary" data-donate-panel>Donate now</a>
-      <a href="/donate" class="btn btn-ghost">Join the community</a>
-    </div>
-  </div>
 
 </Layout>

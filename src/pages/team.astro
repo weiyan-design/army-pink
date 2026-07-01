@@ -6,18 +6,28 @@ import { team } from '../data/team.js';
 // which uses the same leadershipSlugs list to exclude these people).
 const leadershipSlugs = [
   'robin-bement',
+  'bill-hensley',
   'cecelia-machuca',
   'debra-prince',
-  'diana-drews',
   'cynthia-modders',
   'kathy-hallen',
   'liliana-pettenkofer',
   'beverly-taridona',
+  'ashley-antony',
+  'emily-nguyen',
+  'rasit-tasdelen',
   'wei-yan',
 ];
+const lastName = (p) => p.name.trim().split(/\s+/).pop();
+// Robin Bement is pinned first; everyone else follows alphabetically by last name.
 const leadership = leadershipSlugs
   .map((slug) => team.find((p) => p.slug === slug))
-  .filter(Boolean);
+  .filter(Boolean)
+  .sort((a, b) => {
+    if (a.slug === 'robin-bement') return -1;
+    if (b.slug === 'robin-bement') return 1;
+    return lastName(a).localeCompare(lastName(b));
+  });
 ---
 
 <Layout title="Leadership — Army Pink" description="The leadership behind Army Pink — the people driving our mission to ensure every survivor has a safe way out.">

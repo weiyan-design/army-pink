@@ -9,14 +9,19 @@ const leadershipSlugs = [
   'bill-hensley',
   'cecelia-machuca',
   'debra-prince',
-  'diana-drews',
   'cynthia-modders',
   'kathy-hallen',
   'liliana-pettenkofer',
   'beverly-taridona',
+  'ashley-antony',
+  'emily-nguyen',
+  'rasit-tasdelen',
   'wei-yan',
 ];
-const volunteers = team.filter((p) => !leadershipSlugs.includes(p.slug));
+const lastName = (p) => p.name.trim().split(/\s+/).pop();
+const volunteers = team
+  .filter((p) => !leadershipSlugs.includes(p.slug))
+  .sort((a, b) => lastName(a).localeCompare(lastName(b)));
 
 // Category chips. Volunteers have no category field in the data, so we infer
 // one from each person's job title via ordered keyword rules (first match
@@ -70,20 +75,23 @@ const volunteersByCat = volunteers.map((p) => ({ ...p, category: categorize(p.ti
 
 <Layout title="Volunteers — Army Pink" description="The volunteers behind Army Pink — the people giving their time to ensure every survivor has a safe way out.">
 
-  <!-- HERO — contained blush card: heading + copy + CTA left, butterfly loop right -->
+  <!-- HERO — contained blush card: heading + copy + CTA left, volunteer portrait
+       (overflowing the top edge) right, yellow sun peeking from the corner behind.
+       Text + image fade up on load (above the fold, so load-triggered not scroll). -->
   <section class="vol-hero">
     <div class="vol-hero__card">
-      <div class="vol-hero__text">
-        <h1 class="tp-display vol-hero__title reveal-item"><span class="tp-w tp-w--blue">meet</span><span class="tp-w tp-w--orange">the</span><br /><span class="tp-w tp-w--blue">volunteers</span></h1>
-        <p class="vol-hero__sub reveal-item">Volunteers power every escape. Bring your skills — leave with purpose. Join the team.</p>
-        <button type="button" class="dn-btn reveal-item" data-volunteer-form>Become a Volunteer</button>
+      <div class="vol-hero__sun-clip" aria-hidden="true">
+        <img class="vol-hero__sun" src="/img/sun.png" alt="" />
       </div>
-      <div class="vol-hero__media reveal-item">
-        <video
-          src="/vid/volunteer-hero.mp4"
-          autoplay muted loop playsinline preload="auto"
-          aria-hidden="true"
-        ></video>
+      <div class="vol-hero__text">
+        <h1 class="tp-display vol-hero__title"><span class="tp-w tp-w--blue">meet</span><span class="tp-w tp-w--orange">the</span><br /><span class="tp-w tp-w--blue">volunteers</span></h1>
+        <p class="vol-hero__sub">Volunteers power every escape. Bring your skills — leave with purpose. Join the team.</p>
+        <button type="button" class="btn btn-primary vol-hero__cta" data-volunteer-form>Become a Volunteer</button>
+      </div>
+      <div class="vol-hero__media">
+        <div class="vol-hero__photo-frame">
+          <img class="vol-hero__photo" src="/img/volunteer-hero-2.jpg" alt="An Army Pink volunteer in a VOLUNTEER shirt at a community event" />
+        </div>
       </div>
     </div>
   </section>

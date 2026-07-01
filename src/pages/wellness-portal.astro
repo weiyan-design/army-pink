@@ -50,7 +50,7 @@ const wordmarkWords = WORDMARK.split(' ').map(word => ({
   </noscript>
 
   <!-- ===== CALM ROOM COLLECTION (black, tabbed, filterable grid) ===== -->
-  <section class="calm-collection" aria-label="Calm Room video collection">
+  <section class="calm-collection" aria-label="Calm Room video collection" data-nav-theme="dark">
     <div class="calm-collection-inner">
       <div class="calm-tabs" role="tablist" aria-label="Categories">
         <button class="calm-tab is-active" type="button" role="tab" data-cat="all" aria-selected="true">All</button>
@@ -63,7 +63,6 @@ const wordmarkWords = WORDMARK.split(' ').map(word => ({
         {calmRoomShelves.flatMap((shelf, i) =>
           shelf.videos.filter(v => v.youtubeId).map(v => (
             <button class={`calm-card${v.featured ? ' is-featured' : ''}`} type="button" data-cat={String(i)} data-youtube-id={v.youtubeId} data-title={v.title}>
-              {v.featured && <span class="calm-card-badge">Featured</span>}
               {v.cover ? (
                 <img class="calm-card-img" src={v.cover} alt="" loading="lazy" />
               ) : (
@@ -280,20 +279,6 @@ const wordmarkWords = WORDMARK.split(' ').map(word => ({
       grid-column: span 2;
       grid-row: span 2;
       aspect-ratio: auto;
-    }
-    .calm-card-badge {
-      position: absolute;
-      top: 0.9rem;
-      left: 0.9rem;
-      z-index: 2;
-      background: var(--pink);
-      color: #fff;
-      font-size: 0.62rem;
-      font-weight: 600;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      padding: 0.32rem 0.7rem;
-      border-radius: 999px;
     }
     .calm-card.is-featured .calm-card-eyebrow { font-size: 0.72rem; }
     .calm-card.is-featured .calm-card-title {

@@ -1,0 +1,288 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Ways to give — scroll prototype</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --green-dark: #164a51;   /* left column + right card */
+      --green-light: #1b616a;  /* page bg / right-side frame */
+      --ink-on-dark: #f4fcfd;  /* off-white text */
+      --accent: #ea79a9;       /* title accent pink */
+      --pink: #d4728c;         /* button */
+      --pink-dark: #c25f7b;
+      --yellow: #f7cf63;       /* placeholder graphic */
+      --ease: cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: 'Inter', system-ui, sans-serif;
+      background: var(--green-light);
+      color: var(--ink-on-dark);
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ---- Full-bleed: left column scrolls, right panel is FIXED ---- */
+    .w2 { position: relative; width: 100vw; }
+    .w2__grid { display: block; }
+
+    /* LEFT — dark-green column (left half), steps scroll through */
+    .w2__left { width: 50vw; background: var(--green-dark); }
+    .w2__step {
+      min-height: 100vh;                 /* each row is full viewheight */
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 8vh clamp(2rem, 4vw, 3rem);
+    }
+    .w2__copy {
+      width: 100%;
+      max-width: 500px;
+      display: flex;
+      flex-direction: column;
+      gap: clamp(0.9rem, 1.6vw, 1.4rem);
+    }
+    .w2__title {
+      margin: 0;
+      font-weight: 600;
+      font-size: clamp(1.7rem, 2.85vw, 2.25rem);
+      line-height: 90%;
+      letter-spacing: -0.01em;
+      color: var(--ink-on-dark);
+    }
+    /* Per-step highlight colour is set inline on each .accent span. */
+    .w2__body {
+      margin: 0;
+      max-width: 30rem;
+      font-weight: 400;
+      font-size: clamp(0.9rem, 1vw, 0.95rem);     /* ~15px */
+      line-height: 1.55;
+      color: rgba(244, 252, 253, 0.82);
+    }
+    .w2__body strong { font-weight: 700; color: var(--ink-on-dark); }
+
+    /* RIGHT — FIXED light-green frame holding the dark card. The container stays
+       put; only the inner .w2__viz content crossfades as you scroll. */
+    .w2__right {
+      position: fixed;
+      top: 0;
+      right: 0;
+      width: 50vw;
+      height: 100vh;
+      background: var(--green-light);
+      padding: 20px 20px 20px 27px;
+    }
+    .w2__card {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      background: var(--green-dark);
+      border-radius: 32px;
+      overflow: hidden;
+    }
+    .w2__viz {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: clamp(1.5rem, 4vw, 3.5rem);
+      opacity: 0;
+      transform: scale(1.02);
+      transition: opacity 0.6s var(--ease), transform 0.6s var(--ease);
+      pointer-events: none;
+    }
+    .w2__viz.is-active { opacity: 1; transform: none; pointer-events: auto; }
+
+    .w2__viz img { width: min(72%, 560px); height: auto; display: block; }
+    .w2__vid { display: block; }
+    /* Freedom Rides impact loop (9:16) — fit by height, rounded corners */
+    .w2__vid--portrait { max-height: 82%; max-width: 80%; width: auto; height: auto; border-radius: 18px; }
+    /* Escape Club logo (baked on the card colour) — fit by width, no rounding */
+    .w2__vid--logo { width: min(72%, 520px); height: auto; }
+
+    /* Placeholder graphic for the as-yet-undesigned steps */
+    .w2__ph {
+      width: min(60%, 360px);
+      aspect-ratio: 1;
+      border-radius: 28px;
+      background: var(--yellow);
+      color: var(--green-dark);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 0.4rem;
+      text-align: center;
+    }
+    .w2__ph b { font-size: clamp(2.5rem, 6vw, 4rem); line-height: 1; }
+    .w2__ph span { font-weight: 600; font-size: 0.9rem; letter-spacing: 0.04em; text-transform: uppercase; }
+
+    /* Pill button, top-right of the card */
+    .w2__btn {
+      position: absolute;
+      top: 50px;
+      right: 39px;
+      padding: 0.72rem 2.1rem;
+      border-radius: 59px;
+      background: var(--pink);
+      border: 2px solid var(--pink);
+      color: #fff;
+      font-weight: 600;
+      font-size: 0.95rem;
+      text-decoration: none;
+      white-space: nowrap;
+      transition: background 0.3s var(--ease);
+    }
+    .w2__btn:hover { background: var(--pink-dark); border-color: var(--pink-dark); }
+
+    @media (prefers-reduced-motion: reduce) {
+      .w2__viz { transition: none; }
+    }
+
+    /* ---- Stacked (mobile): visual pins on top, copy scrolls beneath ---- */
+    @media (max-width: 820px) {
+      .w2__grid { display: block; }
+      /* Stacked: text scrolls in the top half; media fixed to the bottom half (1fr/1fr). */
+      .w2__left { width: 100%; padding-bottom: 50vh; }
+      .w2__right {
+        position: fixed;
+        inset: auto 0 0 0;     /* pin bottom, full width */
+        width: 100%;
+        height: 50vh;
+        padding: 12px;
+        z-index: 1;
+      }
+      .w2__copy { max-width: 60vw; }   /* stacked layout */
+      .w2__btn { top: 24px; right: 24px; padding: 0.55rem 1.4rem; font-size: 0.85rem; }
+      .w2__step { min-height: 70vh; padding: 6vh 1.5rem; }
+      .w2__viz img { width: min(58%, 280px); }
+      .w2__vid--logo { width: min(58%, 240px); }
+    }
+  </style>
+</head>
+<body>
+
+  <section class="w2" aria-label="Ways to give">
+    <div class="w2__grid">
+
+      <!-- LEFT: scrolling copy -->
+      <div class="w2__left">
+        <article class="w2__step" data-i="0">
+          <div class="w2__copy">
+            <h2 class="w2__title">Fund the <span class="accent" style="color:#ea79a9">first 200 rides</span> and help launch the movement.</h2>
+            <p class="w2__body">Every gift helps provide safe, discreet transportation for survivors who need to leave unsafe environments, reach safe destinations, or access critical services.</p>
+          </div>
+        </article>
+
+        <article class="w2__step" data-i="1">
+          <div class="w2__copy">
+            <h2 class="w2__title"><span class="accent" style="color:#f4c84e">Give monthly</span> and keep safe rides available for survivors year-round.</h2>
+            <p class="w2__body">Through recurring monthly gifts, <strong>Escape Club members</strong> help sustain Freedom Rides and provide the reliable funding needed to keep transportation available when survivors need to leave.</p>
+          </div>
+        </article>
+
+        <article class="w2__step" data-i="2">
+          <div class="w2__copy">
+            <h2 class="w2__title">Start your own fundraiser and <span class="accent" style="color:#e8833a">rally your people</span> to help.</h2>
+            <p class="w2__body">Start your own fundraiser and rally your community — because this is about proving what's possible when people come together to remove barriers and create access to safety.</p>
+          </div>
+        </article>
+
+        <article class="w2__step" data-i="3">
+          <div class="w2__copy">
+            <h2 class="w2__title">Bring your <span class="accent" style="color:#8b7fd4">organization's</span> funding or services to keep survivors moving.</h2>
+            <p class="w2__body">Partner with Army Pink through funding, services, or sponsorship to help strengthen the network of organizations, advocates, and support systems that move survivors toward safety.</p>
+          </div>
+        </article>
+
+        <article class="w2__step" data-i="4">
+          <div class="w2__copy">
+            <h2 class="w2__title">Give goods, services, or <span class="accent" style="color:#5bb3a0">auction items</span> that help survivors further.</h2>
+            <p class="w2__body">In-kind support that helps Army Pink stretch every dollar and keep safe transportation available for more survivors.</p>
+          </div>
+        </article>
+
+        <article class="w2__step" data-i="5">
+          <div class="w2__copy">
+            <h2 class="w2__title">Start a <span class="accent" style="color:#ea79a9">campus chapter</span> and raise funds and awareness together</h2>
+            <p class="w2__body">Through campus chapters, student-led events, and awareness campaigns, Campus Impact connects young leaders with Army Pink's mission to help remove barriers survivors face when seeking safety.</p>
+          </div>
+        </article>
+
+        <article class="w2__step" data-i="6">
+          <div class="w2__copy">
+            <h2 class="w2__title">Join our auction, <span class="accent" style="color:#f4c84e">bid on experiences</span>, and fund more rides.</h2>
+            <p class="w2__body">Join our benefit auction to bid on standout experiences and items, turning a night out into rides that move survivors toward safety.</p>
+          </div>
+        </article>
+      </div>
+
+      <!-- RIGHT: light-green frame + sticky dark card that crossfades -->
+      <div class="w2__right">
+        <div class="w2__card">
+          <div class="w2__viz is-active" data-i="0">
+            <video class="w2__vid w2__vid--portrait" src="/vid/impact-loop-200rides.mp4" autoplay muted loop playsinline preload="auto"></video>
+            <a class="w2__btn" href="#">Give Now</a>
+          </div>
+          <div class="w2__viz" data-i="1">
+            <img class="w2__vid w2__vid--logo" src="/vid/escape-club-logo.gif" alt="Escape Club logo" />
+            <a class="w2__btn" href="#">Give Now</a>
+          </div>
+          <div class="w2__viz" data-i="2">
+            <div class="w2__ph"><b>03</b><span>Right-side placeholder</span></div>
+            <a class="w2__btn" href="#">Give Now</a>
+          </div>
+          <div class="w2__viz" data-i="3">
+            <div class="w2__ph"><b>04</b><span>Right-side placeholder</span></div>
+            <a class="w2__btn" href="#">Give Now</a>
+          </div>
+          <div class="w2__viz" data-i="4">
+            <div class="w2__ph"><b>05</b><span>Right-side placeholder</span></div>
+            <a class="w2__btn" href="#">Give Now</a>
+          </div>
+          <div class="w2__viz" data-i="5">
+            <div class="w2__ph"><b>06</b><span>Right-side placeholder</span></div>
+            <a class="w2__btn" href="#">Give Now</a>
+          </div>
+          <div class="w2__viz" data-i="6">
+            <div class="w2__ph"><b>07</b><span>Right-side placeholder</span></div>
+            <a class="w2__btn" href="#">Give Now</a>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <script>
+    (function () {
+      var steps = Array.prototype.slice.call(document.querySelectorAll('.w2__step'));
+      var vizes = Array.prototype.slice.call(document.querySelectorAll('.w2__viz'));
+      if (!steps.length) return;
+
+      function setActive(i) {
+        vizes.forEach(function (v, j) { v.classList.toggle('is-active', j === i); });
+      }
+
+      if (!('IntersectionObserver' in window)) { setActive(0); return; }
+
+      // The step crossing the centre band of the viewport drives the crossfade.
+      var io = new IntersectionObserver(function (entries) {
+        entries.forEach(function (e) {
+          if (e.isIntersecting) setActive(parseInt(e.target.getAttribute('data-i'), 10));
+        });
+      }, { rootMargin: '-45% 0px -45% 0px', threshold: 0 });
+
+      steps.forEach(function (s) { io.observe(s); });
+      setActive(0);
+    })();
+  </script>
+</body>
+</html>
