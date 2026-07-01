@@ -1,199 +1,353 @@
 ---
 import Layout from '../layouts/Layout.astro';
+
+const ways = [
+  {
+    label: 'Crisis orgs · Shelters · Advocates',
+    title: 'Refer survivors',
+    body: 'Connect the people you serve to Freedom Rides through approved, safety-informed referral pathways. You stay the advocate; we cover the miles between danger and the next safe step.',
+    link: { href: '/donate', text: 'How a Freedom Ride works' },
+  },
+  {
+    label: 'Companies · Foundations',
+    title: 'Corporate sponsorship',
+    body: 'Fund rides directly, sponsor the 200 Rides campaign or a fundraising event, or set up employee and matching giving. Roughly $50 funds one ride to safety.',
+    link: { href: '/donate', text: 'See the 200 Rides campaign' },
+  },
+  {
+    label: 'Businesses · Professionals',
+    title: 'In-kind & services',
+    body: 'Donate services, products, or auction items for our fundraising events. From pro-bono expertise to auction packages, in-kind gifts stretch every program dollar.',
+    link: { href: '#partner-form', text: 'Offer an in-kind gift' },
+  },
+  {
+    label: 'Studios · Content creators',
+    title: 'Wellness & content',
+    body: 'Bring survivor wellness content or access into our portal — trauma-informed classes, meditation libraries, retreats — so healing continues long after the ride.',
+    link: { href: '/wellness-portal', text: 'Explore the wellness portal' },
+  },
+];
+
+const perks = [
+  {
+    title: 'Named & featured placement',
+    body: 'Recognition on public-facing pages, campaigns, and annual reporting — gratitude framing in the PBS tradition of "made possible by," never advertising.',
+  },
+  {
+    title: 'Shared impact reporting',
+    body: 'Real numbers, attributed to you: "Thanks to your support, 47 survivors reached safety this quarter." Meaningful to boards, funders, and employees.',
+  },
+  {
+    title: 'Co-branded materials',
+    body: 'Campaign and social assets you can share with your own audience, built with our team.',
+  },
+  {
+    title: 'Auction & event access',
+    body: 'Invitations and featured placement at Army Pink fundraising events and auctions.',
+  },
+  {
+    title: 'A vetted network',
+    body: 'Membership in a safety-informed survivor-support network of crisis organizations, wellness providers, and mission-aligned companies.',
+  },
+];
+
+const featured = [
+  {
+    name: 'Still Mountain Wellness Retreat',
+    logo: '/img/partner-logo/still-mountain.png',
+    blurb: 'Trauma-informed yoga and meditation programming inside the Calm Room.',
+  },
+  {
+    name: 'Do Yoga With Me',
+    logo: '/img/partner-logo/do-yoga-with-me.png',
+    blurb: 'Curated meditation, breathwork, and sleep content across the wellness portal.',
+  },
+  {
+    name: 'ReloShare',
+    logo: '/img/partner-logo/reloshare.png',
+    blurb: 'Anonymous emergency hotel booking technology for survivors in transit.',
+  },
+  {
+    name: 'Salesforce',
+    logo: '/img/partner-logo/salesforce.png',
+    blurb: 'Nonprofit technology powering the coordination behind every ride.',
+  },
+];
+
+const referralSteps = [
+  {
+    title: 'Reach out',
+    body: 'Tell us about your organization and the people you serve. We approve referral partners through a short, safety-informed onboarding.',
+  },
+  {
+    title: 'Coordinate rides',
+    body: 'Your advocates request rides through our approved pathways; every ride is dispatched, monitored, and confirmed end to end.',
+  },
+  {
+    title: 'Close the loop',
+    body: 'Arrival is confirmed and logged, and impact is reported back to your team — no survivor data shared beyond what the ride requires.',
+  },
+];
+
+const sponsorSteps = [
+  {
+    title: 'Choose your path',
+    body: 'One-time gift, the 200 Rides campaign, event sponsorship, employee matching, or an in-kind contribution.',
+  },
+  {
+    title: 'Fund rides',
+    body: 'Roughly $50 funds one safe, discreet ride. Sponsorships fund rides at scale and keep the program available year-round.',
+  },
+  {
+    title: 'See your impact',
+    body: 'Shared impact reporting and named recognition — rides funded, survivors reached, in your annual numbers.',
+  },
+];
 ---
 
-<Layout title="Partners — Army Pink" description="Army Pink partners with wellness providers, yoga studios, and community organizations to give survivors access to healing resources they couldn't access alone.">
+<Layout title="Partner with Army Pink" description="Army Pink removes the transportation barrier so the safety network you've already built can reach the people who need it. Refer survivors, sponsor rides, or bring wellness content to survivors.">
 
-  <!-- PAGE HERO -->
-  <section class="page-hero">
-    <span class="pill-label reveal-item">Our Partners</span>
-    <h1 class="reveal-item">Healing happens<br>together.</h1>
-    <p class="reveal-item">
-      Army Pink doesn't build everything ourselves — we build bridges.
-      Our partners bring clinical expertise, wellness programming, and community
-      reach that survivors couldn't access on their own.
-    </p>
-    <div class="page-hero-actions reveal-item">
-      <a href="#become-a-partner" class="btn btn-primary">Become a partner</a>
-      <a href="#current-partners" class="btn btn-ghost">See our partners</a>
-    </div>
-  </section>
-
-  <!-- PHILOSOPHY -->
-  <section class="section">
-    <div class="container">
-      <div style="text-align: center; margin-bottom: var(--space-lg);">
-        <span class="pill-label reveal-item">Our Approach</span>
-        <h2 class="reveal-item" style="font-family: var(--font-display); font-size: clamp(1.8rem, 4vw, 2.8rem); margin-top: var(--space-sm);">
-          Partners, not sponsors.
-        </h2>
-      </div>
-
-      <div class="philosophy-block reveal-item">
-        <p>"This program is made possible by..." — not "brought to you by."</p>
-        <cite>Army Pink's partnership philosophy, modeled on the PBS/NPR approach to supporter recognition.</cite>
-      </div>
-
-      <div class="prose-grid" style="margin-top: var(--space-lg);">
-        <div class="prose-text reveal-item">
-          <h2>Survivor spaces stay sacred.</h2>
-          <p>
-            We keep a clear separation between where survivors heal and where partners
-            receive recognition. In crisis and healing spaces — the Calm Room, the
-            Escape Club's support channels, safety planning tools — the experience is
-            entirely about the survivor.
-          </p>
-          <p>
-            Partner visibility lives in public-facing content, annual reports, and
-            impact dashboards. Funders get meaningful attribution. Survivors get
-            undistracted support.
-          </p>
-        </div>
-        <div class="prose-text reveal-item">
-          <h2>Impact-centered attribution.</h2>
-          <p>
-            We don't put logos on safety tools. Instead, we tell the real story:
-            "Thanks to Vedanta Wellness Studio, 47 survivors accessed free
-            trauma-informed yoga this quarter."
-          </p>
-          <p>
-            That kind of attribution is more meaningful to funders — and completely
-            safe for survivors. Partners become part of the mission story, not a
-            banner above it.
-          </p>
-        </div>
+  <!-- HERO -->
+  <section class="pn-hero">
+    <div class="pn-hero__inner">
+      <span class="dn-pill">Partnerships</span>
+      <h1 class="dn-title">Partner with <em>Army Pink.</em></h1>
+      <p class="dn-body pn-hero__lead">
+        Shelters, advocates, and crisis lines have already built the safety network.
+        What's often missing is the ride to reach it. Army Pink removes the
+        transportation barrier with Freedom Rides — so the network you've already
+        built can actually reach the people who need it. We multiply your impact.
+        We don't compete with it.
+      </p>
+      <div class="pn-hero__actions">
+        <a href="#partner-form" class="dn-btn">Become a partner</a>
+        <a href="#how-it-works" class="dn-btn pn-btn--ghost">See how it works</a>
       </div>
     </div>
   </section>
 
-  <!-- FEATURED PARTNER: VEDANTA -->
-  <section class="section" id="current-partners" style="background: var(--beige);">
-    <div class="container">
-      <div style="text-align: center; margin-bottom: var(--space-lg);">
-        <span class="pill-label reveal-item">Featured Partner</span>
-        <h2 class="reveal-item" style="font-family: var(--font-display); font-size: clamp(1.8rem, 4vw, 2.6rem); margin-top: var(--space-sm);">
-          Made possible by our partners.
-        </h2>
+  <!-- WAYS TO PARTNER -->
+  <section class="pn-ways">
+    <div class="pn-head">
+      <div class="pn-head__inner">
+        <span class="dn-pill">Ways to Partner</span>
+        <h2 class="dn-title">Four ways to <em>multiply impact.</em></h2>
       </div>
-
-      <div class="partner-featured-card reveal-item">
-        <div>
-          <span class="partner-type">Wellness Partner</span>
-          <h3>Vedanta Wellness Studio</h3>
-          <p>
-            Vedanta brings trauma-informed yoga and meditation programming directly
-            into Army Pink's Calm Room. Their instructors understand the
-            specific experience of domestic violence survivors — no pressure, no
-            performance, just gentle movement and nervous system support.
-          </p>
-          <p>
-            Together, we're co-creating the <strong>Pathway to Wellness</strong>
-            program — a structured healing journey from escape to embodiment,
-            designed specifically for DV survivors and grant-funded for free access.
-          </p>
-          <a href="/wellness-portal" class="btn btn-primary" style="margin-top: var(--space-sm); display: inline-flex;">
-            Explore the Calm Room
-          </a>
-        </div>
-        <div class="partner-featured-image">
-          <img src="/img/empowering-hero.jpg" alt="Vedanta wellness partnership" />
-        </div>
+    </div>
+    <div class="pn-ways__body">
+      <div class="pn-ways__grid">
+        {ways.map((way) => (
+          <article class="pn-card">
+            <span class="pn-card__label">{way.label}</span>
+            <h3 class="pn-card__title">{way.title}</h3>
+            <p class="pn-card__body">{way.body}</p>
+            <a class="pn-card__link" href={way.link.href}>{way.link.text} →</a>
+          </article>
+        ))}
       </div>
+      <div class="dn-wave" aria-hidden="true"></div>
+    </div>
+  </section>
 
-      <!-- Additional partner slots -->
-      <div class="partner-grid">
-        <div class="partner-card reveal-item">
-          <span class="partner-type">Technology Partner</span>
-          <h4>Do Yoga With Me</h4>
-          <p>
-            Providing curated yoga and meditation content through our Calm Room —
-            from sleep aids and breathwork to full programs for managing anxiety
-            and life transitions.
-          </p>
+  <!-- WHAT PARTNERS GET -->
+  <section class="pn-perks">
+    <div class="pn-head__inner pn-perks__head">
+      <span class="dn-pill">Why Partner</span>
+      <h2 class="dn-title">What partnership <em>looks like.</em></h2>
+      <p class="dn-body">
+        Our recognition model is gratitude, not advertising — partners become part
+        of the mission story, not a banner above it.
+      </p>
+    </div>
+    <div class="pn-perks__grid">
+      {perks.map((perk) => (
+        <div class="pn-perk">
+          <h3>{perk.title}</h3>
+          <p>{perk.body}</p>
         </div>
-        <div class="partner-card reveal-item" style="border-style: dashed; background: transparent;">
-          <span class="partner-type">Coming Soon</span>
-          <h4>Transportation Partner</h4>
-          <p>
-            We're actively seeking rideshare and transportation partners to power
-            Freedom Rides. If your organization can help move survivors safely,
-            we want to talk.
-          </p>
-        </div>
-        <div class="partner-card reveal-item" style="border-style: dashed; background: transparent;">
-          <span class="partner-type">Coming Soon</span>
-          <h4>Corporate Sponsor</h4>
-          <p>
-            Champion-level corporate partners fund free survivor access and receive
-            named recognition in our impact reports and annual gala. Inquire below.
-          </p>
-        </div>
+      ))}
+    </div>
+  </section>
+
+  <!-- FEATURED PARTNERS -->
+  <section class="pn-featured" id="current-partners">
+    <div class="pn-head">
+      <div class="pn-head__inner">
+        <span class="dn-pill">Our Partners</span>
+        <h2 class="dn-title">In good <em>company.</em></h2>
+      </div>
+    </div>
+    <div class="pn-featured__body">
+      <div class="pn-featured__grid">
+        {featured.map((partner) => (
+          <article class="pn-partner">
+            <div class="pn-partner__logo">
+              <img src={partner.logo} alt={`${partner.name} logo`} loading="lazy" />
+            </div>
+            <h3 class="pn-partner__name">{partner.name}</h3>
+            <p class="pn-partner__blurb">{partner.blurb}</p>
+          </article>
+        ))}
+      </div>
+      <div class="dn-wave" aria-hidden="true"></div>
+    </div>
+  </section>
+
+  <!-- HOW IT WORKS -->
+  <section class="pn-how" id="how-it-works">
+    <div class="pn-head__inner pn-how__head">
+      <span class="dn-pill">How It Works</span>
+      <h2 class="dn-title">Two paths, one <em>destination.</em></h2>
+    </div>
+    <div class="pn-how__grid">
+      <div class="pn-path">
+        <h3 class="pn-path__title">For referral organizations</h3>
+        <ol class="pn-steps">
+          {referralSteps.map((step) => (
+            <li>
+              <h4>{step.title}</h4>
+              <p>{step.body}</p>
+            </li>
+          ))}
+        </ol>
+        <a class="pn-card__link" href="/donate">See the full ride flow →</a>
+      </div>
+      <div class="pn-path">
+        <h3 class="pn-path__title">For sponsors & funders</h3>
+        <ol class="pn-steps">
+          {sponsorSteps.map((step) => (
+            <li>
+              <h4>{step.title}</h4>
+              <p>{step.body}</p>
+            </li>
+          ))}
+        </ol>
+        <a class="pn-card__link" href="/donate">Fund rides today →</a>
       </div>
     </div>
   </section>
 
-  <!-- PARTNERSHIP MODELS -->
-  <section class="section">
-    <div class="container">
-      <div style="text-align: center; margin-bottom: var(--space-lg);">
-        <span class="pill-label reveal-item">Partnership Models</span>
-        <h2 class="reveal-item" style="font-family: var(--font-display); font-size: clamp(1.8rem, 4vw, 2.6rem); margin-top: var(--space-sm);">
-          Ways to partner with us.
-        </h2>
+  <!-- TRUST -->
+  <section class="pn-trust">
+    <div class="pn-trust__inner">
+    <blockquote class="pn-trust__quote">
+      <p>"This program is made possible by…" — not "brought to you by."</p>
+      <cite>Army Pink's partnership philosophy, modeled on the PBS/NPR approach to supporter recognition.</cite>
+    </blockquote>
+    <div class="pn-trust__grid">
+      <div class="pn-trust__item">
+        <h3>Survivor spaces stay sacred</h3>
+        <p>No logos on safety tools, no sponsor content in crisis or healing spaces. Partner visibility lives in public-facing content and reporting.</p>
       </div>
-
-      <div class="partner-grid">
-        <div class="partner-card reveal-item">
-          <span class="partner-type">Model A</span>
-          <h4>Subsidized Access</h4>
-          <p>
-            Provide free or reduced-cost services to Army Pink survivors.
-            We handle outreach and matching; you provide the expertise.
-            Great for wellness providers, therapists, and service organizations.
-          </p>
-        </div>
-        <div class="partner-card reveal-item">
-          <span class="partner-type">Model B</span>
-          <h4>Embedded Content</h4>
-          <p>
-            Your content — guided meditations, yoga classes, courses — embedded
-            directly in our Calm Room. Survivors access it through us;
-            partners gain mission-aligned exposure.
-          </p>
-        </div>
-        <div class="partner-card reveal-item">
-          <span class="partner-type">Model C</span>
-          <h4>Co-Created Program</h4>
-          <p>
-            Joint programming designed from scratch for DV survivors.
-            The deepest impact model, and the most fundable for grants.
-            Currently active with Vedanta.
-          </p>
-        </div>
-        <div class="partner-card reveal-item">
-          <span class="partner-type">Model D</span>
-          <h4>Corporate Sponsorship</h4>
-          <p>
-            Fund survivor access at scale. Named recognition in reports, events,
-            and the annual impact dashboard. Tax-deductible through our fiscal
-            sponsor, Charity On Top.
-          </p>
-        </div>
+      <div class="pn-trust__item">
+        <h3>Alongside, not instead</h3>
+        <p>We don't duplicate shelters, hotlines, or advocacy. We move people to the support that already exists — yours.</p>
       </div>
+      <div class="pn-trust__item">
+        <h3>Tax-deductible giving</h3>
+        <p>Army Pink operates under the 501(c)(3) umbrella of Charity On Top Foundation; contributions are tax-deductible to the extent allowed by law.</p>
+      </div>
+      <div class="pn-trust__item">
+        <h3>Transparent by default</h3>
+        <p>Every partner receives impact reporting — rides funded, survivors reached — so you always know what your support did.</p>
+      </div>
+    </div>
     </div>
   </section>
 
-  <!-- CTA -->
-  <div class="cta-section" id="become-a-partner">
-    <h2 class="reveal-item">Interested in partnering?</h2>
-    <p class="reveal-item">
-      Whether you're a wellness provider, a corporation, or a community organization —
-      if you want to put your resources behind survivor healing, let's talk.
-    </p>
-    <div class="cta-actions reveal-item">
-      <a href="mailto:wei@weiyandesign.com" class="btn btn-primary">Get in touch</a>
-      <a href="/mission" class="btn btn-ghost">Learn about our mission</a>
+  <!-- PARTNER INQUIRY FORM -->
+  <section class="pn-cta" id="partner-form">
+    <div class="pn-head">
+      <div class="pn-head__inner">
+        <span class="dn-pill">Partner With Us</span>
+        <h2 class="dn-title">Let's build this <em>together.</em></h2>
+      </div>
     </div>
-  </div>
+    <div class="pn-cta__body">
+      <div class="pn-cta__inner">
+        <div class="pn-form-card">
+          <p class="pn-form-card__intro">
+            Partnerships are relationships, not transactions. Tell us a little about
+            your organization and we'll set up a conversation.
+          </p>
+          <form
+            name="partner"
+            method="POST"
+            data-netlify="true"
+            netlify-honeypot="bot-field"
+            action="/partners?sent=true"
+            class="pn-form"
+          >
+            <input type="hidden" name="form-name" value="partner" />
+            <p class="contact-honeypot" hidden>
+              <label>Don't fill this out: <input name="bot-field" /></label>
+            </p>
+
+            <div class="contact-field">
+              <label for="pn-org">Organization <span class="contact-required" aria-hidden="true">*</span></label>
+              <input id="pn-org" name="organization" type="text" required autocomplete="organization" />
+            </div>
+
+            <div class="contact-field">
+              <label for="pn-name">Your name <span class="contact-required" aria-hidden="true">*</span></label>
+              <input id="pn-name" name="name" type="text" required autocomplete="name" />
+            </div>
+
+            <div class="contact-field">
+              <label for="pn-email">Email <span class="contact-required" aria-hidden="true">*</span></label>
+              <input id="pn-email" name="email" type="email" required autocomplete="email" />
+            </div>
+
+            <div class="contact-field">
+              <label for="pn-type">How would you like to partner?</label>
+              <select id="pn-type" name="partnership-type" required>
+                <option value="refer">Refer survivors (crisis org / shelter / advocate)</option>
+                <option value="sponsor">Corporate sponsorship</option>
+                <option value="in-kind">In-kind & services</option>
+                <option value="wellness">Wellness & content</option>
+                <option value="other">Something else</option>
+              </select>
+            </div>
+
+            <div class="contact-field">
+              <label for="pn-message">Tell us about your organization <span class="contact-required" aria-hidden="true">*</span></label>
+              <textarea id="pn-message" name="message" rows="5" required placeholder="Who you serve, what you have in mind, and anything you'd like us to know."></textarea>
+            </div>
+
+            <div class="pn-form__actions">
+              <button type="submit" class="dn-btn">Start the conversation</button>
+              <p class="pn-form__note">
+                Inquiries go to our partnerships team at <a href="mailto:support@armypink.org">support@armypink.org</a>.
+              </p>
+            </div>
+          </form>
+
+          <!-- Success message (shown when ?sent=true) -->
+          <div class="pn-form-success" id="pn-form-success" hidden>
+            <h3>Thank you — we'll be in touch.</h3>
+            <p>Your inquiry is on its way to our partnerships team. We aim to respond within 2–3 business days.</p>
+          </div>
+        </div>
+      </div>
+      <div class="dn-wave dn-wave--footer" aria-hidden="true"></div>
+    </div>
+  </section>
+
+  <script is:inline>
+    (function () {
+      var params = new URLSearchParams(window.location.search);
+      if (params.get('sent') === 'true') {
+        var form = document.querySelector('.pn-form');
+        var intro = document.querySelector('.pn-form-card__intro');
+        var success = document.getElementById('pn-form-success');
+        if (form) form.hidden = true;
+        if (intro) intro.hidden = true;
+        if (success) {
+          success.hidden = false;
+          success.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+      }
+    })();
+  </script>
 
 </Layout>

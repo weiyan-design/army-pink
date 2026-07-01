@@ -262,24 +262,27 @@
     });
   }
 
-  // --- Stats columns parallax (right column drifts up faster than left) ---
+  // --- Stats rows parallax (alternating rows drift L/R on scroll) ---
   var statsCells = document.querySelector('.stats-cells');
   if (statsCells && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-    var statsCols = statsCells.querySelectorAll('.stats-col');
-    if (statsCols.length === 2) {
-      var COL_DRIFT = [36, 280]; // total upward px of travel: [left, right]
+    var statsRows = statsCells.querySelectorAll('.stats-row');
+    if (statsRows.length) {
+      var ROW_DRIFT = 64; // total horizontal px of travel across the journey
 
       function updateStatsParallax() {
-        // Measure the untransformed parent — the cols' own rects move as
-        // they're translated, which would feed back into the math.
+        // Off below the single-column breakpoint — horizontal drift would
+        // clip a stacked layout. Measure the untransformed parent so the
+        // rows' own translated rects don't feed back into the math.
+        var off = window.innerWidth <= 600;
         var r = statsCells.getBoundingClientRect();
         var vh = window.innerHeight;
         var p = Math.max(0, Math.min(1, (vh - r.top) / (vh + r.height)));
         var centered = p - 0.5; // 0 at mid-journey = natural position
-        statsCols[0].style.transform =
-          'translate3d(0,' + (-centered * COL_DRIFT[0]).toFixed(1) + 'px,0)';
-        statsCols[1].style.transform =
-          'translate3d(0,' + (-centered * COL_DRIFT[1]).toFixed(1) + 'px,0)';
+        for (var i = 0; i < statsRows.length; i++) {
+          var dir = (i % 2 === 0) ? 1 : -1; // even rows →, odd rows ←
+          var x = off ? 0 : (centered * ROW_DRIFT * dir);
+          statsRows[i].style.transform = 'translate3d(' + x.toFixed(1) + 'px,0,0)';
+        }
       }
 
       window.addEventListener('scroll', updateStatsParallax, { passive: true });

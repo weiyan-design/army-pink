@@ -15,6 +15,7 @@ export const calmRoomShelves = [
   {
     title: 'Sound Sanctuary',
     videos: [
+      { title: 'Find Peace — Healing Frequency', youtubeId: '6Q5-rHTTe6Q', featured: true, cover: '/img/calm-find-peace.jpg' },
       { title: 'Freedom Frequencies — Being the Wind', youtubeId: 'qyZTeZq8jHA' },
       { title: 'Forest Frequencies', youtubeId: '53j2gJ21H9w' },
       { title: 'Ambient Affirmations', youtubeId: 'Q_fyUT7NMWQ' },
@@ -23,7 +24,6 @@ export const calmRoomShelves = [
       { title: 'Asleep Among Endives — Ichiko Aoba', youtubeId: '9aED02XuLwo' },
       { title: 'Healing Angelic Meditation Music', youtubeId: 'MYwyd-RdvXA' },
       { title: '1111hz Light Healing Frequency', youtubeId: 'whI8SZQZOX8' },
-      { title: 'Find Peace — Healing Frequency', youtubeId: '6Q5-rHTTe6Q' },
       { title: 'EMDR Bilateral Music — Calm Fight-or-Flight', youtubeId: 'jgMH89btVQA', cover: '/img/calm-emdr-bilateral.jpg' },
       { title: 'Psoas Frequency Healing — Release Stored Trauma', youtubeId: 'UUC-3YhCwKo', cover: '/img/calm-psoas-frequency.jpg' },
       { title: 'Release Anxiety Crystal Bowls 432Hz Sound Bath', youtubeId: 'hms0chui1NM' },

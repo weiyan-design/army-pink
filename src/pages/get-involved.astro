@@ -142,8 +142,22 @@ import Layout from '../layouts/Layout.astro';
       var homeM = document.querySelector('[data-cta-home]');
       var targetM = document.querySelector('[data-cta-target]');
       function clamp(v, lo, hi) { return v < lo ? lo : (v > hi ? hi : v); }
+      // Publish the live header height so the stacked Ways panel/button can sit
+      // just below the (variable-height) mobile header.
+      function setGiwTop() {
+        if (headerEl) document.documentElement.style.setProperty('--giw-panel-top', headerEl.offsetHeight + 'px');
+      }
       function updateFly() {
         if (!fly || !homeM || !targetM) return;
+        // Mobile: once the Ways section reaches the top, pin the button to the
+        // top-right over the media panel (no fly). Else it docks at the home marker.
+        if (window.matchMedia('(max-width: 820px)').matches) {
+          var headerH = headerEl ? headerEl.offsetHeight : 0;
+          if (section.getBoundingClientRect().top <= headerH + 1) {
+            fly.style.transform = 'translate(' + (window.innerWidth - 16 - fly.offsetWidth) + 'px, ' + (headerH + 14) + 'px)';
+            return;
+          }
+        }
         var hr = homeM.getBoundingClientRect();
         var tr = targetM.getBoundingClientRect();
         var gr = section.getBoundingClientRect();
@@ -196,7 +210,7 @@ import Layout from '../layouts/Layout.astro';
         // fill ~100svh. Floor at 50vw (never too small), cap to viewport width.
         function sizeVideo(asideH) {
           var h = Math.max(0, visible - TOP_M - BOT_M - GAP - asideH);
-          var w = Math.min(Math.max(h * 16 / 9, vw * 0.5), vw - 2 * gutter);
+          var w = Math.min(Math.max(h * 16 / 9, vw * 0.5), vw - 2 * gutter, 1120);
           return { w: w, h: w * 9 / 16, left: Math.max(gutter, (vw - w) / 2) };
         }
         // Two passes: aligning the lead's right edge to the (narrower) video changes
@@ -248,7 +262,8 @@ import Layout from '../layouts/Layout.astro';
       // Per-frame loop keeps the button glued to the (Lenis-smoothed) scroll position.
       function frame() { updatePin(); updateFly(); requestAnimationFrame(frame); }
       requestAnimationFrame(frame);
-      window.addEventListener('resize', function () { layoutHeroMedia(); updatePin(); updateFly(); });
+      window.addEventListener('resize', function () { setGiwTop(); layoutHeroMedia(); updatePin(); updateFly(); });
+      setGiwTop();
       layoutHeroMedia();
       if (document.fonts && document.fonts.ready) document.fonts.ready.then(layoutHeroMedia);
       updatePin();
@@ -311,6 +326,28 @@ import Layout from '../layouts/Layout.astro';
         }, DUR * 1000 + 50);
       }
       setTimeout(tick, HOLD);
+    })();
+  </script>
+
+  <!-- TEMP headline-size tuner (remove after dialing in the value) -->
+  <div id="fsTool" style="position:fixed; left:12px; bottom:12px; z-index:99999; background:#111; color:#fff; font:600 12px/1.5 ui-monospace,monospace; padding:10px 12px; border-radius:8px; width:230px; box-shadow:0 4px 16px rgba(0,0,0,.3);">
+    <div>headline max: <span id="fsVal" style="color:#7ef">–</span></div>
+    <input id="fsRange" type="range" min="3" max="5.5" step="0.0625" value="4.5" style="width:100%; margin-top:6px;">
+    <div style="opacity:.6; font-size:11px;">drag → live resize</div>
+  </div>
+  <script>
+    (function () {
+      var title = document.querySelector('.gih__title');
+      var range = document.getElementById('fsRange');
+      var out = document.getElementById('fsVal');
+      function apply() {
+        var rem = parseFloat(range.value);
+        title.style.setProperty('--gih-title-max', rem + 'rem');
+        out.textContent = rem + 'rem  (' + Math.round(rem * 16) + 'px cap)';
+        window.dispatchEvent(new Event('resize'));   // re-run the hero layout
+      }
+      range.addEventListener('input', apply);
+      apply();
     })();
   </script>
 
