@@ -60,7 +60,6 @@ export const en = {
   'footer.hotline': 'DV Hotline: 1-800-799-7233',
   'footer.safetyPlanning': 'Safety Planning',
   'footer.crisisText': 'Crisis Text Line: Text START to 88788',
-  'footer.partners': 'Partners',
   'footer.volunteer': 'Volunteer',
   'footer.faq': 'FAQ',
   'footer.contact': 'Contact Us',

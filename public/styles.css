@@ -6111,7 +6111,7 @@ body.overlay-open {
   max-width: 52%;
   font-family: var(--font-display);
   font-weight: 500;
-  font-size: clamp(2.2rem, 6vw, var(--gih-title-max, 4.5rem));   /* cap tweakable via --gih-title-max */
+  font-size: clamp(2.2rem, 6vw, var(--gih-title-max, 4.0625rem));   /* cap tweakable via --gih-title-max */
   line-height: 1.18;
   letter-spacing: -0.01em;
   color: #1c5f59;                     /* deep teal */
@@ -6309,6 +6309,14 @@ body.overlay-open {
 }
 .giw__ph b { font-family: var(--font-display); font-size: clamp(2.5rem, 6vw, 4rem); line-height: 1; }
 .giw__ph span { font-weight: 600; font-size: 0.85rem; letter-spacing: 0.04em; text-transform: uppercase; }
+/* Step photo — same square footprint as the placeholder, cropped to cover */
+.giw__photo {
+  width: min(60%, 340px);
+  aspect-ratio: 1;
+  object-fit: cover;
+  border-radius: 28px;
+  display: block;
+}
 /* Flying CTA (hero → ways card) — fixed, JS-positioned (uses .btn.btn-primary). */
 .cta-fly {
   position: fixed;
@@ -7010,7 +7018,10 @@ body.overlay-open {
    The founder quote pins (sticky) as a background; the cream origin section
    flows up over it (higher z-index + opaque bg), then releases into normal
    scroll. Sticky is proven on this site despite body{overflow-x:hidden}. */
-.mv-reveal { position: relative; }
+/* Pull the hero up under the sticky header so the nav overlays it (no gap at
+   top). Mirrors .hero-bleed on the home hero; --app-header-h is JS-synced, with
+   a 7.5rem fallback so it's valid on any page. */
+.mv-reveal { position: relative; margin-top: calc(-1 * var(--app-header-h, 7.5rem)); }
 
 .mv-hero {
   position: sticky;
@@ -7099,8 +7110,9 @@ body.overlay-open {
   letter-spacing: -0.01em;
   color: var(--text);
   text-align: right;
+  white-space: nowrap; /* keep "This Mission" on one line */
 }
-.mv-why__mission em { font-style: italic; }
+.mv-why__mission em { font-style: normal; } /* upright, not italic */
 .mv-why__body {
   max-width: 42rem;
   margin: 0 auto clamp(2.5rem, 7vh, 5rem);
@@ -7165,6 +7177,10 @@ body.overlay-open {
   background: var(--offwhite);
   padding-block: clamp(3rem, 8vh, 6rem) clamp(2rem, 5vh, 3.5rem);
 }
+/* This marquee sits on the cream pathway background, so its edge fades blend to
+   that tone (not the homepage's pink-pale). --offwhite === .mv-pathway__top bg. */
+.mv-pathway__empower-track::before { background: linear-gradient(to right, var(--offwhite), transparent); }
+.mv-pathway__empower-track::after  { background: linear-gradient(to left,  var(--offwhite), transparent); }
 .mv-pathway__head {
   display: grid;
   grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr);
@@ -7349,8 +7365,54 @@ body.overlay-open {
   .mv-origin__photo { max-width: 360px; }
   .mv-stats { grid-template-columns: 1fr; gap: 2.25rem; max-width: 340px; margin-inline: auto; }
   .mv-stat__art { width: clamp(160px, 46vw, 210px); }
-  .mv-map { max-width: 320px; }
-  .mv-map__label { font-size: 0.62rem; }
+}
+
+/* Below 760px the spatial route map would overflow (absolute side-labels), so
+   it becomes a clean vertical stepper — same nodes, same sequential light-up. */
+@media (max-width: 760px) {
+  .mv-map {
+    max-width: 420px;
+    aspect-ratio: auto;
+    margin-inline: 0;
+  }
+  .mv-map__svg { display: none; }
+  .mv-map__nodes {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: clamp(1.1rem, 4vw, 1.6rem);
+    padding: 0.25rem 0 0.25rem 0;
+  }
+  /* vertical connector line behind the dots */
+  .mv-map__nodes::before {
+    content: '';
+    position: absolute;
+    left: 7px;
+    top: 12px;
+    bottom: 12px;
+    width: 2px;
+    background: var(--beige-dark);
+    z-index: 0;
+  }
+  .mv-map__node {
+    position: static;
+    width: auto;
+    height: auto;
+    display: flex;
+    align-items: center;
+    gap: 0.9rem;
+    z-index: 1;
+  }
+  .mv-map__dot { position: static; transform: none; flex-shrink: 0; }
+  .mv-map__label {
+    position: static;
+    transform: none !important;
+    inset: auto !important;
+    width: auto !important;
+    max-width: none !important;
+    text-align: left !important;
+    font-size: 0.82rem;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {

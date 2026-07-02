@@ -57,7 +57,6 @@ export const es = {
   'footer.hotline': 'Línea de VD: 1-800-799-7233',
   'footer.safetyPlanning': 'Plan de Seguridad',
   'footer.crisisText': 'Línea de Texto de Crisis: Envíe START al 88788',
-  'footer.partners': 'Aliados',
   'footer.volunteer': 'Voluntariado',
   'footer.faq': 'Preguntas Frecuentes',
   'footer.contact': 'Contáctanos',
