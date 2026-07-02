@@ -220,11 +220,28 @@ img {
   color: var(--pink-dark);
 }
 
+.logo {
+  display: flex;
+  align-items: center;
+  /* Rest width ≈ 18px tall (aspect 1475/170). May shrink proportionally down to
+     the min-width floor below (≈ 12px tall) when the nav tightens — after which
+     the content-aware collapse (script.js) switches to the hamburger. */
+  flex: 0 1 156px;
+  min-width: 104px;
+}
+
 .logo-img {
   height: 18px;
   width: auto;
   aspect-ratio: 1475 / 170;
   display: block;
+}
+
+/* Nav wordmark scales with its (shrinkable) anchor, staying proportional
+   (footer logo keeps the fixed 18px height from the rule above). */
+.logo .logo-img {
+  width: 100%;
+  height: auto;
 }
 
 .footer-logo-wrap {
@@ -256,6 +273,7 @@ img {
   display: flex;
   align-items: center;
   height: 100%;
+  white-space: nowrap; /* never wrap a label to 2 lines; overflow instead so JS can collapse the nav */
   transition: color var(--duration) var(--ease);
 }
 
@@ -277,7 +295,10 @@ img {
 .main-nav.is-transparent .nav-links a[aria-current="page"] { color: #fff; }
 
 /* --- Language switcher (globe trigger + dropdown; current state in brand pink) --- */
-.nav-lang { position: relative; margin-left: 0.4rem; }
+/* Flex (not block) so the trigger centers as a flex item — a block parent would
+   put the inline-flex button on a line box and align it to the text baseline,
+   throwing the globe off-center vertically. */
+.nav-lang { position: relative; display: flex; align-items: center; margin-left: 0.4rem; }
 
 .nav-lang__trigger {
   display: inline-flex;
@@ -346,10 +367,79 @@ img {
 .nav-lang__check { color: var(--pink); }
 .nav-lang__globe-icon { color: var(--text-muted, #9a9aa4); }
 
-/* On phones, collapse the trigger to just the globe to save room next to the burger. */
-@media (max-width: 768px) {
-  .nav-lang { order: 3; margin-left: auto; }
-  .nav-lang__current { display: none; }
+/* ============================================
+   Collapsed nav (hamburger). JS adds `.is-collapsed` to `.main-nav` the moment
+   the inline items would overflow one line — see updateNavCollapse in script.js.
+   This replaces the old fixed 768px breakpoint so longer labels (e.g. the
+   Spanish nav) collapse exactly when they stop fitting, not at an arbitrary px.
+   ============================================ */
+.main-nav.is-collapsed .mobile-menu-toggle {
+  display: flex;
+  order: 4;
+  margin-left: 0.6rem; /* small gap after the Donate button (which carries the auto margin) */
+}
+
+.main-nav.is-collapsed .nav-links {
+  display: none;
+  position: absolute;
+  top: calc(100% + 10px);
+  left: 0;
+  right: 0;
+  height: auto;
+  background: var(--offwhite);
+  flex-direction: column;
+  align-items: stretch;
+  padding: var(--space-md);
+  border: 1px solid var(--beige-dark);
+  border-radius: 18px;
+  box-shadow: 0 14px 34px rgba(0,0,0,0.12);
+}
+.main-nav.is-collapsed .nav-links > li { display: block; height: auto; }
+.main-nav.is-collapsed .nav-links.open { display: flex; }
+
+/* The open panel has its own light bg — keep links dark regardless of nav state. */
+.main-nav.is-collapsed.is-dark .nav-links a,
+.main-nav.is-collapsed.is-transparent .nav-links a { color: var(--text-light); }
+.main-nav.is-collapsed.is-dark .nav-links a[aria-current="page"],
+.main-nav.is-collapsed.is-transparent .nav-links a[aria-current="page"] { color: var(--pink); }
+
+/* Dropdown becomes a static, indented nested list (no hover). */
+.main-nav.is-collapsed .nav-dropdown {
+  position: static;
+  transform: none;
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  min-width: 0;
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  padding: 0.25rem 0 0.25rem 1rem;
+}
+.main-nav.is-collapsed .nav-dropdown a { padding: 0.4rem 0; }
+
+/* Keep the Donate CTA in the collapsed bar, grouped to the right by the burger. */
+.main-nav.is-collapsed .nav-donate {
+  display: inline-flex;
+  order: 3;
+  margin-left: auto; /* pushes the Donate + burger group to the right edge */
+}
+
+/* Language selector sits snug to the logo (left); the collapsed trigger shows
+   just the globe, and its dropdown opens from the left edge. */
+.main-nav.is-collapsed .nav-lang { order: 1; margin-left: 0.35rem; }
+.main-nav.is-collapsed .nav-lang__current { display: none; }
+.main-nav.is-collapsed .nav-lang__menu { right: auto; left: 0; }
+
+/* Globe matches the logo height (18px) and stays perfectly centered. */
+.main-nav.is-collapsed .nav-lang__trigger {
+  padding: 0;
+  line-height: 0; /* kill inline glyph slack so the icon centers exactly */
+}
+.main-nav.is-collapsed .nav-lang__globe {
+  width: 18px;
+  height: 18px;
+  display: block;
 }
 
 /* --- Nav dropdown (hover/focus on desktop) --- */
@@ -1577,7 +1667,10 @@ img {
 /* Givebutter trigger — must render visibly so the widget initializes,
    but hidden from the user by being positioned off-screen. */
 .givebutter-trigger-wrap {
-  position: absolute;
+  /* Fixed (viewport-relative) rather than absolute so focusing the hidden
+     trigger on widget open/close never scrolls the document to the top.
+     Keeps real dimensions off-screen — zero-dim wrappers break widget init. */
+  position: fixed;
   left: -9999px;
   top: 0;
 }
@@ -2301,64 +2394,9 @@ button.featured-card {
    Responsive
    ============================================ */
 @media (max-width: 768px) {
-  .mobile-menu-toggle {
-    display: flex;
-  }
-
-  .nav-links {
-    display: none;
-    position: absolute;
-    top: calc(100% + 10px);
-    left: 0;
-    right: 0;
-    height: auto;
-    background: var(--offwhite);
-    flex-direction: column;
-    align-items: stretch;
-    padding: var(--space-md);
-    border: 1px solid var(--beige-dark);
-    border-radius: 18px;
-    box-shadow: 0 14px 34px rgba(0,0,0,0.12);
-  }
-  .nav-links > li {
-    display: block;
-    height: auto;
-  }
-  /* The open panel has its own light bg — keep links dark regardless of nav state. */
-  .main-nav.is-dark .nav-links a,
-  .main-nav.is-transparent .nav-links a { color: var(--text-light); }
-  .main-nav.is-dark .nav-links a[aria-current="page"],
-  .main-nav.is-transparent .nav-links a[aria-current="page"] { color: var(--pink); }
-
-  .nav-links.open {
-    display: flex;
-  }
-
-  /* On mobile the dropdown is a static, indented nested list (no hover). */
-  .nav-dropdown {
-    position: static;
-    transform: none;
-    opacity: 1;
-    visibility: visible;
-    pointer-events: auto;
-    min-width: 0;
-    background: transparent;
-    border: none;
-    box-shadow: none;
-    padding: 0.25rem 0 0.25rem 1rem;
-  }
-
-  .nav-dropdown a {
-    padding: 0.4rem 0;
-  }
-
-  .nav-donate {
-    display: none;
-  }
-
-  .nav-links.open + .nav-donate {
-    display: none;
-  }
+  /* Nav collapse is now content-driven via `.main-nav.is-collapsed` (see the
+     collapsed-nav block above + updateNavCollapse in script.js), not this
+     breakpoint. Only non-nav mobile tweaks remain here. */
 
   .safe-exit-wrap {
     bottom: 24px;
@@ -7084,13 +7122,20 @@ body.overlay-open {
 }
 .mv-stat { display: flex; flex-direction: column; align-items: center; text-align: center; }
 .mv-stat__art {
+  position: relative;
   width: clamp(150px, 20vw, 240px);
-  aspect-ratio: 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  aspect-ratio: 313 / 293;
+  overflow: hidden;   /* clip the cut-out to the frame, matching Figma */
 }
-.mv-stat__art img { width: 100%; height: 100%; object-fit: contain; display: block; }
+/* Colour blobs sit behind; the transparent cut-out floats on top. */
+.mv-stat__blobs { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+.mv-stat__cutout {
+  position: absolute;
+  height: auto;
+  object-fit: contain;
+  display: block;
+  /* width / left / top set inline per-stat */
+}
 .mv-stat__value {
   margin-top: 0.6rem;
   font-family: var(--font-display);

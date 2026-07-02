@@ -105,10 +105,28 @@ const localeCodes = Object.keys(languages);
             </li>
           ))}
         </ul>
-        <div class="nav-lang" role="group" aria-label={t('nav.langAria')}>
-          {localeCodes.map((code) => (
-            <a href={localizedPath(logicalPath, code)} lang={code} hreflang={code} class={code === lang ? 'is-current' : undefined} aria-current={code === lang ? 'true' : undefined}>{code.toUpperCase()}</a>
-          ))}
+        <div class="nav-lang" data-lang-switcher>
+          <button type="button" class="nav-lang__trigger" aria-haspopup="true" aria-expanded="false" aria-label={t('nav.langAria')}>
+            <i data-lucide="globe" class="nav-lang__globe"></i>
+            <span class="nav-lang__current">{languages[lang]}</span>
+            <i data-lucide="chevron-down" class="nav-lang__chev"></i>
+          </button>
+          <ul class="nav-lang__menu" role="menu" hidden>
+            {localeCodes.map((code) => (
+              <li role="none">
+                <a role="menuitem" href={localizedPath(logicalPath, code)} lang={code} hreflang={code} class={code === lang ? 'is-current' : undefined} aria-current={code === lang ? 'true' : undefined}>
+                  <span class="nav-lang__icon">
+                    {code === lang
+                      ? <i data-lucide="check" class="nav-lang__check"></i>
+                      : code === 'en'
+                        ? <img src="/img/flags/us.svg" alt="" width="24" height="16" />
+                        : <i data-lucide="globe" class="nav-lang__globe-icon"></i>}
+                  </span>
+                  <span class="nav-lang__label">{languages[code]}</span>
+                </a>
+              </li>
+            ))}
+          </ul>
         </div>
         <a href="#" class="btn btn-primary nav-donate" data-donate-panel>{t('nav.donate')}</a>
       </div>
@@ -224,7 +242,6 @@ const localeCodes = Object.keys(languages);
           <h4>{t('footer.connect')}</h4>
           <ul>
             <li><a href={localizedPath('/volunteers', lang)}>{t('footer.volunteer')}</a></li>
-            <li><a href="#">{t('footer.perks')}</a></li>
             <li><a href={localizedPath('/faq', lang)}>{t('footer.faq')}</a></li>
             <li><a href={localizedPath('/contact', lang)}>{t('footer.contact')}</a></li>
           </ul>
@@ -272,6 +289,30 @@ const localeCodes = Object.keys(languages);
 
   <script src="/script.js" is:inline></script>
   <script is:inline>lucide.createIcons();</script>
+
+  <!-- Language switcher: click-to-open dropdown (globe trigger). Self-contained. -->
+  <script is:inline>
+    (function () {
+      var sw = document.querySelector('[data-lang-switcher]');
+      if (!sw) return;
+      var trigger = sw.querySelector('.nav-lang__trigger');
+      var menu = sw.querySelector('.nav-lang__menu');
+      function setOpen(open) {
+        menu.hidden = !open;
+        trigger.setAttribute('aria-expanded', open ? 'true' : 'false');
+      }
+      trigger.addEventListener('click', function (e) {
+        e.stopPropagation();
+        setOpen(menu.hidden);
+      });
+      document.addEventListener('click', function (e) {
+        if (!sw.contains(e.target)) setOpen(false);
+      });
+      document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape') setOpen(false);
+      });
+    })();
+  </script>
 
 </body>
 </html>
