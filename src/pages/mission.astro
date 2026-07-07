@@ -191,10 +191,15 @@ const empoweredBy = [
 
     <div class="mv-pathway__body">
       <div class="container mv-pathway__grid">
-        <figure class="mv-pathway__portrait reveal-item">
-          <!-- PLACEHOLDER: Figma template clip. Swap for real AP footage/still. -->
-          <img src="/img/mission/pathway-portrait.jpg" alt="" loading="lazy" />
-        </figure>
+        <!-- Track reserves the left grid column; the figure inside is lifted up
+             to top-align with the "Pathway to Freedom" title (overlapping the
+             cream band) and pins to viewport centre on scroll — see [data-portrait]
+             logic in script.js. Desktop only; mobile falls back to inline flow. -->
+        <div class="mv-pathway__portrait-track" data-portrait-track>
+          <figure class="mv-pathway__portrait" data-portrait>
+            <img src="/img/mission/rides-to-freedom.jpg" alt="A Pathway to Freedom rider" loading="lazy" />
+          </figure>
+        </div>
 
         <div class="mv-pathway__main">
           <!-- Winding route map — nodes light up in sequence on scroll -->

@@ -1137,6 +1137,58 @@
     updatePathway();
   }
 
+  // --- Pathway portrait: top-align to the title, then pin to viewport centre ---
+  // Desktop only. The figure is taken out of flow (position:fixed) and its top is
+  // driven every frame between three anchors: start = top-aligned to the "Pathway
+  // to Freedom" title (overlapping the cream band), middle = vertically centred in
+  // the viewport, end = bottom-aligned to the section end (then it scrolls away).
+  var portFig = pathway && pathway.querySelector('[data-portrait]');
+  var portTrack = pathway && pathway.querySelector('[data-portrait-track]');
+  var portTitle = pathway && pathway.querySelector('.mv-pathway__title');
+  if (portFig && portTrack && portTitle) {
+    var PORT_MAX_W = 330;          // matches .mv-pathway__portrait max-width
+    var PORT_RATIO = 587 / 330;    // frame aspect (height / width)
+    var portPinned = false;
+    var portTicking = false;
+    var clearPort = function () {
+      portFig.classList.remove('is-pinned');
+      portFig.style.top = '';
+      portFig.style.left = '';
+      portFig.style.width = '';
+      portPinned = false;
+    };
+    var updatePort = function () {
+      portTicking = false;
+      if (window.innerWidth <= 900) { if (portPinned) clearPort(); return; }
+      var vh = window.innerHeight || document.documentElement.clientHeight;
+      var sy = window.pageYOffset || document.documentElement.scrollTop || 0;
+      var secRect = pathway.getBoundingClientRect();
+      var trackRect = portTrack.getBoundingClientRect();
+      var titleRect = portTitle.getBoundingClientRect();
+      var imgW = Math.min(trackRect.width, PORT_MAX_W);
+      var imgH = imgW * PORT_RATIO;
+      var leftPx = trackRect.left + (trackRect.width - imgW) / 2;
+      var titleTopDoc = titleRect.top + sy;              // start anchor
+      var endTopDoc = (secRect.bottom + sy) - imgH;      // end anchor (bottom-aligned)
+      var centerTopDoc = sy + vh / 2 - imgH / 2;         // pinned anchor (viewport centre)
+      var topDoc = Math.min(Math.max(centerTopDoc, titleTopDoc), endTopDoc);
+      if (titleTopDoc > endTopDoc) topDoc = titleTopDoc; // guard: very short section
+      if (!portPinned) { portFig.classList.add('is-pinned'); portPinned = true; }
+      portFig.style.width = imgW + 'px';
+      portFig.style.left = leftPx + 'px';
+      portFig.style.top = (topDoc - sy) + 'px';
+    };
+    var onPortScroll = function () {
+      if (portTicking) return;
+      portTicking = true;
+      requestAnimationFrame(updatePort);
+    };
+    window.addEventListener('scroll', onPortScroll, { passive: true });
+    window.addEventListener('resize', onPortScroll);
+    window.addEventListener('load', updatePort);
+    updatePort();
+  }
+
   // --- Hero video thumbnail → full-video popup ---
   var heroThumb = document.querySelector('[data-hero-thumb]');
   var videoModal = document.getElementById('heroVideoModal');
