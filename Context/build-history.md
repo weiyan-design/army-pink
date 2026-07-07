@@ -760,3 +760,29 @@ Branch: still **`reconcile-local-main`** (origin/main diverged — see CLAUDE.md
 ## Sourcing logos in this sandbox (reusable)
 - Wikimedia/Wikipedia work: `https://commons.wikimedia.org/wiki/Special:FilePath/<File>` and `https://en.wikipedia.org/wiki/Special:FilePath/<File>` (enwiki holds non-free logos like Canva). Find exact titles via the API: `…/w/api.php?action=query&list=search&srnamespace=6&srsearch=<q>`.
 - Clearbit `logo.clearbit.com` and the simple-icons *colored* CDN endpoints returned `000`/`404`; jsDelivr simple-icons (monochrome) works.
+
+---
+
+# Session journal — 2026-07-01 → 2026-07-07: git-ref recovery + Get Involved polish (images, exit-scroll sync)
+
+Branch: **`reconcile-local-main`**. Net commits this span: PR #6 (`5f5f804`…) → PR #7 (`e027abd`, `--cream`) → parallel-session bundle `ff9cdeb` + `affbe93` (which swept in the Get Involved work below). All pushed; PRs #6/#7 merged to `main`.
+
+## Broken branch ref recovery (the headache)
+- Opened to find `reconcile-local-main` reporting **"No commits yet"** and all ~250 files staged as `A`, with `origin/reconcile-local-main [gone]` — looked catastrophic, was not.
+- **Root cause:** an interrupted git commit (Jun 29 16:33) left a stale **`.git/refs/heads/reconcile-local-main.lock`** with the intended tip hash but no real ref file. HEAD pointed at a branch whose ref was never finalized → git saw no commit history to diff against.
+- **Fix (non-destructive):** the `.lock` holds the commit hash of the interrupted write, so finalize it — `mv .git/refs/heads/reconcile-local-main.lock .git/refs/heads/reconcile-local-main`. History returned instantly; the 250 phantom `A` files collapsed to the real ~12 changes.
+- **Same bug recurred on push:** a matching stale `.git/refs/remotes/origin/reconcile-local-main.lock` blocked the tracking-ref update (push to GitHub had already succeeded server-side). Fix: `rm` the stale lock, then `git fetch` to rebuild the tracking ref. Verify no live git process / `index.lock` first.
+- Contribution-graph gap (Jun 24→now) was just **unpushed local commits** — pushing filled it. (Caveat: author email must be verified on the GitHub account or squares still won't render.)
+
+## Get Involved page (`get-involved.astro` + `styles.css` `.giw*`)
+- **Hero headline cap** → `--gih-title-max` default `4.5rem` → **`4.0625rem`**; removed the TEMP `#fsTool` size tuner (it re-applied its 4.5 slider default on load and shipped publicly in `dist/`).
+- **5 "ways to give" step photos**: replaced `.giw__ph` placeholders (`data-art` 2–6) with `.giw__photo` images — same square footprint (`aspect-ratio:1`, radius 28px) + `object-fit:cover`. Sources were 16MB raw files with spaces/apostrophes → `sips -Z 900` into `public/img/` with kebab-case names (rally-your-people, org-funding-services, goods-services-auction, campus-chapter, bid-on-experiences).
+- **Exit-scroll fix #1 (media card).** The fixed `.giw__right` panel faded out early (`is-onscreen` gate required `rect.bottom >= innerHeight`), leaving an empty dark half before the footer. Now it **rides up with the section bottom** on exit: `translateY(min(0, rect.bottom - innerHeight))` in `updatePin()` (mobile top-band branch left as-is).
+- **Exit-scroll fix #2 (Give Now flying CTA).** Button's X tracked the card (`tr.left`) but Y was on a separate hero/lock/section-bottom track that engaged too late → button floated while card lifted. Fix: tie **Y to the same card target marker as X** — `y = hr.top + (tr.top - hr.top) * pe` (both axes, same eased `pe`). The `data-cta-target` marker lives *inside* `.giw__right`, so it rides up with the translated panel → button stays glued to the card by construction. Verified live: `btnVsTarget` dx/dy = 0 through the exit. (A plain `clamp(hr.top, lockY, …)` failed because clamp returns the lower bound first.)
+
+## Home
+- **Volunteers section** (`.launch--volunteers`) background base `#fcf9ed` → **`var(--cream)`** (`#fdfbf7`); paper-noise texture + torn teal edge untouched. (PR #7, merged.)
+
+## Ops / process
+- **Concurrent-edit hazard recurred hard.** A parallel session was staging + committing the working tree *while I inspected it* — index flipped between `git status` calls, then two commits (`ff9cdeb`, `affbe93`) landed and **bundled my uncommitted Get Involved work into them**. Work was safe (verified `giw__photo` / button-fix strings present in `HEAD`), just not the isolated commit intended. Lesson reinforced: don't co-edit the same files across sessions; check `git status` twice and `git log` before assuming your uncommitted work is still uncommitted.
+- **Lenis breaks programmatic scroll verification.** `window.scrollTo` / `lenis.scrollTo` fought the smooth-scroll and gave stale/frozen transform reads (and once froze the renderer). Reliable path: real wheel-scroll via the browser `computer` tool, then **read** geometry with `javascript_tool` (no scrolling in JS).
