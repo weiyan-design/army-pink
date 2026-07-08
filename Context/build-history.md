@@ -786,3 +786,27 @@ Branch: **`reconcile-local-main`**. Net commits this span: PR #6 (`5f5f804`…) 
 ## Ops / process
 - **Concurrent-edit hazard recurred hard.** A parallel session was staging + committing the working tree *while I inspected it* — index flipped between `git status` calls, then two commits (`ff9cdeb`, `affbe93`) landed and **bundled my uncommitted Get Involved work into them**. Work was safe (verified `giw__photo` / button-fix strings present in `HEAD`), just not the isolated commit intended. Lesson reinforced: don't co-edit the same files across sessions; check `git status` twice and `git log` before assuming your uncommitted work is still uncommitted.
 - **Lenis breaks programmatic scroll verification.** `window.scrollTo` / `lenis.scrollTo` fought the smooth-scroll and gave stale/frozen transform reads (and once froze the renderer). Reliable path: real wheel-scroll via the browser `computer` tool, then **read** geometry with `javascript_tool` (no scrolling in JS).
+
+---
+
+# Session journal — 2026-07-08: prep `reconcile-local-main` → `main` merge (broken-image fix)
+
+Branch: **`reconcile-local-main`**. One commit this span: **`3ca997c`** ("Commit referenced Mission/volunteer/footer images + mobile map fix"). Pushed; **PR #8** opened → `main` (left for Wei to merge — auto-mode blocks self-authored merge-without-review).
+
+## Merge-readiness audit
+- `reconcile-local-main` is a **clean content-superset** of `origin/main`: 6 commits of real work ahead; the 5 commits `main` has that the branch lacks are all prior PR merge commits (#2–#7) with **no unique content** (`git log reconcile-local-main..origin/main --no-merges` empty). Merge base `e027abd` → conflict-free.
+- Local `main` still stale (35 behind `origin/main`) — untouched; PR from the branch as usual.
+
+## The real blocker: broken-on-merge images
+- Committed *built* pages referenced **7 images that were still untracked** → would 404 on `main`/prod. Found by `git grep`-ing each untracked `public/img/*` against committed `src/`:
+  - `candid-silver-transparency-2026.png` (Layout footer badge), `calm-find-peace.jpg` (calm-room data), `mission/{cut-car,cut-house,cut-money}.png` + `founder-story.jpg` (mission.astro), `volunteer-hero-2.jpg` (volunteers.astro).
+- Committed **only** those 7 + the uncommitted `script.js` change (mobile mission-map ghost-blob fix: detaches `.mv-map__svg` <760px so a stale composite layer doesn't ghost). Staged file-by-file — **no `git add -A`** — to dodge the live concurrent-edit / scratch-file hazard.
+- **Verified:** `npm run build` passes (17 pages); all 7 images emit into `dist/img/…`.
+
+## Intentionally left untracked (scope = "fix broken images only")
+- `partner-logo/{reloshare,salesforce}.png` — only referenced by `src/_archive/partners.astro`, which Astro doesn't build → no 404.
+- Orphan/unreferenced: `mission/pathway-portrait.jpg`, `volunteer-hero-photo.jpg`, `volunteer-hero-sun.png`, `get-involved/escape-heart.png`; unimported `src/components/OnePersonRide.astro`; the `Context/*-handoff.md` docs; and root `img/` + `CLAUDE 2.md` scratch.
+
+## Still pending (Wei)
+- Merge **PR #8** (`gh pr merge 8 --merge` or GitHub UI).
+- Deploy is separate/manual: `npm run build && netlify deploy --prod`.
