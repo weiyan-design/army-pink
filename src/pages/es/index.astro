@@ -1,0 +1,26 @@
+---
+// PROOF-OF-PLUMBING route for the Spanish site (Phase 1 i18n scaffold).
+//
+// Because it lives under /es/, Layout auto-detects locale 'es' and renders the
+// entire shell in Spanish (crisis banner, nav, footer, safe exit, forms) plus
+// hreflang tags and the EN/ES switcher — with zero prop threading.
+//
+// The page BODY is a placeholder: home-page copy hasn't been extracted into a
+// dictionary yet (Phase 2). When ready, factor index.astro's markup into a
+// shared `HomePage.astro` component that reads t('home.*'), then render it here
+// as `<HomePage lang="es" />` and from src/pages/index.astro as `lang="en"`.
+import Layout from '../../layouts/Layout.astro';
+---
+<Layout>
+  <main style="min-height:60vh;max-width:52rem;margin:0 auto;padding:12rem 1.5rem 6rem;text-align:center;">
+    <p style="text-transform:uppercase;letter-spacing:0.12em;font-size:0.8rem;opacity:0.6;">Español · borrador</p>
+    <h1 style="font-family:'Playfair Display',serif;font-size:clamp(2rem,5vw,3.2rem);margin:0.5rem 0 1rem;">
+      El sitio en español está en construcción
+    </h1>
+    <p style="font-size:1.05rem;line-height:1.7;opacity:0.85;">
+      La estructura multilingüe ya funciona: la cabecera, el pie de página y los
+      recursos de crisis se muestran en español automáticamente. El contenido de
+      cada página se traducirá a medida que se estabilice.
+    </p>
+  </main>
+</Layout>

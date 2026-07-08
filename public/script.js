@@ -191,6 +191,38 @@
     });
   }
 
+  // --- Content-aware nav collapse ---
+  // Switch to the hamburger the instant the inline nav would overflow one line
+  // (e.g. longer Spanish labels), instead of at a fixed pixel breakpoint.
+  var mainNav = document.querySelector('.main-nav');
+  var navInner = mainNav && mainNav.querySelector('.nav-inner');
+  if (mainNav && navInner && navLinks) {
+    var navFitScheduled = false;
+    function measureNavFit() {
+      navFitScheduled = false;
+      // Don't yank the layout while the mobile menu is open.
+      if (navLinks.classList.contains('open')) return;
+      // Measure in the expanded state. Removing then (maybe) re-adding the class
+      // within one synchronous pass isn't painted, so there's no flicker.
+      mainNav.classList.remove('is-collapsed');
+      var overflowing =
+        navInner.scrollWidth > navInner.clientWidth + 1 ||
+        navLinks.scrollWidth > navLinks.clientWidth + 1;
+      mainNav.classList.toggle('is-collapsed', overflowing);
+    }
+    function scheduleNavFit() {
+      if (navFitScheduled) return;
+      navFitScheduled = true;
+      requestAnimationFrame(measureNavFit);
+    }
+    scheduleNavFit();
+    window.addEventListener('resize', scheduleNavFit);
+    // Re-measure once webfonts swap in (text width changes).
+    if (document.fonts && document.fonts.ready) {
+      document.fonts.ready.then(scheduleNavFit);
+    }
+  }
+
   // --- Box Breathing Exercise ---
   const breathToggle = document.getElementById('breath-toggle');
   const breathCircle = document.getElementById('breath-circle');
@@ -612,7 +644,22 @@
         if (!target) target = gb;
       }
       if (target && typeof target.click === 'function') {
+        // Opening the Givebutter widget focuses the hidden off-screen trigger
+        // (anchored at top:0), which yanks the page to the top. Capture the
+        // current scroll and pin it back for a few frames after the click.
+        var keepY = window.scrollY || window.pageYOffset || 0;
+        function pinScroll() {
+          if ((window.scrollY || window.pageYOffset || 0) === keepY) return;
+          if (window.lenis) {
+            window.lenis.scrollTo(keepY, { immediate: true, force: true });
+          } else {
+            window.scrollTo(0, keepY);
+          }
+        }
         target.click();
+        requestAnimationFrame(pinScroll);
+        setTimeout(pinScroll, 80);
+        setTimeout(pinScroll, 250);
       } else {
         // Fallback: hosted page in a new tab
         window.open('https://givebutter.com/pathwaytofreedom', '_blank', 'noopener');
@@ -718,7 +765,15 @@
   document.querySelectorAll('a[href^="#"]').forEach(function (anchor) {
     if (anchor.closest('.overlay')) return;
     anchor.addEventListener('click', function (e) {
-      var target = document.querySelector(this.getAttribute('href'));
+      var href = this.getAttribute('href');
+      // Bare "#" links (popup triggers, placeholders) must NOT jump to top.
+      // Cancel the default and stay put — `querySelector('#')` would throw,
+      // which is what let the native jump-to-top slip through before.
+      if (href === '#' || href === '') {
+        e.preventDefault();
+        return;
+      }
+      var target = document.querySelector(href);
       if (target) {
         e.preventDefault();
         target.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -1040,6 +1095,120 @@
     window.addEventListener('load', setWaysPinH);
     var waysPinVid = waysPin.querySelector('video');
     if (waysPinVid) waysPinVid.addEventListener('loadedmetadata', setWaysPinH);
+  }
+
+  // --- Mission "Pathway to Freedom" map: waypoints light up in sequence ---
+  // Same scroll-progress mechanic as the 200-Rides tracker above: derive a
+  // 0→1 progress `p` from the map's position in the viewport, drive the route
+  // stroke reveal (--pathway-p) and toggle each node's .is-lit in sequence.
+  var pathway = document.querySelector('[data-pathway]');
+  var pathMap = pathway && pathway.querySelector('[data-map]');
+  if (pathway && pathMap) {
+    var routeFill = pathMap.querySelector('[data-route-fill]');
+    var pathNodes = pathMap.querySelectorAll('.mv-map__node');
+    var pathN = pathNodes.length;
+    if (routeFill && routeFill.getTotalLength) {
+      try { pathMap.style.setProperty('--route-len', routeFill.getTotalLength().toFixed(1)); } catch (e) {}
+    }
+
+    // Below 760px the map is a vertical stepper and the winding SVG route is
+    // hidden via CSS. But merely display:none-ing an SVG that already painted
+    // can leave a stale compositing layer (a "ghost" blob) until the region
+    // repaints. So physically detach the SVG on mobile — no layer, no ghost —
+    // and re-attach it on desktop. Idempotent + resize-safe.
+    var pathSvg = pathMap.querySelector('.mv-map__svg');
+    if (pathSvg && window.matchMedia) {
+      var pathSvgParent = pathSvg.parentNode;
+      var pathSvgAnchor = pathSvg.nextSibling;
+      var pathMq = window.matchMedia('(max-width: 760px)');
+      var syncPathSvg = function () {
+        if (pathMq.matches) {
+          if (pathSvg.parentNode) pathSvg.parentNode.removeChild(pathSvg);
+        } else if (!pathSvg.parentNode && pathSvgParent) {
+          pathSvgParent.insertBefore(pathSvg, pathSvgAnchor);
+        }
+      };
+      syncPathSvg();
+      if (pathMq.addEventListener) pathMq.addEventListener('change', syncPathSvg);
+      else if (pathMq.addListener) pathMq.addListener(syncPathSvg);
+    }
+    var pathTicking = false;
+    var updatePathway = function () {
+      pathTicking = false;
+      var rect = pathMap.getBoundingClientRect();
+      var vh = window.innerHeight || document.documentElement.clientHeight;
+      // Fully unlit when the map's top sits at 85% of the viewport; fully lit
+      // once its bottom clears 35%. Clamped so it holds at the ends.
+      var span = (vh * 0.85) + rect.height - (vh * 0.35);
+      var p = span > 0 ? ((vh * 0.85) - rect.top) / span : 0;
+      p = p < 0 ? 0 : (p > 1 ? 1 : p);
+      pathway.style.setProperty('--pathway-p', p.toFixed(3));
+      for (var i = 0; i < pathN; i++) {
+        var thr = pathN > 1 ? (i / (pathN - 1)) * 0.86 + 0.05 : 0.5;
+        pathNodes[i].classList.toggle('is-lit', p >= thr);
+      }
+    };
+    var onPathwayScroll = function () {
+      if (pathTicking) return;
+      pathTicking = true;
+      requestAnimationFrame(updatePathway);
+    };
+    window.addEventListener('scroll', onPathwayScroll, { passive: true });
+    window.addEventListener('resize', onPathwayScroll);
+    window.addEventListener('load', updatePathway);
+    updatePathway();
+  }
+
+  // --- Pathway portrait: top-align to the title, then pin to viewport centre ---
+  // Desktop only. The figure is taken out of flow (position:fixed) and its top is
+  // driven every frame between three anchors: start = top-aligned to the "Pathway
+  // to Freedom" title (overlapping the cream band), middle = vertically centred in
+  // the viewport, end = bottom-aligned to the section end (then it scrolls away).
+  var portFig = pathway && pathway.querySelector('[data-portrait]');
+  var portTrack = pathway && pathway.querySelector('[data-portrait-track]');
+  var portTitle = pathway && pathway.querySelector('.mv-pathway__title');
+  if (portFig && portTrack && portTitle) {
+    var PORT_MAX_W = 330;          // matches .mv-pathway__portrait max-width
+    var PORT_RATIO = 587 / 330;    // frame aspect (height / width)
+    var portPinned = false;
+    var portTicking = false;
+    var clearPort = function () {
+      portFig.classList.remove('is-pinned');
+      portFig.style.top = '';
+      portFig.style.left = '';
+      portFig.style.width = '';
+      portPinned = false;
+    };
+    var updatePort = function () {
+      portTicking = false;
+      if (window.innerWidth <= 900) { if (portPinned) clearPort(); return; }
+      var vh = window.innerHeight || document.documentElement.clientHeight;
+      var sy = window.pageYOffset || document.documentElement.scrollTop || 0;
+      var secRect = pathway.getBoundingClientRect();
+      var trackRect = portTrack.getBoundingClientRect();
+      var titleRect = portTitle.getBoundingClientRect();
+      var imgW = Math.min(trackRect.width, PORT_MAX_W);
+      var imgH = imgW * PORT_RATIO;
+      var leftPx = trackRect.left + (trackRect.width - imgW) / 2;
+      var titleTopDoc = titleRect.top + sy;              // start anchor
+      var endTopDoc = (secRect.bottom + sy) - imgH;      // end anchor (bottom-aligned)
+      var centerTopDoc = sy + vh / 2 - imgH / 2;         // pinned anchor (viewport centre)
+      var topDoc = Math.min(Math.max(centerTopDoc, titleTopDoc), endTopDoc);
+      if (titleTopDoc > endTopDoc) topDoc = titleTopDoc; // guard: very short section
+      if (!portPinned) { portFig.classList.add('is-pinned'); portPinned = true; }
+      portFig.style.width = imgW + 'px';
+      portFig.style.left = leftPx + 'px';
+      portFig.style.top = (topDoc - sy) + 'px';
+    };
+    var onPortScroll = function () {
+      if (portTicking) return;
+      portTicking = true;
+      requestAnimationFrame(updatePort);
+    };
+    window.addEventListener('scroll', onPortScroll, { passive: true });
+    window.addEventListener('resize', onPortScroll);
+    window.addEventListener('load', updatePort);
+    updatePort();
   }
 
   // --- Hero video thumbnail → full-video popup ---

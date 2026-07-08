@@ -220,11 +220,28 @@ img {
   color: var(--pink-dark);
 }
 
+.logo {
+  display: flex;
+  align-items: center;
+  /* Rest width ≈ 18px tall (aspect 1475/170). May shrink proportionally down to
+     the min-width floor below (≈ 12px tall) when the nav tightens — after which
+     the content-aware collapse (script.js) switches to the hamburger. */
+  flex: 0 1 156px;
+  min-width: 104px;
+}
+
 .logo-img {
   height: 18px;
   width: auto;
   aspect-ratio: 1475 / 170;
   display: block;
+}
+
+/* Nav wordmark scales with its (shrinkable) anchor, staying proportional
+   (footer logo keeps the fixed 18px height from the rule above). */
+.logo .logo-img {
+  width: 100%;
+  height: auto;
 }
 
 .footer-logo-wrap {
@@ -256,6 +273,7 @@ img {
   display: flex;
   align-items: center;
   height: 100%;
+  white-space: nowrap; /* never wrap a label to 2 lines; overflow instead so JS can collapse the nav */
   transition: color var(--duration) var(--ease);
 }
 
@@ -277,7 +295,10 @@ img {
 .main-nav.is-transparent .nav-links a[aria-current="page"] { color: #fff; }
 
 /* --- Language switcher (globe trigger + dropdown; current state in brand pink) --- */
-.nav-lang { position: relative; margin-left: 0.4rem; }
+/* Flex (not block) so the trigger centers as a flex item — a block parent would
+   put the inline-flex button on a line box and align it to the text baseline,
+   throwing the globe off-center vertically. */
+.nav-lang { position: relative; display: flex; align-items: center; margin-left: 0.4rem; }
 
 .nav-lang__trigger {
   display: inline-flex;
@@ -346,10 +367,79 @@ img {
 .nav-lang__check { color: var(--pink); }
 .nav-lang__globe-icon { color: var(--text-muted, #9a9aa4); }
 
-/* On phones, collapse the trigger to just the globe to save room next to the burger. */
-@media (max-width: 768px) {
-  .nav-lang { order: 3; margin-left: auto; }
-  .nav-lang__current { display: none; }
+/* ============================================
+   Collapsed nav (hamburger). JS adds `.is-collapsed` to `.main-nav` the moment
+   the inline items would overflow one line — see updateNavCollapse in script.js.
+   This replaces the old fixed 768px breakpoint so longer labels (e.g. the
+   Spanish nav) collapse exactly when they stop fitting, not at an arbitrary px.
+   ============================================ */
+.main-nav.is-collapsed .mobile-menu-toggle {
+  display: flex;
+  order: 4;
+  margin-left: 0.6rem; /* small gap after the Donate button (which carries the auto margin) */
+}
+
+.main-nav.is-collapsed .nav-links {
+  display: none;
+  position: absolute;
+  top: calc(100% + 10px);
+  left: 0;
+  right: 0;
+  height: auto;
+  background: var(--offwhite);
+  flex-direction: column;
+  align-items: stretch;
+  padding: var(--space-md);
+  border: 1px solid var(--beige-dark);
+  border-radius: 18px;
+  box-shadow: 0 14px 34px rgba(0,0,0,0.12);
+}
+.main-nav.is-collapsed .nav-links > li { display: block; height: auto; }
+.main-nav.is-collapsed .nav-links.open { display: flex; }
+
+/* The open panel has its own light bg — keep links dark regardless of nav state. */
+.main-nav.is-collapsed.is-dark .nav-links a,
+.main-nav.is-collapsed.is-transparent .nav-links a { color: var(--text-light); }
+.main-nav.is-collapsed.is-dark .nav-links a[aria-current="page"],
+.main-nav.is-collapsed.is-transparent .nav-links a[aria-current="page"] { color: var(--pink); }
+
+/* Dropdown becomes a static, indented nested list (no hover). */
+.main-nav.is-collapsed .nav-dropdown {
+  position: static;
+  transform: none;
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  min-width: 0;
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  padding: 0.25rem 0 0.25rem 1rem;
+}
+.main-nav.is-collapsed .nav-dropdown a { padding: 0.4rem 0; }
+
+/* Keep the Donate CTA in the collapsed bar, grouped to the right by the burger. */
+.main-nav.is-collapsed .nav-donate {
+  display: inline-flex;
+  order: 3;
+  margin-left: auto; /* pushes the Donate + burger group to the right edge */
+}
+
+/* Language selector sits snug to the logo (left); the collapsed trigger shows
+   just the globe, and its dropdown opens from the left edge. */
+.main-nav.is-collapsed .nav-lang { order: 1; margin-left: 0.35rem; }
+.main-nav.is-collapsed .nav-lang__current { display: none; }
+.main-nav.is-collapsed .nav-lang__menu { right: auto; left: 0; }
+
+/* Globe matches the logo height (18px) and stays perfectly centered. */
+.main-nav.is-collapsed .nav-lang__trigger {
+  padding: 0;
+  line-height: 0; /* kill inline glyph slack so the icon centers exactly */
+}
+.main-nav.is-collapsed .nav-lang__globe {
+  width: 18px;
+  height: 18px;
+  display: block;
 }
 
 /* --- Nav dropdown (hover/focus on desktop) --- */
@@ -1577,7 +1667,10 @@ img {
 /* Givebutter trigger — must render visibly so the widget initializes,
    but hidden from the user by being positioned off-screen. */
 .givebutter-trigger-wrap {
-  position: absolute;
+  /* Fixed (viewport-relative) rather than absolute so focusing the hidden
+     trigger on widget open/close never scrolls the document to the top.
+     Keeps real dimensions off-screen — zero-dim wrappers break widget init. */
+  position: fixed;
   left: -9999px;
   top: 0;
 }
@@ -2301,64 +2394,9 @@ button.featured-card {
    Responsive
    ============================================ */
 @media (max-width: 768px) {
-  .mobile-menu-toggle {
-    display: flex;
-  }
-
-  .nav-links {
-    display: none;
-    position: absolute;
-    top: calc(100% + 10px);
-    left: 0;
-    right: 0;
-    height: auto;
-    background: var(--offwhite);
-    flex-direction: column;
-    align-items: stretch;
-    padding: var(--space-md);
-    border: 1px solid var(--beige-dark);
-    border-radius: 18px;
-    box-shadow: 0 14px 34px rgba(0,0,0,0.12);
-  }
-  .nav-links > li {
-    display: block;
-    height: auto;
-  }
-  /* The open panel has its own light bg — keep links dark regardless of nav state. */
-  .main-nav.is-dark .nav-links a,
-  .main-nav.is-transparent .nav-links a { color: var(--text-light); }
-  .main-nav.is-dark .nav-links a[aria-current="page"],
-  .main-nav.is-transparent .nav-links a[aria-current="page"] { color: var(--pink); }
-
-  .nav-links.open {
-    display: flex;
-  }
-
-  /* On mobile the dropdown is a static, indented nested list (no hover). */
-  .nav-dropdown {
-    position: static;
-    transform: none;
-    opacity: 1;
-    visibility: visible;
-    pointer-events: auto;
-    min-width: 0;
-    background: transparent;
-    border: none;
-    box-shadow: none;
-    padding: 0.25rem 0 0.25rem 1rem;
-  }
-
-  .nav-dropdown a {
-    padding: 0.4rem 0;
-  }
-
-  .nav-donate {
-    display: none;
-  }
-
-  .nav-links.open + .nav-donate {
-    display: none;
-  }
+  /* Nav collapse is now content-driven via `.main-nav.is-collapsed` (see the
+     collapsed-nav block above + updateNavCollapse in script.js), not this
+     breakpoint. Only non-nav mobile tweaks remain here. */
 
   .safe-exit-wrap {
     bottom: 24px;
@@ -6073,7 +6111,7 @@ body.overlay-open {
   max-width: 52%;
   font-family: var(--font-display);
   font-weight: 500;
-  font-size: clamp(2.2rem, 6vw, var(--gih-title-max, 4.5rem));   /* cap tweakable via --gih-title-max */
+  font-size: clamp(2.2rem, 6vw, var(--gih-title-max, 4.0625rem));   /* cap tweakable via --gih-title-max */
   line-height: 1.18;
   letter-spacing: -0.01em;
   color: #1c5f59;                     /* deep teal */
@@ -6271,6 +6309,14 @@ body.overlay-open {
 }
 .giw__ph b { font-family: var(--font-display); font-size: clamp(2.5rem, 6vw, 4rem); line-height: 1; }
 .giw__ph span { font-weight: 600; font-size: 0.85rem; letter-spacing: 0.04em; text-transform: uppercase; }
+/* Step photo — same square footprint as the placeholder, cropped to cover */
+.giw__photo {
+  width: min(60%, 340px);
+  aspect-ratio: 1;
+  object-fit: cover;
+  border-radius: 28px;
+  display: block;
+}
 /* Flying CTA (hero → ways card) — fixed, JS-positioned (uses .btn.btn-primary). */
 .cta-fly {
   position: fixed;
@@ -6972,7 +7018,10 @@ body.overlay-open {
    The founder quote pins (sticky) as a background; the cream origin section
    flows up over it (higher z-index + opaque bg), then releases into normal
    scroll. Sticky is proven on this site despite body{overflow-x:hidden}. */
-.mv-reveal { position: relative; }
+/* Pull the hero up under the sticky header so the nav overlays it (no gap at
+   top). Mirrors .hero-bleed on the home hero; --app-header-h is JS-synced, with
+   a 7.5rem fallback so it's valid on any page. */
+.mv-reveal { position: relative; margin-top: calc(-1 * var(--app-header-h, 7.5rem)); }
 
 .mv-hero {
   position: sticky;
@@ -7061,8 +7110,9 @@ body.overlay-open {
   letter-spacing: -0.01em;
   color: var(--text);
   text-align: right;
+  white-space: nowrap; /* keep "This Mission" on one line */
 }
-.mv-why__mission em { font-style: italic; }
+.mv-why__mission em { font-style: normal; } /* upright, not italic */
 .mv-why__body {
   max-width: 42rem;
   margin: 0 auto clamp(2.5rem, 7vh, 5rem);
@@ -7084,13 +7134,20 @@ body.overlay-open {
 }
 .mv-stat { display: flex; flex-direction: column; align-items: center; text-align: center; }
 .mv-stat__art {
+  position: relative;
   width: clamp(150px, 20vw, 240px);
-  aspect-ratio: 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  aspect-ratio: 313 / 293;
+  overflow: hidden;   /* clip the cut-out to the frame, matching Figma */
 }
-.mv-stat__art img { width: 100%; height: 100%; object-fit: contain; display: block; }
+/* Colour blobs sit behind; the transparent cut-out floats on top. */
+.mv-stat__blobs { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+.mv-stat__cutout {
+  position: absolute;
+  height: auto;
+  object-fit: contain;
+  display: block;
+  /* width / left / top set inline per-stat */
+}
 .mv-stat__value {
   margin-top: 0.6rem;
   font-family: var(--font-display);
@@ -7120,6 +7177,10 @@ body.overlay-open {
   background: var(--offwhite);
   padding-block: clamp(3rem, 8vh, 6rem) clamp(2rem, 5vh, 3.5rem);
 }
+/* This marquee sits on the cream pathway background, so its edge fades blend to
+   that tone (not the homepage's pink-pale). --offwhite === .mv-pathway__top bg. */
+.mv-pathway__empower-track::before { background: linear-gradient(to right, var(--offwhite), transparent); }
+.mv-pathway__empower-track::after  { background: linear-gradient(to left,  var(--offwhite), transparent); }
 .mv-pathway__head {
   display: grid;
   grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr);
@@ -7164,6 +7225,9 @@ body.overlay-open {
   gap: clamp(1.5rem, 4vw, 3.5rem);
   align-items: center;
 }
+/* Reserves the left grid column so the 2-col layout holds even though the
+   figure itself is lifted out of flow (fixed) on desktop. */
+.mv-pathway__portrait-track { width: 100%; }
 .mv-pathway__portrait {
   margin: 0 auto;
   width: 100%;
@@ -7171,8 +7235,14 @@ body.overlay-open {
   aspect-ratio: 330 / 587;
   border-radius: 18px;
   overflow: hidden;
+  z-index: 2;
 }
 .mv-pathway__portrait img { width: 100%; height: 100%; object-fit: cover; display: block; }
+/* Desktop pin: JS sets position:fixed + inline top/left/width every frame so the
+   image top-aligns to the title, then holds at viewport centre through the
+   section (see [data-portrait] in script.js). overflow-x:hidden on body rules
+   out position:sticky, hence the fixed + rAF approach. */
+.mv-pathway__portrait.is-pinned { position: fixed; margin: 0; will-change: top; }
 .mv-pathway__main { display: flex; flex-direction: column; gap: clamp(1.75rem, 4vh, 2.75rem); }
 
 /* Winding route map */
@@ -7297,6 +7367,9 @@ body.overlay-open {
   .mv-pathway__head > * { grid-column: 1; }
   .mv-pathway__grid { grid-template-columns: 1fr; gap: clamp(2rem, 6vh, 3rem); }
   .mv-pathway__portrait { max-width: 300px; }
+  /* Mobile: no pin — image flows inline above the text (JS also clears inline
+     styles below 900px, this is the CSS safety net). */
+  .mv-pathway__portrait.is-pinned { position: static !important; top: auto; left: auto; width: 100%; margin: 0 auto; }
   .mv-values__grid { grid-template-columns: 1fr; gap: clamp(1.5rem, 5vh, 2.5rem); }
 }
 @media (max-width: 620px) {
@@ -7304,8 +7377,54 @@ body.overlay-open {
   .mv-origin__photo { max-width: 360px; }
   .mv-stats { grid-template-columns: 1fr; gap: 2.25rem; max-width: 340px; margin-inline: auto; }
   .mv-stat__art { width: clamp(160px, 46vw, 210px); }
-  .mv-map { max-width: 320px; }
-  .mv-map__label { font-size: 0.62rem; }
+}
+
+/* Below 760px the spatial route map would overflow (absolute side-labels), so
+   it becomes a clean vertical stepper — same nodes, same sequential light-up. */
+@media (max-width: 760px) {
+  .mv-map {
+    max-width: 420px;
+    aspect-ratio: auto;
+    margin-inline: 0;
+  }
+  .mv-map__svg { display: none; }
+  .mv-map__nodes {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: clamp(1.1rem, 4vw, 1.6rem);
+    padding: 0.25rem 0 0.25rem 0;
+  }
+  /* vertical connector line behind the dots */
+  .mv-map__nodes::before {
+    content: '';
+    position: absolute;
+    left: 7px;
+    top: 12px;
+    bottom: 12px;
+    width: 2px;
+    background: var(--beige-dark);
+    z-index: 0;
+  }
+  .mv-map__node {
+    position: static;
+    width: auto;
+    height: auto;
+    display: flex;
+    align-items: center;
+    gap: 0.9rem;
+    z-index: 1;
+  }
+  .mv-map__dot { position: static; transform: none; flex-shrink: 0; }
+  .mv-map__label {
+    position: static;
+    transform: none !important;
+    inset: auto !important;
+    width: auto !important;
+    max-width: none !important;
+    text-align: left !important;
+    font-size: 0.82rem;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
