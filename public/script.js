@@ -1110,6 +1110,28 @@
     if (routeFill && routeFill.getTotalLength) {
       try { pathMap.style.setProperty('--route-len', routeFill.getTotalLength().toFixed(1)); } catch (e) {}
     }
+
+    // Below 760px the map is a vertical stepper and the winding SVG route is
+    // hidden via CSS. But merely display:none-ing an SVG that already painted
+    // can leave a stale compositing layer (a "ghost" blob) until the region
+    // repaints. So physically detach the SVG on mobile — no layer, no ghost —
+    // and re-attach it on desktop. Idempotent + resize-safe.
+    var pathSvg = pathMap.querySelector('.mv-map__svg');
+    if (pathSvg && window.matchMedia) {
+      var pathSvgParent = pathSvg.parentNode;
+      var pathSvgAnchor = pathSvg.nextSibling;
+      var pathMq = window.matchMedia('(max-width: 760px)');
+      var syncPathSvg = function () {
+        if (pathMq.matches) {
+          if (pathSvg.parentNode) pathSvg.parentNode.removeChild(pathSvg);
+        } else if (!pathSvg.parentNode && pathSvgParent) {
+          pathSvgParent.insertBefore(pathSvg, pathSvgAnchor);
+        }
+      };
+      syncPathSvg();
+      if (pathMq.addEventListener) pathMq.addEventListener('change', syncPathSvg);
+      else if (pathMq.addListener) pathMq.addListener(syncPathSvg);
+    }
     var pathTicking = false;
     var updatePathway = function () {
       pathTicking = false;
